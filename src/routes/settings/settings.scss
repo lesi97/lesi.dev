@@ -1,0 +1,11 @@
+.settings {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+
+    .settingsOptions {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        cursor: pointer;
+    }
+}

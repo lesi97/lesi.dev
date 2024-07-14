@@ -1,0 +1,160 @@
+@import "./app-background-image.scss";
+
+html,
+#root {
+    height: calc(100vh - 47px);
+}
+
+body {
+    // --nav-background-colour: #08407b;
+    // --nav-background-colour: #0c2a4b;
+    --nav-background-colour: #1265be;
+    --nav-active-background-colour: #fbfefd;
+    --nav-font-colour: #fcfdfd;
+    --nav-active-font-colour: #0e0f3b;
+    --nav-active-mobile-background-colour: #fdfdfd;
+
+    --main-font-colour: #0e0f3b;
+    --body-background-colour: #f0f0f0be;
+    --main-background-colour: #fbfefd;
+
+    --accent-colour: #f8931f;
+    // --tertiary-colour: #08407b;
+    --tertiary-colour: #1265be;
+
+    --button-colour: #fbfefd;
+    --button-hovor-colour: #1265be;
+    --button-hovor-font-colour: #fff;
+
+    --illustration-grass-colour: #648000;
+    --illustration-primary-colour: #f8931f;
+    --illustration-secondary-colour: #2f2e41;
+
+    --loader-colour: #f8931f;
+
+    --svg-refresh-spinner: var(--main-background-colour);
+    --svg-refresh-spinner-hover: #dddddd;
+
+    --drop-container-box-shadow-colour: 0px 0px 20px 0px rgba(1, 1, 1, 0.3);
+    --drop-container-file-drop-border-colour: #41414177;
+    --drop-container-file-drop-background-colour: #2c2c2c65;
+
+    margin: 0;
+    background-color: var(--body-background-colour);
+    background-image: var(--main-background-image);
+    color: var(--main-font-colour);
+    height: 100%;
+
+    a {
+        color: var(--accent-colour);
+        font-weight: 700;
+        padding-top: 0.5px;
+        font-size: 1.05em;
+        text-underline-offset: 3px;
+    }
+
+    .forTheMeme {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 1px;
+        height: 1px;
+    }
+}
+
+body.night {
+    --svg-refresh-spinner: #fff;
+    --svg-refresh-spinner-hover: #dddddd;
+
+    --nav-background-colour: #1f2429;
+    --nav-active-background-colour: #ddd;
+    --nav-font-colour: #e3e3e3;
+    --nav-active-font-colour: #1f2429;
+    --nav-active-mobile-background-colour: #fdfdfd;
+
+    --main-font-colour: #e3e3e3;
+    --body-background-colour: #151a1f;
+    --main-background-colour: #1f2429;
+
+    --accent-colour: #cc3369;
+    --tertiary-colour: #fdfdfd;
+
+    --button-colour: #151a1f;
+    --button-hovor-colour: #ddd;
+    --button-hovor-font-colour: #151a1f;
+
+    --illustration-grass-colour: green;
+    --illustration-primary-colour: #cc3369;
+    --illustration-secondary-colour: #2f2e41;
+
+    --loader-colour: #cc3369;
+
+    --svg-refresh-spinner: var(--main-background-colour);
+    --svg-refresh-spinner-hover: var(--body-background-colour);
+
+    --drop-container-box-shadow-colour: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+    --drop-container-file-drop-border-colour: #9797974f;
+    --drop-container-file-drop-background-colour: #ffffff23;
+
+    background-image: none;
+}
+
+* {
+    font-family: Lato, sans-serif;
+    font-weight: 400;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    box-sizing: border-box;
+    &:focus {
+        outline: solid #fff 0px;
+    }
+}
+
+main {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    translate: -50% 0%;
+    min-width: 50%;
+    height: fit-content;
+    padding: 16px 12px;
+    border-radius: 10px;
+    background-color: var(--main-background-colour);
+    outline: var(--main-border);
+    // box-shadow: var(--main-box-shadow);
+
+    box-shadow: var(--drop-container-box-shadow-colour);
+}
+
+@media (max-width: 767px) {
+    body {
+        height: unset;
+
+        #root {
+            height: unset;
+            padding-bottom: 5px;
+        }
+    }
+    header {
+        display: block;
+    }
+    main {
+        position: relative;
+        display: block;
+        top: 9%;
+        left: unset;
+        margin: 30px 5% 30px 5%;
+        translate: unset;
+        min-width: unset;
+        width: 90%;
+        height: fit-content;
+        padding: 16px 12px;
+        border-radius: 10px;
+        background-color: var(--main-background-colour);
+        outline: var(--main-border);
+        // box-shadow: var(--main-box-shadow);
+
+        box-shadow: var(--drop-container-box-shadow-colour);
+    }
+}

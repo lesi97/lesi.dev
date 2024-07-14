@@ -1,0 +1,48 @@
+{
+    "name": "lesi.dev",
+    "version": "1.0.0",
+    "description": "Chris Lesi's WebApp",
+    "main": "main.js",
+    "keywords": [],
+    "author": "Chris Lesi",
+    "license": "ISC",
+    "scripts": {
+        "dev": "vite --host",
+        "clean": "rimraf ./src/public && rimraf ./build",
+        "build": "npm run clean && vite build",
+        "deploy": "npm run build && powershell .\\ftp.ps1",
+        "deploy-cloudfare": "npm run build && wrangler pages deploy ./build",
+        "preview": "npm run build && wrangler pages dev ./build",
+        "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
+        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --quiet"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-react": "^4.2.1",
+        "eslint": "^8.56.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-jsx-a11y": "^6.8.0",
+        "eslint-plugin-react": "^7.33.2",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "prettier": "^3.3.2",
+        "prettier-plugin-css-order": "^2.1.2",
+        "rimraf": "^5.0.5",
+        "sass": "^1.71.1",
+        "vite": "^5.1.4",
+        "wrangler": "^3.48.0"
+    },
+    "dependencies": {
+        "@ffmpeg/ffmpeg": "^0.11.5",
+        "@tanstack/react-query": "^5.29.0",
+        "axios": "^1.6.8",
+        "cssbeautify": "^0.3.1",
+        "js-beautify": "^1.15.1",
+        "pdfjs-dist": "^3.0.279",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.22.3",
+        "terser": "^5.31.2",
+        "wavesurfer.js": "^7.7.9",
+        "xml-formatter": "^3.6.3"
+    }
+}

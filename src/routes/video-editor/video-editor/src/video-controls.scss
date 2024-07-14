@@ -1,0 +1,47 @@
+.controlBar {
+    width: 100%;
+    height: 160px;
+    position: fixed;
+    bottom: 12px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: blue;
+
+    .controls {
+        display: flex;
+        flex-direction: row;
+        max-height: 50%;
+        height: 50%;
+        position: relative;
+        width: 100%;
+        justify-content: center;
+
+        .playPause {
+            border-radius: 500px;
+            margin: 0px 20px;
+        }
+    }
+
+    .timeLineContainer {
+        width: 100%;
+        height: 70px;
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+        video {
+            display: none;
+        }
+    }
+
+    .videoSeekbar {
+        max-height: 50%;
+        height: 50%;
+        display: flex;
+        flex-direction: row;
+    }
+}

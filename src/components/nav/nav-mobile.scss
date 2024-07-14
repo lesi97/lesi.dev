@@ -1,0 +1,65 @@
+@media (max-width: 767px) {
+    header {
+        nav {
+            z-index: 99;
+            ul {
+                position: fixed;
+                display: none;
+                width: 100%;
+                left: 0px;
+                top: 46px;
+                li {
+                    width: 100%;
+                    // border-bottom: solid var(--accent-colour) 1px;
+
+                    &:last-child {
+                        position: unset;
+                        a {
+                            padding: 14px 16px;
+                            margin-right: unset;
+                        }
+                    }
+
+                    a {
+                        padding: 14px 16px;
+                        text-align: left;
+                    }
+                }
+                .active {
+                    background-color: var(
+                        --nav-active-mobile-background-colour
+                    );
+                    color: var(--nav-active-font-colour);
+                    a {
+                        color: var(--nav-active-font-colour);
+                    }
+                }
+            }
+            .burger-menu {
+                padding: 14px 16px 7px 16px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                z-index: 100;
+                color: var(--nav-font-colour);
+
+                svg {
+                    width: 21px;
+                    height: auto;
+                    color: var(--nav-font-colour);
+                }
+
+                &:hover {
+                    background-color: var(
+                        --nav-active-mobile-background-colour
+                    );
+                    color: var(--nav-active-font-colour);
+
+                    svg {
+                        color: var(--nav-active-font-colour);
+                    }
+                }
+            }
+        }
+    }
+}
