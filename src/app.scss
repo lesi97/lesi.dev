@@ -14,6 +14,10 @@ body {
     --nav-active-font-colour: #0e0f3b;
     --nav-active-mobile-background-colour: #fdfdfd;
 
+    --footer-svg: #1f2429;
+    // --footer-drop-shadow: drop-shadow(0px 0px 2px #f8931f86);
+    --footer-drop-shadow: none;
+
     --main-font-colour: #0e0f3b;
     --body-background-colour: #f0f0f0be;
     --main-background-colour: #fbfefd;
@@ -72,6 +76,9 @@ body.night {
     --nav-active-font-colour: #1f2429;
     --nav-active-mobile-background-colour: #fdfdfd;
 
+    --footer-svg: #fdfdfd;
+    --footer-drop-shadow: none;
+
     --main-font-colour: #e3e3e3;
     --body-background-colour: #151a1f;
     --main-background-colour: #1f2429;
@@ -112,11 +119,12 @@ body.night {
 }
 
 main {
-    position: absolute;
-    top: 10%;
+    position: relative;
+    top: 5%;
     left: 50%;
     translate: -50% 0%;
     min-width: 50%;
+    max-width: 50%;
     height: fit-content;
     padding: 16px 12px;
     border-radius: 10px;
@@ -141,12 +149,12 @@ main {
     }
     main {
         position: relative;
-        display: block;
+        // display: block;
         top: 9%;
-        left: unset;
-        margin: 30px 5% 30px 5%;
-        translate: unset;
-        min-width: unset;
+        // left: unset;
+        margin: 30px 0px 30px 0px;
+        // translate: unset;
+        min-width: 90%;
         width: 90%;
         height: fit-content;
         padding: 16px 12px;

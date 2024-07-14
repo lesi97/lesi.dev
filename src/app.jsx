@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Nav } from "./components/nav/nav";
+import { Footer } from "./components/footer/footer";
 import ltoe from "./assets/images/ltoe.png";
 import { Home, Error404, AspectRatio, VideoToMp3, CropToShort, Settings, VideoEditor, PdfToPng, PasswordGenerator, WeightConverter, IconConverter, Minifier } from "./routes";
 
@@ -111,6 +112,7 @@ const App = () => {
                         <Route path="/settings" element={<Settings toggleNightMode={toggleNightMode} nigthModeState={isNightMode} />} />
                     </Routes>
                     {/* </main> */}
+                    <Footer />
                 </QueryClientProvider>
             </BrowserRouter>
             <a target="_blank" rel="noreferrer" href="https://twitch.tv/liight2k">
