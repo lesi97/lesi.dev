@@ -2,13 +2,15 @@ import "./aspect-ratio.scss";
 import "./aspect-ratio-mobile.scss";
 import { useState, useEffect } from "react";
 
-export const AspectRatio = () => {
+export const AspectRatio = ({ setError }) => {
     const [originalWidth, setOriginalWidth] = useState("");
     const [originalHeight, setOriginalHeight] = useState("");
     const [newWidth, setNewWidth] = useState("");
     const [newHeight, setNewHeight] = useState("");
     const [aspectRatio, setAspectRatio] = useState("");
     const [selectedRadio, setSelectedRadio] = useState("width");
+
+    setError(false);
 
     useEffect(() => {
         document.title = `Lesi | Aspect Ratio Calculator`;

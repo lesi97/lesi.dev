@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getTime, getWeatherInfo } from "./home-fns";
 import "./home.scss";
 
-export const Home = () => {
+export const Home = ({ setError }) => {
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [weatherInfo, setWeatherInfo] = useState({});
@@ -12,6 +12,8 @@ export const Home = () => {
     const [feelsLikeFahrenheit, setFeelsLikeFahrenheit] = useState("");
     const [isCelsius, setIsCelsius] = useState(true);
     const [timeZone, setTimeZone] = useState("");
+
+    setError(false);
 
 
     useEffect(() => {

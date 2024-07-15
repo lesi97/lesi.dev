@@ -2,7 +2,9 @@ import { DayNightToggle } from "../../components/dayNightToggle";
 import "./settings.scss";
 import { useEffect } from "react";
 
-export const Settings = ({ toggleNightMode, nigthModeState }) => {
+export const Settings = ({ toggleNightMode, nigthModeState, setError }) => {
+
+    setError(false);
 
     useEffect(() => {
         document.title = `Lesi | Settings`;

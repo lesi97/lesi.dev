@@ -3,7 +3,9 @@ import "./whitebeard.scss";
 import "./404-mobile.scss";
 import { Link } from "react-router-dom";
 
-export const Error404 = () => {
+export const Error404 = ({ setError }) => {
+
+    setError(true);
 
     return (
         <Link to="/">

@@ -3,8 +3,10 @@ import "./minifier.scss";
 import "./minifier-mobile.scss";
 import { minify, unminify } from "./minifier-fns";
 
-export const Minifier = () => {
+export const Minifier = ({ setError }) => {
     const [code, setCode] = useState("");
+
+    setError(false);
 
     useEffect(() => {
         document.title = `Lesi | Minifier`;

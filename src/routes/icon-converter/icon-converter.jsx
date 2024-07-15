@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { DropBox } from "../../components/dropbox/dropbox";
 import { ConvertApp } from "./iconConverter";
 
-export const IconConverter = () => {
+export const IconConverter = ({ setError }) => {
     const [image, setImage] = useState(null);
+
+    setError(false);
 
     useEffect(() => {
         document.title = `Lesi | Icon Converter`;

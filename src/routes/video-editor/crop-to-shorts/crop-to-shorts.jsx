@@ -1,13 +1,13 @@
 import "./crop-to-shorts.scss";
 import { DropBox } from "../../../components/dropbox/dropbox";
-import { LoaderNewtonsCradle, LoaderRing } from "../../../components/loading/";
+// import { LoaderNewtonsCradle, LoaderRing } from "../../../components/loading/";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { useEffect, useState, useRef } from "react";
 import { writeToMemory } from "../video-editor/src/write-to-memory";
 
 const ffmpeg = createFFmpeg({ log: true });
 
-export const CropToShort = () => {
+export const CropToShort = ({ setError }) => {
 
     const [ready, setReady] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -17,6 +17,8 @@ export const CropToShort = () => {
     const [originalVideoBlobUrl, setOriginalVideoBlobUrl] = useState();
     const progressBarRef = useRef(null);
     const progressBarTotalRef = useRef(null);
+
+    setError(false);
 
     useEffect(() => {
         document.title = `Lesi | Video Cropper`;
@@ -94,7 +96,7 @@ export const CropToShort = () => {
             await ffmpeg.load()
         }
 
-        ffmpeg.setLogger(({ type, message }) => {
+        ffmpeg.setLogger(({ message }) => {
             const timeMatch = message.match(/time=(\d{2}:\d{2}:\d{2}\.\d{2})/);
             if (timeMatch) {
                 const currentTime = timeToSeconds(timeMatch[1]);
@@ -172,6 +174,7 @@ export const CropToShort = () => {
                     </h2>
                 </div>
                 {ready && <DropBox loadVideo={loadVideo} type="videoCrop" loading={loading} progressBar={progressBarRef} progressBarTotal={progressBarTotalRef} />}
+                {/* eslint-disable-next-line jsx-a11y/media-has-caption*/}
                 {video && <video id="video" src={originalVideoBlobUrl} />}
             </div>
         </main>

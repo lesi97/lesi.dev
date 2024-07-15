@@ -2,12 +2,15 @@ import "./weight-converter.scss";
 import "./weight-converter-mobile.scss";
 import { useEffect, useState } from "react";
 
-export const WeightConverter = () => {
+export const WeightConverter = ({ setError }) => {
     const [pounds, setPounds] = useState("");
     const [kilograms, setKilograms] = useState("");
     const [ounces, setOunces] = useState("");
     const [grams, setGrams] = useState("");
     const [stones, setStones] = useState("");
+
+    setError(false);
+
 
     useEffect(() => {
         document.title = `Lesi | Weight Converter`;

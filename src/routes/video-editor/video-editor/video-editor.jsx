@@ -1,19 +1,21 @@
 import "./video-editor.scss";
 import { DropBox } from "../../../components/dropbox/dropbox";
-import { LoaderNewtonsCradle, LoaderRing } from "../../../components/loading";
-import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+// import { LoaderNewtonsCradle, LoaderRing } from "../../../components/loading";
+import { createFFmpeg } from "@ffmpeg/ffmpeg";
 import { useEffect, useState } from "react";
-import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
+// import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { writeToMemory } from "./src/write-to-memory";
 import { VideoControls } from "./src/video-controls";
 
 const ffmpeg = createFFmpeg({ log: true });
 
-export const VideoEditor = () => {
+export const VideoEditor = ({ setError }) => {
     const [ready, setReady] = useState(false);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const [originalVideoBlobUrl, setOriginalVideoBlobUrl] = useState();
     const [video, setVideo] = useState();
+
+    setError(false);
 
 
     useEffect(() => {
@@ -63,7 +65,7 @@ export const VideoEditor = () => {
             {!originalVideoBlobUrl &&
                 <main>
                     <div className="videoToMp3">
-                        {loading && <LoaderRing />}
+                        {/* {loading && <LoaderRing />} */}
                         <div className="description">
                             <h1>Video To MP3 Converter</h1>
                             <h2>
@@ -71,12 +73,13 @@ export const VideoEditor = () => {
                                 Press the play button once loaded to play the audio in your browser
                             </h2>
                         </div>
-                        {ready && <DropBox loadVideo={loadVideo} type="videoToMp3" loading={loading} />}
+                        {ready && <DropBox loadVideo={loadVideo} type="videoToMp3" /*loading={loading}*/ />}
                     </div>
                 </main>}
 
             {originalVideoBlobUrl &&
                 <>
+                    {/*eslint-disable-next-line jsx-a11y/media-has-caption*/}
                     <video id="video" src={originalVideoBlobUrl} controls />
                     <VideoControls video={video} blobUrl={originalVideoBlobUrl} />
                 </>

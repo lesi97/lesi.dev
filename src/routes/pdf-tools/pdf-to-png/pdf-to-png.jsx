@@ -6,8 +6,10 @@ import * as pdfjsLib from 'pdfjs-dist/build/pdf';
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.0.279/pdf.worker.min.js'
 
 
-export const PdfToPng = () => {
+export const PdfToPng = ({ setError }) => {
     const [pdf, setPdf] = useState(null);
+
+    setError(false);
 
     useEffect(() => {
         document.title = `Lesi | PDF To PNG Converter`;

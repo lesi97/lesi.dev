@@ -1,21 +1,23 @@
 import "./video-to-mp3.scss";
 import { DropBox } from "../../../components/dropbox/dropbox";
-import { LoaderNewtonsCradle, LoaderRing } from "../../../components/loading/";
+// import { LoaderNewtonsCradle, LoaderRing } from "../../../components/loading/";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { useEffect, useState, useRef } from "react";
 import { writeToMemory } from "../video-editor/src/write-to-memory";
 
 const ffmpeg = createFFmpeg({ log: true });
 
-export const VideoToMp3 = () => {
+export const VideoToMp3 = ({ setError }) => {
     const [ready, setReady] = useState(false);
     const [loading, setLoading] = useState(false);
     const [video, setVideo] = useState();
     const [mp3, setMp3] = useState(null);
     const [progress, setProgress] = useState(0);
     const [originalVideoBlobUrl, setOriginalVideoBlobUrl] = useState();
-    const progressBarRef = useRef(null);
+    // const progressBarRef = useRef(null);
     const progressBarTotalRef = useRef(null);
+
+    setError(false);
 
     useEffect(() => {
         document.title = `Lesi | Video To MP3`;
@@ -67,7 +69,7 @@ export const VideoToMp3 = () => {
             await ffmpeg.load()
         }
 
-        ffmpeg.setLogger(({ type, message }) => {
+        ffmpeg.setLogger(({ message }) => {
             const timeMatch = message.match(/time=(\d{2}:\d{2}:\d{2}\.\d{2})/);
             if (timeMatch) {
                 const currentTime = timeToSeconds(timeMatch[1]);
@@ -128,7 +130,7 @@ export const VideoToMp3 = () => {
     return (
         <main>
             <div className="videoToMp3">
-                {loading && <LoaderRing />}
+                {/* {loading && <LoaderRing />} */}
                 <div className="description">
                     <h1>Video To MP3 Converter</h1>
                     <h2>
@@ -137,6 +139,7 @@ export const VideoToMp3 = () => {
                     </h2>
                 </div>
                 {ready && <DropBox loadVideo={loadVideo} mp3url={mp3} type="videoToMp3" loading={loading} progressBar={progress} progressBarTotal={progressBarTotalRef} />}
+                {/*eslint-disable-next-line jsx-a11y/media-has-caption*/}
                 {video && <video id="video" src={originalVideoBlobUrl} />}
             </div>
         </main>

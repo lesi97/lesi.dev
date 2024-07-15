@@ -20,6 +20,7 @@ const queryClient = new QueryClient({
 
 const App = () => {
     const [isNightMode, setIsNightMode] = useState();
+    const [isErrorPage, setIsErrorPage] = useState(false);
     const memeRef = useRef(null);
 
 
@@ -90,29 +91,29 @@ const App = () => {
         };
     }, []);
 
+
+
     return (
         <>
             <BrowserRouter>
                 <QueryClientProvider client={queryClient}>
                     <Nav toggleNightMode={toggleNightMode} nigthModeState={isNightMode} />
-                    {/* <main> */}
                     <Routes>
-                        <Route path="" element={<Home />} />
-                        <Route path="*" element={<Error404 />} />
-                        <Route path="/aspect-ratio-calculator" element={<AspectRatio />} />
-                        <Route path="/pdf-to-png" element={<PdfToPng />} />
-                        <Route path="/ico-converter" element={<IconConverter />} />
-                        <Route path="/password-generator" element={<PasswordGenerator />} />
-                        <Route path="/svg-converter" element={null} />
-                        <Route path="/weight-converter" element={<WeightConverter />} />
-                        <Route path="/video-editor" element={<VideoEditor />} />
-                        <Route path="/video-to-mp3" element={<VideoToMp3 />} />
-                        <Route path="/video-cropper" element={<CropToShort />} />
-                        <Route path="/minifier" element={<Minifier />} />
-                        <Route path="/settings" element={<Settings toggleNightMode={toggleNightMode} nigthModeState={isNightMode} />} />
+                        <Route path="" element={<Home setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="*" element={<Error404 setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/aspect-ratio-calculator" element={<AspectRatio setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/pdf-to-png" element={<PdfToPng setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/ico-converter" element={<IconConverter setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/password-generator" element={<PasswordGenerator setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/svg-converter" element={null} setError={(e) => setIsErrorPage(e)} />
+                        <Route path="/weight-converter" element={<WeightConverter setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/video-editor" element={<VideoEditor setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/video-to-mp3" element={<VideoToMp3 setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/video-cropper" element={<CropToShort setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/minifier" element={<Minifier setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/settings" element={<Settings toggleNightMode={toggleNightMode} nigthModeState={isNightMode} setError={(e) => setIsErrorPage(e)} />} />
                     </Routes>
-                    {/* </main> */}
-                    <Footer />
+                    {!isErrorPage && <Footer />}
                 </QueryClientProvider>
             </BrowserRouter>
             <a target="_blank" rel="noreferrer" href="https://twitch.tv/liight2k">

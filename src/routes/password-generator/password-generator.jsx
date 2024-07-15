@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 import { RefreshSvg, Copy } from "../../components/icons";
 import { Checkbox } from "../../components/checkbox/checkbox";
 
-export const PasswordGenerator = () => {
+export const PasswordGenerator = ({ setError }) => {
     const [password, setPassword] = useState("");
     const [sliderVal, setSliderVal] = useState(16);
     const [includeNum, setIncludeNum] = useState(true);
     const [includeSymbols, setIncludeSymbols] = useState(true);
     const [isUserTyping, setIsUserTyping] = useState(false);
+
+    setError(false);
 
     useEffect(() => {
         document.title = `Lesi | Password Generator`;
