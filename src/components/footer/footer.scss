@@ -16,6 +16,12 @@ footer {
             text-align: center;
             a {
                 color: var(--footer-svg);
+                &:focus {
+                    color: var(--accent-colour);
+                    svg {
+                        height: 32px;
+                    }
+                }
                 svg {
                     height: 28px;
                     width: auto;
