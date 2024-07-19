@@ -5,8 +5,9 @@ import { Waveform } from "../../routes/video-editor/video-mp3/waveform";
 import { useState, useRef } from "react";
 
 export const DropBox = (props) => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 767);
     const [isPlaying, setIsPlaying] = useState(false);
+
+    const isMobile = window.innerWidth < 767;
 
     const waveformRef = useRef(null);
 
@@ -29,20 +30,20 @@ export const DropBox = (props) => {
         }
     }
 
-    function uploadBoxOnFileInputChange(evt) {
-        const fileInput = document.getElementById("fileInput");
-        let file = fileInput?.files?.[0];
-        if (!file)
-            file = !isMobile ? "Drag and drop your file here<br /><br /> Or click here to browse<br /> your PC for documents to upload" :
-                "Click here to browse<br /> for a document to upload";
-        const label = fileInput.previousElementSibling;
-        label.innerHTML = file;
-        if (props.type === "video") return props.loadVideo();
+    // function uploadBoxOnFileInputChange(evt) {
+    //     const fileInput = document.getElementById("fileInput");
+    //     let file = fileInput?.files?.[0];
+    //     if (!file)
+    //         file = !isMobile ? "Drag and drop your file here<br /><br /> Or click here to browse<br /> your PC for documents to upload" :
+    //             "Click here to browse<br /> for a document to upload";
+    //     const label = fileInput.previousElementSibling;
+    //     label.innerHTML = file;
+    //     if (props.type === "video") return props.loadVideo();
 
-        if (typeof props?.fn === "function") {
-            props.fn();
-        }
-    }
+    //     if (typeof props?.fn === "function") {
+    //         props.fn();
+    //     }
+    // }
 
     function clickLabel() {
         document.getElementById("fileInput").click();
@@ -77,6 +78,7 @@ export const DropBox = (props) => {
                 onDragEnter={uploadBoxDropOverOrEnter}
                 onDrop={uploadBoxOnDrop}
                 onClick={!props?.mp3url ? clickLabel : null}
+                onKeyDown={!props?.mp3url ? clickLabel : null}
             >
                 <div id="dropContainer" className="dropZone">
                     <div className={`svgContainer ${props?.mp3url ? "additionalPadding" : ""}`} >
@@ -87,6 +89,7 @@ export const DropBox = (props) => {
                         {props?.mp3url && <Waveform url={props?.mp3url} ref={waveformRef} setPlaying={(e) => setIsPlaying(e)} onClick={(e) => { console.log(e) }} />}
                     </div>
 
+                    { /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
                     <label htmlFor="fileInput" id="uploadText" onClick={(e) => handleMp3ChangeFile(e)}>
                         {!isMobile ? (
                             <>

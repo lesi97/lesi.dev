@@ -116,7 +116,7 @@ const App = () => {
                     {!isErrorPage && <Footer />}
                 </QueryClientProvider>
             </BrowserRouter>
-            <a target="_blank" rel="noreferrer" href="https://twitch.tv/liight2k">
+            <a target="_blank" rel="noreferrer" href="https://twitch.tv/liight2k" tabIndex="-1">
                 {/*eslint-disable-next-line jsx-a11y/img-redundant-alt*/}
                 <img ref={memeRef} className="forTheMeme" src={ltoe} alt="The sacred image is missing, plz forgiv" />
             </a>

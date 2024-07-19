@@ -1,6 +1,6 @@
 import "./dayNightToggle.scss";
 import { Alien } from "../icons";
-const DayNightToggle = ({ isChecked, toggle }) => {
+const DayNightToggle = ({ isChecked }) => {
   return (
     <>
       <input
@@ -11,6 +11,7 @@ const DayNightToggle = ({ isChecked, toggle }) => {
         readOnly={true}
       />
 
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="toggle--label">
         <span className="toggle--label-background"><Alien /></span>
       </label>
