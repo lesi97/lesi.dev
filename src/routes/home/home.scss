@@ -23,6 +23,9 @@
             &:hover {
                 cursor: pointer;
             }
+            &:focus-visible {
+                color: var(--accent-colour);
+            }
         }
 
         .values {

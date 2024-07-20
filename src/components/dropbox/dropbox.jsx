@@ -62,13 +62,12 @@ export const DropBox = (props) => {
     };
 
     const handleMp3ChangeFile = (e) => {
+        if (e.code) return e.preventDefault();
         if (props.type === "videoToMp3" && props?.mp3url) {
             return;
         }
         return e.preventDefault();
     }
-
-    console.log(props?.mp3url)
 
     return (
         <>
@@ -82,15 +81,15 @@ export const DropBox = (props) => {
             >
                 <div id="dropContainer" className="dropZone">
                     <div className={`svgContainer ${props?.mp3url ? "additionalPadding" : ""}`} >
-                        {props.type === "videoToMp3" && <IllustrationMusic playPause={handlePlayPause} isPlaying={isPlaying} progressBar={props.progressBar} progressBarTotal={props.progressBarTotal} />}
+                        {props.type === "videoToMp3" && <IllustrationMusic playPause={handlePlayPause} isPlaying={isPlaying} progressBar={props.progressBar} />}
                         {props.type === "videoCrop" && <IllustrationInfluencer progressBar={props.progressBar} progressBarTotal={props.progressBarTotal} />}
                         {props.type === "pdfToPng" && <IllustrationPersonalFile />}
                         {props.type === "imgToIco" && <IllustrationImagePost />}
                         {props?.mp3url && <Waveform url={props?.mp3url} ref={waveformRef} setPlaying={(e) => setIsPlaying(e)} onClick={(e) => { console.log(e) }} />}
                     </div>
 
-                    { /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-                    <label htmlFor="fileInput" id="uploadText" onClick={(e) => handleMp3ChangeFile(e)}>
+                    { /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role, jsx-a11y/no-noninteractive-element-interactions */}
+                    <label htmlFor="fileInput" id="uploadText" onClick={(e) => handleMp3ChangeFile(e)} onKeyDown={(e) => handleMp3ChangeFile(e)}>
                         {!isMobile ? (
                             <>
                                 Drag and drop your file here
@@ -120,6 +119,9 @@ export const DropBox = (props) => {
             <div
                 className="hiddenDropArea"
                 id="hiddenDropArea"
+                tabIndex="0"
+                role="button"
+                onKeyDown={(e) => { if (e.code === "Enter") return clickLabel() }}
                 onDragOver={uploadBoxDropOverOrEnter}
                 onDragEnter={uploadBoxDropOverOrEnter}
                 onDragLeave={removeDropZone}

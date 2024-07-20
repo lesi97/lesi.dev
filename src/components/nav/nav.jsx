@@ -43,8 +43,8 @@ export function Nav() {
 
                 <ul id="myLinks" className="myLinks">
                     <li>
-                        <Link to="/"
-                            className={`${"/" === currentPage ? " active" : ""}`}
+                        <Link to=""
+                            className={`${("/" === currentPage || "0" === currentPage) ? " active" : ""}`}
                             onClick={(e) => handleClick(e)}
                             onKeyDown={(e) => handleButtonCLick(e)}
                             tabIndex={0}>

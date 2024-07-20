@@ -7,6 +7,13 @@
     z-index: 0;
     width: 100%;
     height: 100%;
+    &:focus-visible {
+        opacity: 1;
+        z-index: 99;
+        border-radius: 10px;
+        border: dashed 5px var(--drop-container-file-drop-border-colour);
+        background-color: var(--drop-container-file-drop-background-colour);
+    }
 }
 .dropAreaFileHover {
     opacity: 1;

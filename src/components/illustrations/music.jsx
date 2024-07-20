@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-export const IllustrationMusic = ({ playPause, isPlaying, progressBar, progressBarTotal }) => {
+export const IllustrationMusic = ({ playPause, isPlaying, progressBar }) => {
     const [clipHeight, setClipHeight] = useState(0);
 
     useEffect(() => {

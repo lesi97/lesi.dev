@@ -1,4 +1,4 @@
-/* eslint-disable react/display-name */
+
 import { useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import WaveSurfer from "wavesurfer.js";
 import "./waveform.scss"
@@ -103,3 +103,5 @@ export const Waveform = forwardRef(({ url, setPlaying }, ref) => {
 
     return <div id="waveform" className="waveformMp3" ref={waveformRef}></div>;
 })
+
+Waveform.displayName = "Waveform";

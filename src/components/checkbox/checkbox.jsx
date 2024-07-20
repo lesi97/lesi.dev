@@ -7,7 +7,8 @@ export const Checkbox = ({ checked, onChange }) => {
             <input
                 type="checkbox"
                 checked={checked}
-                onChange={onChange}></input>
+                onChange={onChange}
+                tabIndex="0"></input>
             <span className="checkmark"></span>
         </label>
     );

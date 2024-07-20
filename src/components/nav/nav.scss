@@ -45,7 +45,7 @@ header {
                     height: 100%;
                     width: 100%;
 
-                    &:focus {
+                    &:focus-visible {
                         color: var(--accent-colour);
                     }
 

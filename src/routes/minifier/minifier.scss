@@ -44,6 +44,12 @@
                 color: var(--button-hovor-font-colour);
                 outline: none;
             }
+
+            &:focus-visible {
+                background-color: var(--button-hovor-colour);
+                color: var(--button-hovor-font-colour);
+                outline: none;
+            }
         }
     }
 }

@@ -139,8 +139,7 @@ export const VideoToMp3 = ({ setError }) => {
                     </h2>
                 </div>
                 {ready && <DropBox loadVideo={loadVideo} mp3url={mp3} type="videoToMp3" loading={loading} progressBar={progress} progressBarTotal={progressBarTotalRef} />}
-                {/*eslint-disable-next-line jsx-a11y/media-has-caption*/}
-                {video && <video id="video" src={originalVideoBlobUrl} />}
+                {video && <video id="video" muted src={originalVideoBlobUrl} />}
             </div>
         </main>
     );

@@ -11,7 +11,7 @@ export const Home = ({ setError }) => {
     const [feelsLikeCelsius, setFeelsLikeCelsius] = useState("");
     const [feelsLikeFahrenheit, setFeelsLikeFahrenheit] = useState("");
     const [isCelsius, setIsCelsius] = useState(true);
-    const [timeZone, setTimeZone] = useState("");
+    // const [timeZone, setTimeZone] = useState("");
 
     setError(false);
 
@@ -62,6 +62,12 @@ export const Home = ({ setError }) => {
         setIsCelsius(!isCelsius);
     };
 
+    const handleTempTypeChange = (e) => {
+        if (e.code === "Enter" || e.code === "Space") {
+            toggleTemperatureUnit()
+        }
+    }
+
     return (
         <main>
             <div className="home">
@@ -75,11 +81,17 @@ export const Home = ({ setError }) => {
                         Current weather in {weatherInfo?.location?.name}
                     </div>
                     <div className="values clickable"
-                        onClick={toggleTemperatureUnit}>
+                        onClick={toggleTemperatureUnit}
+                        onKeyDown={(e) => handleTempTypeChange(e)}
+                        tabIndex="0"
+                        role="button">
                         Temperature: {isCelsius ? `${tempCelsius}°C` : `${tempFahrenheit}°F`}
                     </div>
                     <div className="values clickable"
-                        onClick={toggleTemperatureUnit}>
+                        onClick={toggleTemperatureUnit}
+                        onKeyDown={(e) => handleTempTypeChange(e)}
+                        tabIndex="0"
+                        role="button">
                         Feels Like: {isCelsius ? `${feelsLikeCelsius}°C` : `${feelsLikeFahrenheit}°F`}
                     </div>
                     <div className="values">

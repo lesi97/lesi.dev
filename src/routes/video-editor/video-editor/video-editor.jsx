@@ -79,8 +79,7 @@ export const VideoEditor = ({ setError }) => {
 
             {originalVideoBlobUrl &&
                 <>
-                    {/*eslint-disable-next-line jsx-a11y/media-has-caption*/}
-                    <video id="video" src={originalVideoBlobUrl} controls />
+                    <video id="video" muted src={originalVideoBlobUrl} controls />
                     <VideoControls video={video} blobUrl={originalVideoBlobUrl} />
                 </>
             }

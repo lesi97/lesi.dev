@@ -174,8 +174,7 @@ export const CropToShort = ({ setError }) => {
                     </h2>
                 </div>
                 {ready && <DropBox loadVideo={loadVideo} type="videoCrop" loading={loading} progressBar={progressBarRef} progressBarTotal={progressBarTotalRef} />}
-                {/* eslint-disable-next-line jsx-a11y/media-has-caption*/}
-                {video && <video id="video" src={originalVideoBlobUrl} />}
+                {video && <video id="video" muted src={originalVideoBlobUrl} />}
             </div>
         </main>
     );

@@ -95,11 +95,11 @@ export const PasswordGenerator = ({ setError }) => {
                 </div>
 
                 <div className="passwordField">
-                    <input type="text" value={password} id="password" onChange={e => handleTyping(e)}></input>
-                    <div className="reloadSvg" onClick={generatePassword}>
+                    <input type="text" value={password} id="password" onChange={e => handleTyping(e)} spellCheck="false"></input>
+                    <div className="reloadSvg" tabIndex="0" role="button" onClick={generatePassword} onKeyDown={(e) => { if (e.code === "Enter") generatePassword() }}>
                         <RefreshSvg />
                     </div>
-                    <div className="copySvg" onClick={copyPassword}>
+                    <div className="copySvg" tabIndex="0" role="button" onClick={copyPassword} onKeyDown={(e) => { if (e.code === "Enter") copyPassword() }}>
                         <Copy />
                     </div>
                 </div>

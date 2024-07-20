@@ -96,6 +96,7 @@ export const AspectRatio = ({ setError }) => {
                     <div>
                         <label>
                             New Width
+                            { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                             <label htmlFor="width" className="customRadio">
                                 <input type="radio"
                                     id="width"
@@ -116,6 +117,7 @@ export const AspectRatio = ({ setError }) => {
                     <div>
                         <label>
                             New Height
+                            { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                             <label htmlFor="height"
                                 className="customRadio">
                                 <input type="radio"

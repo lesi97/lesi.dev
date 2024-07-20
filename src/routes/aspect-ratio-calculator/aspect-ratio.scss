@@ -46,6 +46,10 @@
                         &:checked {
                             border: 6px solid var(--accent-colour);
                         }
+
+                        &:focus-visible {
+                            box-shadow: 0px 0px 20px 0px red;
+                        }
                     }
                 }
 
@@ -56,6 +60,10 @@
                     border-radius: 4px;
                     font-size: 18px;
                     box-shadow: 0px 0px 2px 0px var(--tertiary-colour);
+
+                    &:focus-visible {
+                        box-shadow: 0px 0px 10px 0px var(--tertiary-colour);
+                    }
                 }
             }
         }
