@@ -33,9 +33,6 @@ const App = () => {
             localStorage.setItem("nightmode", mediaQuery.matches);
             setIsNightMode(mediaQuery.matches);
         }
-        document.addEventListener('focusin', (event) => {
-            console.log('Focused element:', event.target);
-        });
 
     }, []);
 
