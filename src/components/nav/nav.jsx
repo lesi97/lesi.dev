@@ -32,7 +32,7 @@ export function Nav() {
     return (
         <header>
             <nav>
-                <Link id="homeLink" to="/">
+                <Link id="homeLink" to="/" tabIndex="-1">
                     <img
                         src={emote56}
                         height={47}
