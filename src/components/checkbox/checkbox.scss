@@ -12,7 +12,7 @@
     width: 14px;
     height: 14px;
 
-    &:focus-within {
+    &:focus-visble {
         box-shadow: 0px 0px 30px 2px var(--tertiary-colour);
     }
 }

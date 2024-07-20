@@ -62,7 +62,6 @@ export const DropBox = (props) => {
     };
 
     const handleMp3ChangeFile = (e) => {
-        if (e.code) return e.preventDefault();
         if (props.type === "videoToMp3" && props?.mp3url) {
             return;
         }
