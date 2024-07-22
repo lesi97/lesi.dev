@@ -74,6 +74,12 @@ error_reporting(E_ALL);
 		
 		if ($membershipIdResponse !== false) {
 			$membershipIdData = json_decode($membershipIdResponse, true);
+
+			if ($membershipIdData["Response"][0]["isPublic"] === false) {
+				echo "ur account is private dummy, go here https://www.bungie.net/7/en/User/Account/Privacy then gift a sub";
+				return;
+			}
+
 			if (json_last_error() == JSON_ERROR_NONE) {
 				$destinyMembershipId = $membershipIdData["Response"][0]["membershipId"];
 				$membershipType = $membershipIdData["Response"][0]["membershipType"];
@@ -243,8 +249,13 @@ error_reporting(E_ALL);
 					$perkHashes = $data["Response"]["itemComponents"]["sockets"]["data"][$itemInstanceId]["sockets"];
 					
 					// Get Perk Hashes From $perkHashes Array
-					for ($i = 0; $i < count($perkHashes); $i++){
-						$perkHash[$i] = $perkHashes[$i]["plugHash"];
+					if (is_array($perkHashes)) {
+						for ($i = 0; $i < count($perkHashes); $i++) {
+							$perkHash[$i] = $perkHashes[$i]["plugHash"];
+						}
+					} else {
+						$perkHash = []; 
+						error_log("Error: \$perkHashes is null or not an array");
 					}
 
 

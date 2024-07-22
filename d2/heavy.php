@@ -74,6 +74,12 @@ error_reporting(E_ALL);
 		
 		if ($membershipIdResponse !== false) {
 			$membershipIdData = json_decode($membershipIdResponse, true);
+
+			if ($membershipIdData["Response"][0]["isPublic"] === false) {
+				echo "ur account is private dummy, go here https://www.bungie.net/7/en/User/Account/Privacy then gift a sub";
+				return;
+			}
+
 			if (json_last_error() == JSON_ERROR_NONE) {
 				$destinyMembershipId = $membershipIdData["Response"][0]["membershipId"];
 				$membershipType = $membershipIdData["Response"][0]["membershipType"];
