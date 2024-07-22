@@ -76,7 +76,7 @@ error_reporting(E_ALL);
 			$membershipIdData = json_decode($membershipIdResponse, true);
 
 			if ($membershipIdData["Response"][0]["isPublic"] === false) {
-				echo "ur account is private dummy, go here https://www.bungie.net/7/en/User/Account/Privacy then gift a sub";
+				echo $user . "ur account is private dummy, go here https://www.bungie.net/7/en/User/Account/Privacy then gift a sub";
 				return;
 			}
 
