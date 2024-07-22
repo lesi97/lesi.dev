@@ -28,7 +28,12 @@ error_reporting(E_ALL);
 
 	if (isset($user)) {
 
-		$user = urlencode($user);				
+		$user = rawurlencode($user);
+		
+		if ($user === 'Blk.%231757') {
+			$destinyMembershipId = 4611686018468437248;
+			$membershipType = 3;
+		}
 		
 		if ($platform === "xb") {
 			$platform = "1";
@@ -47,6 +52,8 @@ error_reporting(E_ALL);
 		}
 
 		// Get Membership ID From Bungie
+
+		if (!isset($destinyMembershipId) || !$destinyMembershipId) {
 		
 		$membershipIdUrl = $bungieEndpoint . $endpointType . "SearchDestinyPlayer/" . $platform . "/" . $user;
 
@@ -71,9 +78,11 @@ error_reporting(E_ALL);
 				$destinyMembershipId = $membershipIdData["Response"][0]["membershipId"];
 				$membershipType = $membershipIdData["Response"][0]["membershipType"];
 			} else {
-				echo 'bungie api is currently down, gift a sub instead';
+				echo 'bungie api is currently down, gift a sub instead ';
+				return;
 			}
 		}
+	}
 
 
 		// Get Character ID's
@@ -97,25 +106,45 @@ error_reporting(E_ALL);
 		
 		if ($characterIdsResponse !== false) {
 			$characterIdsData = json_decode($characterIdsResponse, true);
-			if (json_last_error() == JSON_ERROR_NONE) {				
-
+			if (json_last_error() == JSON_ERROR_NONE) {                
+	
 				$charactersData = $characterIdsData["Response"]["characters"]["data"];
-
-				foreach($charactersData as $character) {
+	
+				$mostRecentCharacters = [
+					'warlock' => ['id' => null, 'dateLastPlayed' => null],
+					'titan' => ['id' => null, 'dateLastPlayed' => null],
+					'hunter' => ['id' => null, 'dateLastPlayed' => null],
+				];
+	
+				foreach ($charactersData as $character) {
 					$classHash = $character['classHash'];
 					$characterId = $character['characterId'];
+					$dateLastPlayed = $character['dateLastPlayed'];
+	
 					if ($classHash == $warlockHash) {
-						$warlock = $characterId;
+						if ($mostRecentCharacters['warlock']['dateLastPlayed'] === null || $dateLastPlayed > $mostRecentCharacters['warlock']['dateLastPlayed']) {
+							$mostRecentCharacters['warlock'] = ['id' => $characterId, 'dateLastPlayed' => $dateLastPlayed];
+						}
 					} elseif ($classHash == $titanHash) {
-						$titan = $characterId;
+						if ($mostRecentCharacters['titan']['dateLastPlayed'] === null || $dateLastPlayed > $mostRecentCharacters['titan']['dateLastPlayed']) {
+							$mostRecentCharacters['titan'] = ['id' => $characterId, 'dateLastPlayed' => $dateLastPlayed];
+						}
 					} elseif ($classHash == $hunterHash) {
-						$hunter = $characterId;
+						if ($mostRecentCharacters['hunter']['dateLastPlayed'] === null || $dateLastPlayed > $mostRecentCharacters['hunter']['dateLastPlayed']) {
+							$mostRecentCharacters['hunter'] = ['id' => $characterId, 'dateLastPlayed' => $dateLastPlayed];
+						}
 					}
 				}
+	
+				$warlock = $mostRecentCharacters['warlock']['id'];
+				$titan = $mostRecentCharacters['titan']['id'];
+				$hunter = $mostRecentCharacters['hunter']['id'];
+	
 			} else {
-				echo 'bungie api is currently down, gift a sub instead';
+				echo 'bungie api is currently down, gift a sub instead ';
+				return;
 			}
-}
+		}
 
 
 		
@@ -275,7 +304,7 @@ error_reporting(E_ALL);
 									$weaponData["weaponShader"]["name"] = $newData[$i]["Response"]["displayProperties"]["name"];
 								}
 							}		
-							if ($newData[$i]["Response"]["itemTypeDisplayName"] === "Weapon Mod") {
+							if (isset($newData[$i]["Response"]["itemTypeDisplayName"]) && $newData[$i]["Response"]["itemTypeDisplayName"] === "Weapon Mod") {
 								$weaponData["weaponMod"]["enabled"] = true;
 								$weaponData["weaponMod"]["name"] = $newData[$i]["Response"]["displayProperties"]["name"];
 							}
@@ -315,7 +344,8 @@ error_reporting(E_ALL);
 					echo $echoString;
 					
 				} else {
-					echo "bungie api is currently down, gift a sub instead";
+					echo "bungie api is currently down, gift a sub instead ";
+					return;
 				}		
 				
 			} else {
