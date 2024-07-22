@@ -13,7 +13,13 @@ export const Settings = ({ toggleNightMode, nigthModeState, setError }) => {
     return (
         <main>
             <div className="settings">
-                <div className="settingsOptions" onClick={toggleNightMode}>
+                <div className="settingsOptions"
+                    role="button"
+                    tabIndex="0"
+                    onClick={toggleNightMode}
+                    onKeyDown={(e) => {
+                        if (e.code === "Enter" || e.code === "Space") toggleNightMode();
+                    }}>
                     <h3>Night Mode</h3> <DayNightToggle isChecked={nigthModeState} />
                 </div>
                 <p>
