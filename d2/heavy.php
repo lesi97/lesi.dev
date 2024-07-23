@@ -29,12 +29,7 @@ error_reporting(E_ALL);
 	if (isset($user)) {
 
 		$user = rawurlencode($user);
-		
-		if ($user === 'Blk.%231757') {
-			$destinyMembershipId = 4611686018468437248;
-			$membershipType = 3;
-		}
-		
+			
 		if ($platform === "xb") {
 			$platform = "1";
 		} else if ($platform === "ps") {
@@ -53,9 +48,8 @@ error_reporting(E_ALL);
 
 		// Get Membership ID From Bungie
 
-		if (!isset($destinyMembershipId) || !$destinyMembershipId) {
 		
-		$membershipIdUrl = $bungieEndpoint . $endpointType . "SearchDestinyPlayer/" . $platform . "/" . $user;
+		$membershipIdUrl = $bungieEndpoint . $endpointType . "SearchDestinyPlayer/" . $platform . "/" . $user . "/";
 
 		$getMembershipId = curl_init();
 		curl_setopt($getMembershipId, CURLOPT_URL, $membershipIdUrl);
@@ -88,7 +82,7 @@ error_reporting(E_ALL);
 				return;
 			}
 		}
-	}
+	
 
 
 		// Get Character ID's
