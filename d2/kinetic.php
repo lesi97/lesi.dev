@@ -12,7 +12,7 @@ error_reporting(E_ALL);
 	include '../../private/loadEnv.php';
 	$api_key = $_ENV['BUNGIE_KEY'];
 	$user = $_GET['user'];
-	$platform = $_GET['platform'];
+	$platform = isset($_GET['platform']) ? $_GET['platform'] : null;
 	$bungieEndpoint = 'https://www.bungie.net/Platform/';
 	$endpointType = 'Destiny2/';
 	$membershipType;
@@ -65,6 +65,11 @@ error_reporting(E_ALL);
 		}
 		
 		curl_close($getMembershipId);
+
+		if (isset($membershipIdResponse["ErrorStatus"]) && $membershipIdResponse["ErrorStatus"] === "SystemDisabled") {
+			echo 'bungie api is currently down, gift a sub instead ';
+			return;
+		}
 		
 		if ($membershipIdResponse !== false) {
 			$membershipIdData = json_decode($membershipIdResponse, true);
