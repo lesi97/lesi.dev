@@ -2,7 +2,8 @@
 
 function getPlayerCount() {
     $cacheFile = 'player_count_cache.json';
-    $cacheTime = 1800; // 30 minutes in seconds
+    // $cacheTime = 1800; // 30 minutes in seconds
+    $cacheTime = 600; // 10 minutes in seconds
 
     if (file_exists($cacheFile)) {
         $cache = json_decode(file_get_contents($cacheFile), true);
@@ -39,9 +40,26 @@ function getPlayerCount() {
         return null;
     }
 
-    $playerCount = $data["platforms"]["0"]["stats"]["playercount"] ?? 0;
+    /*
+    $playerCount = $data["hourly"]["breakdown"] ?? 0;
+
+    $totalCount = 0;
+
+    if (is_array($playerCount) && !empty($playerCount)) {
+        foreach ($playerCount as $count) {
+            if (is_array($count) && isset($count["count"])) {
+                $totalCount += $count["count"];
+            }
+        }
+    }
+    
+    //echo json_encode($data["platforms"]);
+    */
+
+    $totalCount = $data["platforms"]["0"]["recentStats"]["playerCount"];
+
     $cacheData = [
-        'playerCount' => $playerCount,
+        'playerCount' => $totalCount,
         'timestamp' => time()
     ];
     file_put_contents($cacheFile, json_encode($cacheData));
@@ -60,7 +78,7 @@ if ($cacheData !== null) {
     if ($playerCount !== 0) {
         echo "There are currently " . $playerCount . " players in Trials of Osiris across all platforms | Last updated: " . $lastUpdated . " minutes ago";
     } else {
-        echo "No data yet, gift a sub then come back later<br>";
+        echo "No data yet, gift a sub then come back later";
     }
 }
 ?>
