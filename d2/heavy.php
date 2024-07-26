@@ -111,45 +111,51 @@ error_reporting(E_ALL);
 		
 		if ($characterIdsResponse !== false) {
 			$characterIdsData = json_decode($characterIdsResponse, true);
-			if (json_last_error() == JSON_ERROR_NONE) {                
-	
-				$charactersData = $characterIdsData["Response"]["characters"]["data"];
-	
-				$mostRecentCharacters = [
-					'warlock' => ['id' => null, 'dateLastPlayed' => null],
-					'titan' => ['id' => null, 'dateLastPlayed' => null],
-					'hunter' => ['id' => null, 'dateLastPlayed' => null],
-				];
-	
-				foreach ($charactersData as $character) {
-					$classHash = $character['classHash'];
-					$characterId = $character['characterId'];
-					$dateLastPlayed = $character['dateLastPlayed'];
-	
-					if ($classHash == $warlockHash) {
-						if ($mostRecentCharacters['warlock']['dateLastPlayed'] === null || $dateLastPlayed > $mostRecentCharacters['warlock']['dateLastPlayed']) {
-							$mostRecentCharacters['warlock'] = ['id' => $characterId, 'dateLastPlayed' => $dateLastPlayed];
-						}
-					} elseif ($classHash == $titanHash) {
-						if ($mostRecentCharacters['titan']['dateLastPlayed'] === null || $dateLastPlayed > $mostRecentCharacters['titan']['dateLastPlayed']) {
-							$mostRecentCharacters['titan'] = ['id' => $characterId, 'dateLastPlayed' => $dateLastPlayed];
-						}
-					} elseif ($classHash == $hunterHash) {
-						if ($mostRecentCharacters['hunter']['dateLastPlayed'] === null || $dateLastPlayed > $mostRecentCharacters['hunter']['dateLastPlayed']) {
-							$mostRecentCharacters['hunter'] = ['id' => $characterId, 'dateLastPlayed' => $dateLastPlayed];
+			if (json_last_error() == JSON_ERROR_NONE) {
+				if (isset($characterIdsData["Response"]["characters"]["data"])) {
+					$charactersData = $characterIdsData["Response"]["characters"]["data"];
+		
+					$mostRecentCharacters = [
+						'warlock' => ['id' => null, 'dateLastPlayed' => null],
+						'titan' => ['id' => null, 'dateLastPlayed' => null],
+						'hunter' => ['id' => null, 'dateLastPlayed' => null],
+					];
+		
+					foreach ($charactersData as $character) {
+						if (isset($character['classHash'], $character['characterId'], $character['dateLastPlayed'])) {
+							$classHash = $character['classHash'];
+							$characterId = $character['characterId'];
+							$dateLastPlayed = $character['dateLastPlayed'];
+		
+							if ($classHash == $warlockHash) {
+								if ($mostRecentCharacters['warlock']['dateLastPlayed'] === null || $dateLastPlayed > $mostRecentCharacters['warlock']['dateLastPlayed']) {
+									$mostRecentCharacters['warlock'] = ['id' => $characterId, 'dateLastPlayed' => $dateLastPlayed];
+								}
+							} elseif ($classHash == $titanHash) {
+								if ($mostRecentCharacters['titan']['dateLastPlayed'] === null || $dateLastPlayed > $mostRecentCharacters['titan']['dateLastPlayed']) {
+									$mostRecentCharacters['titan'] = ['id' => $characterId, 'dateLastPlayed' => $dateLastPlayed];
+								}
+							} elseif ($classHash == $hunterHash) {
+								if ($mostRecentCharacters['hunter']['dateLastPlayed'] === null || $dateLastPlayed > $mostRecentCharacters['hunter']['dateLastPlayed']) {
+									$mostRecentCharacters['hunter'] = ['id' => $characterId, 'dateLastPlayed' => $dateLastPlayed];
+								}
+							}
 						}
 					}
+		
+					$warlock = $mostRecentCharacters['warlock']['id'];
+					$titan = $mostRecentCharacters['titan']['id'];
+					$hunter = $mostRecentCharacters['hunter']['id'];
+				} else {
+					echo 'No character data available';
+					return;
 				}
-	
-				$warlock = $mostRecentCharacters['warlock']['id'];
-				$titan = $mostRecentCharacters['titan']['id'];
-				$hunter = $mostRecentCharacters['hunter']['id'];
-	
 			} else {
-				echo 'bungie api is currently down, gift a sub instead ';
+				echo 'bungie api is currently down, gift a sub instead';
 				return;
 			}
 		}
+		
 
 
 		
@@ -248,8 +254,18 @@ error_reporting(E_ALL);
 					$perkHashes = $data["Response"]["itemComponents"]["sockets"]["data"][$itemInstanceId]["sockets"];
 					
 					// Get Perk Hashes From $perkHashes Array
-					for ($i = 0; $i < count($perkHashes); $i++){
-						$perkHash[$i] = $perkHashes[$i]["plugHash"];
+					if (is_array($perkHashes)) {
+						$perkHash = []; 
+						for ($i = 0; $i < count($perkHashes); $i++) {
+							if (isset($perkHashes[$i]["plugHash"])) {
+								$perkHash[$i] = $perkHashes[$i]["plugHash"];
+							} else {
+								error_log("Error: Missing 'plugHash' key in \$perkHashes at index $i");
+							}
+						}
+					} else {
+						$perkHash = []; 
+						error_log("Error: \$perkHashes is null or not an array");
 					}
 
 
