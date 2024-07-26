@@ -76,7 +76,7 @@ if ($cacheData !== null) {
     $nextUpdate = ceil(($cacheData['timestamp'] + 1800 - $currentTime) / 60);
 
     if ($playerCount !== 0) {
-        echo "There are currently " . $playerCount . " players in Trials of Osiris across all platforms | Last updated: " . $lastUpdated . " minutes ago";
+        echo "There are currently " . number_format($playerCount) . " players in Trials of Osiris across all platforms | Last updated: " . $lastUpdated . " minutes ago";
     } else {
         echo "No data yet, gift a sub then come back later";
     }
