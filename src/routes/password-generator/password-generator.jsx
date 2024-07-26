@@ -55,6 +55,7 @@ export const PasswordGenerator = ({ setError }) => {
         }
 
         setPassword(tempPassword);
+        document.querySelector("#password").focus();
     }
 
     function handleTyping(e) {
