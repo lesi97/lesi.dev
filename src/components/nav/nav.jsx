@@ -17,7 +17,7 @@ export function Nav() {
     }
 
     function handleButtonCLick(e) {
-        if (e.keyCode === 13) return handleClick(e);
+        if (e.code === "Enter") return handleClick(e);
     }
 
     function mobileMenu() {
@@ -134,7 +134,7 @@ export function Nav() {
                     </li> */}
                     <li>
                         <Link to="/settings"
-                            className={`${"/settings" === currentPage ? " active" : ""}`}
+                            className={`${("/settings" === currentPage || "0 0 512 512" === currentPage) ? " active" : ""}`}
                             onClick={(e) => handleClick(e)}
                             onKeyDown={(e) => handleButtonCLick(e)}>
                             {!isMobile
