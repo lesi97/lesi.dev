@@ -42,8 +42,7 @@ function displayTrialsData() {
     $endDate = new DateTime($data['endDate']);
 
     if ($currentDate > $endDate) {
-        getTrialsData();
-        displayTrialsData();
+        echo "trials isn't here, gift a sub and come back friday";
     } else {
         $flawlessLoot = $data['rewards']['flawless'];
         $mapName = $data['map']['name'];
