@@ -55,7 +55,6 @@ export const PasswordGenerator = ({ setError }) => {
         }
 
         setPassword(tempPassword);
-        document.querySelector("#password").focus();
     }
 
     function handleTyping(e) {
@@ -97,10 +96,17 @@ export const PasswordGenerator = ({ setError }) => {
 
                 <div className="passwordField">
                     <input type="text" value={password} id="password" onChange={e => handleTyping(e)} spellCheck="false"></input>
-                    <div className="reloadSvg" tabIndex="0" role="button" onClick={generatePassword} onKeyDown={(e) => { if (e.code === "Enter") generatePassword() }}>
+                    <div className="reloadSvg"
+                        tabIndex="0"
+                        role="button"
+                        onClick={() => {
+                            generatePassword();
+                            document.getElementById("password").focus();
+                        }}
+                        onKeyDown={(e) => { if (e.code === "Enter") generatePassword() }}>
                         <RefreshSvg />
                     </div>
-                    <div className="copySvg" tabIndex="0" role="button" onClick={copyPassword} onKeyDown={(e) => { if (e.code === "Enter") copyPassword() }}>
+                    <div className="copySvg" tabIndex="0" role="button" onClick={() => { copyPassword }} onKeyDown={(e) => { if (e.code === "Enter") copyPassword() }}>
                         <Copy />
                     </div>
                 </div>
