@@ -106,7 +106,7 @@ export const PasswordGenerator = ({ setError }) => {
                         onKeyDown={(e) => { if (e.code === "Enter") generatePassword() }}>
                         <RefreshSvg />
                     </div>
-                    <div className="copySvg" tabIndex="0" role="button" onClick={() => { copyPassword }} onKeyDown={(e) => { if (e.code === "Enter") copyPassword() }}>
+                    <div className="copySvg" tabIndex="0" role="button" onClick={copyPassword} onKeyDown={(e) => { if (e.code === "Enter") copyPassword() }}>
                         <Copy />
                     </div>
                 </div>
