@@ -25,6 +25,7 @@ _.seed
 
 lib-cov
 /secrets/
+/private/
 
 # Coverage directory used by tools like istanbul
 

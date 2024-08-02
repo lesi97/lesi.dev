@@ -40,26 +40,12 @@ function getPlayerCount() {
         return null;
     }
 
-    /*
-    $playerCount = $data["hourly"]["breakdown"] ?? 0;
-
-    $totalCount = 0;
-
-    if (is_array($playerCount) && !empty($playerCount)) {
-        foreach ($playerCount as $count) {
-            if (is_array($count) && isset($count["count"])) {
-                $totalCount += $count["count"];
-            }
-        }
-    }
-    
-    //echo json_encode($data["platforms"]);
-    */
-
     $totalCount = $data["platforms"]["0"]["recentStats"]["playerCount"];
+    $lastUpdated = $data["platforms"]["0"]["recentStats"]["updatedAt"];
 
     $cacheData = [
         'playerCount' => $totalCount,
+        'updatedAt' => $lastUpdated,
         'timestamp' => time()
     ];
     file_put_contents($cacheFile, json_encode($cacheData));
@@ -72,13 +58,43 @@ $cacheData = getPlayerCount();
 if ($cacheData !== null) {
     $playerCount = $cacheData['playerCount'];
     $currentTime = time();
-    $lastUpdated = floor(($currentTime - $cacheData['timestamp']) / 60);
+    
+    $lastUpdatedTimestamp = strtotime($cacheData['updatedAt']);
+    
+    $elapsedTime = $currentTime - $lastUpdatedTimestamp;
+    $elapsedMinutes = floor($elapsedTime / 60);
     $nextUpdate = ceil(($cacheData['timestamp'] + 1800 - $currentTime) / 60);
 
-    if ($playerCount !== 0) {
-        echo "There are currently " . number_format($playerCount) . " players in Trials of Osiris across all platforms | Last updated: " . $lastUpdated . " minutes ago";
+    $currentDate = new DateTime("now", new DateTimeZone("UTC"));
+
+    $week = $currentDate->format("W");
+    $year = $currentDate->format("Y");
+    $start = new DateTime("{$year}-W{$week}-5 17:00:00", new DateTimeZone("UTC")); // 5 PM UTC Friday
+    $end = new DateTime("{$year}-W{$week}-2 17:00:00", new DateTimeZone("UTC")); // 5 PM UTC Tuesday
+
+    if ($currentDate < $start) {
+        $start->modify('-1 week');
+    }
+
+    if ($currentDate >= $start && $currentDate < $end) {
+        if ($playerCount !== 0) {
+            if ($elapsedMinutes < 60) {
+                echo "There are currently " . number_format($playerCount) . " players in Trials of Osiris across all platforms | Last updated: " . $elapsedMinutes . " minutes ago";
+            } else {
+                $hours = floor($elapsedMinutes / 60);
+                $minutes = $elapsedMinutes % 60;
+                $timeString = "Last updated: " . $hours . " hour" . ($hours != 1 ? "s" : "");
+            
+                if ($minutes > 0) {
+                    $timeString .= " and " . $minutes . " minute" . ($minutes != 1 ? "s" : "");
+                }
+                echo "There are currently " . number_format($playerCount) . " players in Trials of Osiris across all platforms | " . $timeString . " ago";
+            }
+        } else {
+            echo "trials is here! but i have no data yet, gift a sub and try again shortly";
+        }
     } else {
-        echo "No data yet, gift a sub then come back later";
+        echo "trials isn't here yet dummy, gift a sub and come back later";
     }
 }
 ?>

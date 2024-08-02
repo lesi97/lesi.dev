@@ -8,10 +8,10 @@ include_once 'discord.php';
 
 function handleOAuthToken($accessToken) {
 
-    $clientId = $_ENV["TWITCH_ID"];
-    $clientSecret = $_ENV["TWITCH_SECRET"];
+    $clientId = $_ENV["SPOTIFY_ID"];
+    $clientSecret = $_ENV["SPOTIFY_SECRET"];
 
-    $redirectUri = $_ENV["TWITCH_REDIRECT_URI"];
+    $redirectUri = "https://lesi.dev/php/spotify/oauth";
     $tokenUri = 'https://accounts.spotify.com/api/token';
     
     $fields = [
@@ -43,7 +43,7 @@ function handleOAuthToken($accessToken) {
                 buildPage("Success", $pageMessage);
                 storeTokens($responseData["access_token"], $responseData["refresh_token"], $responseData["expires_in"]);
         } else {
-            buildPage("Invalid", '<h1>Invalid Response From Twitch</h1>');
+            buildPage("Invalid", '<h1>Invalid Response From Spotify</h1>');
         }
     } else {       
         buildPage("Failure", '<h1>CURL Failed</h1>');
