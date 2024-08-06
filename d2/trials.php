@@ -29,7 +29,6 @@ function displayTrialsData() {
     $jsonData = @file_get_contents('trials_data.json');
 
     if ($jsonData === false) {
-        echo "No data available.";
         getTrialsData();
         displayTrialsData();
         return;
@@ -42,6 +41,9 @@ function displayTrialsData() {
     $endDate = new DateTime($data['endDate']);
 
     if ($currentDate > $endDate) {
+        if (file_exists('trials_data.json')) {
+            unlink('trials_data.json');
+        }
         echo "trials isn't here yet dummy, gift a sub and come back later";
     } else {
         $flawlessLoot = $data['rewards']['flawless'];
