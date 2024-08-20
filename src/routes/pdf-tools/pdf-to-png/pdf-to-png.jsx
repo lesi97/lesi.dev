@@ -63,7 +63,8 @@ export const PdfToPng = ({ setError }) => {
 
                 const pngBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
                 const downloadLink = document.createElement("a");
-                downloadLink.href = URL.createObjectURL(pngBlob);
+                const objectUrl = URL.createObjectURL(pngBlob);
+                downloadLink.href = objectUrl;
                 const baseName = pdfFile.name.replace(/\.pdf$/i, "");
                 if (numPages > 1) {
                     downloadLink.download = `${baseName}_page${pageNumber}.png`;
@@ -71,6 +72,7 @@ export const PdfToPng = ({ setError }) => {
                     downloadLink.download = `${baseName}.png`;
                 }
                 downloadLink.click();
+                URL.revokeObjectURL(objectUrl);
             }
         } catch (error) {
             console.error("PDF to PNG conversion error:", error);
