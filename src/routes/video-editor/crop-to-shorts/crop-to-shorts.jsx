@@ -4,6 +4,7 @@ import { DropBox } from "../../../components/dropbox/dropbox";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { useEffect, useState, useRef } from "react";
 import { writeToMemory } from "../video-editor/src/write-to-memory";
+import { useLocation } from "react-router-dom";
 
 const ffmpeg = createFFmpeg({ log: true });
 
@@ -17,11 +18,12 @@ export const CropToShort = ({ setError }) => {
     const [originalVideoBlobUrl, setOriginalVideoBlobUrl] = useState();
     const progressBarRef = useRef(null);
     const progressBarTotalRef = useRef(null);
-
-    setError(false);
+    const location = useLocation();
 
     useEffect(() => {
         document.title = `Lesi | Video Cropper`;
+        setError(false);
+        load();
     }, []);
 
     async function load() {
@@ -32,8 +34,12 @@ export const CropToShort = ({ setError }) => {
     }
 
     useEffect(() => {
-        load();
-    }, []);
+        return () => {
+            if (originalVideoBlobUrl) {
+                URL.revokeObjectURL(originalVideoBlobUrl);
+            }
+        };
+    }, [location, originalVideoBlobUrl]);
 
     useEffect(() => {
         if (!video) return;

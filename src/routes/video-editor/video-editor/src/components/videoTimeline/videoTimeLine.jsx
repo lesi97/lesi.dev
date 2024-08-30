@@ -64,7 +64,7 @@ export const VideoTimeLine = ({ videoSrc, duration, blobUrl }) => {
         thumbnailVideo.addEventListener('seeked', handleSeeked);
 
         thumbnailVideo.addEventListener('loadedmetadata', () => {
-            thumbnailVideo.currentTime = timestamps[0]; // Start capturing thumbnails
+            thumbnailVideo.currentTime = timestamps[0];
         });
 
         return () => {

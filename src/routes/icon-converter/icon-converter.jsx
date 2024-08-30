@@ -6,10 +6,9 @@ import { ConvertApp } from "./iconConverter";
 export const IconConverter = ({ setError }) => {
     const [image, setImage] = useState(null);
 
-    setError(false);
-
     useEffect(() => {
         document.title = `Lesi | Icon Converter`;
+        setError(false);
     }, []);
 
     useEffect(() => {

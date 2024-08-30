@@ -11,10 +11,9 @@ export const PasswordGenerator = ({ setError }) => {
     const [includeSymbols, setIncludeSymbols] = useState(true);
     const [isUserTyping, setIsUserTyping] = useState(false);
 
-    setError(false);
-
     useEffect(() => {
         document.title = `Lesi | Password Generator`;
+        setError(false);
     }, []);
 
     useEffect(() => {

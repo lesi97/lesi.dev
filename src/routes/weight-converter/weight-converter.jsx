@@ -9,11 +9,9 @@ export const WeightConverter = ({ setError }) => {
     const [grams, setGrams] = useState("");
     const [stones, setStones] = useState("");
 
-    setError(false);
-
-
     useEffect(() => {
         document.title = `Lesi | Weight Converter`;
+        setError(false);
     }, []);
 
     function sourcePounds(e) {

@@ -1,12 +1,25 @@
 import "./app.scss";
 import { createRoot } from "react-dom/client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, StrictMode } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Nav } from "./components/nav/nav";
 import { Footer } from "./components/footer/footer";
 import ltoe from "./assets/images/ltoe.png";
-import { Home, Error404, AspectRatio, VideoToMp3, CropToShort, Settings, VideoEditor, PdfToPng, PasswordGenerator, WeightConverter, IconConverter, Minifier } from "./routes";
+import {
+    Home,
+    Error404,
+    AspectRatio,
+    VideoToMp3,
+    CropToShort,
+    Settings,
+    VideoEditor,
+    PdfToPng,
+    PasswordGenerator,
+    WeightConverter,
+    IconConverter,
+    Minifier,
+} from "./routes";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -106,7 +119,9 @@ const App = () => {
                         <Route path="/pdf-to-png" element={<PdfToPng setError={(e) => setIsErrorPage(e)} />} />
                         <Route path="/ico-converter" element={<IconConverter setError={(e) => setIsErrorPage(e)} />} />
                         <Route path="/password-generator" element={<PasswordGenerator setError={(e) => setIsErrorPage(e)} />} />
-                        <Route path="/svg-converter" element={null} setError={(e) => setIsErrorPage(e)} />
+
+                        {/* <Route path="/svg-converter" element={null} setError={(e) => setIsErrorPage(e)} /> */}
+
                         <Route path="/weight-converter" element={<WeightConverter setError={(e) => setIsErrorPage(e)} />} />
                         <Route path="/video-editor" element={<VideoEditor setError={(e) => setIsErrorPage(e)} />} />
                         <Route path="/video-to-mp3" element={<VideoToMp3 setError={(e) => setIsErrorPage(e)} />} />
@@ -128,4 +143,8 @@ const App = () => {
 
 
 const root = createRoot(document.getElementById("root"));
-root.render(<App />);
+root.render(
+    <StrictMode>
+        <App />
+    </StrictMode>
+);

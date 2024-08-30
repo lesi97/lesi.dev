@@ -15,11 +15,9 @@ export const VideoEditor = ({ setError }) => {
     const [originalVideoBlobUrl, setOriginalVideoBlobUrl] = useState();
     const [video, setVideo] = useState();
 
-    setError(false);
-
-
     useEffect(() => {
         document.title = `Lesi | Video Editor`;
+        setError(false);
         load();
     }, []);
 

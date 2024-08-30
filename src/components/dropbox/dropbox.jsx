@@ -6,8 +6,7 @@ import { useState, useRef } from "react";
 
 export const DropBox = (props) => {
     const [isPlaying, setIsPlaying] = useState(false);
-
-    const isMobile = window.innerWidth < 767;
+    const [isMobile,] = useState(window.innerWidth < 767);
 
     const waveformRef = useRef(null);
 

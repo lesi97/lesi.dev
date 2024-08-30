@@ -4,10 +4,9 @@ import { useEffect } from "react";
 
 export const Settings = ({ toggleNightMode, nigthModeState, setError }) => {
 
-    setError(false);
-
     useEffect(() => {
         document.title = `Lesi | Settings`;
+        setError(false);
     }, []);
 
     return (

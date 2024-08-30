@@ -6,10 +6,9 @@ import { minify, unminify } from "./minifier-fns";
 export const Minifier = ({ setError }) => {
     const [code, setCode] = useState("");
 
-    setError(false);
-
     useEffect(() => {
         document.title = `Lesi | Minifier`;
+        setError(false);
     }, []);
 
     function handleMinify() {

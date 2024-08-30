@@ -2,10 +2,14 @@ import "./404.scss";
 import "./whitebeard.scss";
 import "./404-mobile.scss";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 export const Error404 = ({ setError }) => {
 
-    setError(true);
+    useEffect(() => {
+        document.title = `Lesi | 404`;
+        setError(true);
+    }, []);
 
     return (
         <Link to="/">

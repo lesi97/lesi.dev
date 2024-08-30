@@ -13,12 +13,9 @@ export const Home = ({ setError }) => {
     const [isCelsius, setIsCelsius] = useState(true);
     // const [timeZone, setTimeZone] = useState("");
 
-    setError(false);
-
-
     useEffect(() => {
         document.title = `Lesi | Home`;
-
+        setError(false);
     }, []);
 
     useEffect(() => {

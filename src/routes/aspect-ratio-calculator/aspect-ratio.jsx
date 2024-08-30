@@ -10,10 +10,9 @@ export const AspectRatio = ({ setError }) => {
     const [aspectRatio, setAspectRatio] = useState("");
     const [selectedRadio, setSelectedRadio] = useState("width");
 
-    setError(false);
-
     useEffect(() => {
         document.title = `Lesi | Aspect Ratio Calculator`;
+        setError(false);
     }, []);
 
     useEffect(() => {

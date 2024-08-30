@@ -8,8 +8,7 @@ import { useState } from "react";
 
 export function Nav() {
     const [currentPage, setCurrentPage] = useState(window.location.pathname);
-
-    const isMobile = window.innerWidth < 767;
+    const [isMobile,] = useState(window.innerWidth < 767);
 
     function handleClick(e) {
         setCurrentPage(e.target.attributes[1].nodeValue)

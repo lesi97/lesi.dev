@@ -9,10 +9,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 export const PdfToPng = ({ setError }) => {
     const [pdf, setPdf] = useState(null);
 
-    setError(false);
-
     useEffect(() => {
         document.title = `Lesi | PDF To PNG Converter`;
+        setError(false);
     }, []);
 
     useEffect(() => {
