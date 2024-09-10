@@ -9,6 +9,9 @@ export default defineConfig({
         },
         hmr: false,
     },
+    esbuild: {
+        target: 'esnext'
+    },
     plugins: [react()],
     root: 'src/',
     base: './',

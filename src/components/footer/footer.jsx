@@ -1,6 +1,16 @@
 import "./footer.scss";
 import "./footer-mobile.scss";
-import { YouTube, TikTok, Discord, XCorp, Instagram, Threads, Twitch, Email, BuyMeACoffee } from "../icons";
+import {
+    YouTube,
+    TikTok,
+    Discord,
+    XCorp,
+    Instagram,
+    //Threads, 
+    Twitch,
+    Email,
+    BuyMeACoffee
+} from "../icons";
 
 export function Footer() {
     return (

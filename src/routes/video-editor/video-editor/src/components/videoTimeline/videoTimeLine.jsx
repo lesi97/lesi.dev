@@ -38,7 +38,7 @@ export const VideoTimeLine = ({ videoSrc, duration, blobUrl }) => {
         let x = 0;
         return () => {
             // Calculate vertical centering
-            const dy = (canvas.height - thumbnailHeight);
+            // const dy = (canvas.height - thumbnailHeight);
             context.drawImage(thumbnailVideoRef.current, 0, 0, thumbnailVideoRef.current.videoWidth, 70, x, 0, thumbnailWidth, 70);
             x += thumbnailWidth;
             if (x < canvasWidth) {

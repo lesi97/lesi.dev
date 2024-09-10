@@ -42,10 +42,10 @@ export const Privacy = ({ setError }) => {
 
                     <h2>4. Google AdSense</h2>
                     <p>
-                        We use Google AdSense to display advertisements on our website. Google AdSense uses cookies to serve ads based on your prior visits to lesi.dev or other websites. Google's use of advertising cookies enables it and its partners to serve ads to you based on your visit to lesi.dev and/or other sites on the Internet.
+                        We use Google AdSense to display advertisements on our website. Google AdSense uses cookies to serve ads based on your prior visits to lesi.dev or other websites. Google&apos;s use of advertising cookies enables it and its partners to serve ads to you based on your visit to lesi.dev and/or other sites on the Internet.
                     </p>
                     <p>
-                        <strong>Cookies and Data Use:</strong> Google AdSense may collect personal data such as IP addresses and may use cookies and similar technologies to provide you with relevant advertisements. For more information on how Google uses data when you use our site, please visit <a href="https://policies.google.com/technologies/partner-sites">Google's Privacy &amp; Terms site</a>.
+                        <strong>Cookies and Data Use:</strong> Google AdSense may collect personal data such as IP addresses and may use cookies and similar technologies to provide you with relevant advertisements. For more information on how Google uses data when you use our site, please visit <a href="https://policies.google.com/technologies/partner-sites">Google&apos;s Privacy &amp; Terms site</a>.
                     </p>
                     <h2>5. Data Security</h2>
                     <p>
