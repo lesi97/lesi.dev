@@ -24,15 +24,6 @@ jobs:
             - name: Build project
               run: npm run build
 
-            - name: Check dist directory
-              run: |
-                  if [ ! -d "dist" ]; then
-                    echo "Dist directory does not exist";
-                    exit 1;
-                  fi
-                  echo "Dist directory exists and contains:"
-                  ls dist
-
             - name: Deploy to FTP
               env:
                   FTP_HOST: ${{ secrets.FTP_HOST }}
@@ -42,7 +33,7 @@ jobs:
                   echo "open $FTP_HOST
                   user $FTP_USERNAME $FTP_PASSWORD
                   binary
-                  lcd dist
+                  lcd /home/runner/work/lesi.dev/lesi.dev/dist
                   cd /htdocs/
                   mput *
                   bye" > ftp_commands.txt
