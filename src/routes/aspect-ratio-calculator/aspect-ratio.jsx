@@ -17,9 +17,12 @@ export const AspectRatio = ({ setError }) => {
 
     useEffect(() => {
         if (!originalWidth || !originalHeight) return;
-        const newAspectRatio = parseInt(originalWidth) / parseInt(originalHeight);
+        const newAspectRatio =
+            parseInt(originalWidth) / parseInt(originalHeight);
         setAspectRatio(newAspectRatio);
-        getSelectedRadioValue() === "width" ? calculateNewHeight(newWidth) : calculateNewWidth(newHeight);
+        getSelectedRadioValue() === "width"
+            ? calculateNewHeight(newWidth)
+            : calculateNewWidth(newHeight);
     }, [originalWidth, originalHeight]);
 
     useEffect(() => {
@@ -32,11 +35,12 @@ export const AspectRatio = ({ setError }) => {
     }, [aspectRatio, newWidth, newHeight]);
 
     function getSelectedRadioValue() {
-        if (parseInt(originalWidth) === 0 || parseInt(originalHeight) === 0) return;
+        if (parseInt(originalWidth) === 0 || parseInt(originalHeight) === 0)
+            return;
         const radios = Array.from(document.getElementsByName("keepValue"));
-        const selectedRadio = radios.filter(radio => radio.checked);
+        const selectedRadio = radios.filter((radio) => radio.checked);
         return selectedRadio.length ? selectedRadio[0].value : "width";
-    };
+    }
 
     function calculateNewWidth(value) {
         if (parseInt(value) === 0) return;
@@ -48,7 +52,7 @@ export const AspectRatio = ({ setError }) => {
 
     function calculateNewHeight(value) {
         if (parseInt(value) === 0) return;
-        setNewWidth(parseInt(value))
+        setNewWidth(parseInt(value));
         if (!aspectRatio) return;
         const height = Math.round(parseInt(value) / aspectRatio);
         setNewHeight(height);
@@ -56,18 +60,20 @@ export const AspectRatio = ({ setError }) => {
 
     const exceptThisSymbols = ["e", "E", "+", "-"];
 
-
     return (
         <main>
             <div className="aspectRatio">
                 <div className="description">
                     <h1>Aspect Ratio Calculator</h1>
                     <h2>
-                        Input your old width and height<br />
-                        Then input your new width or height to automatically calculate the former or the latter
+                        Input your old width and height
+                        <br />
+                        Then input your new width or height to automatically
+                        calculate the former or the latter
                     </h2>
                     <h2>
-                        You can also select to keep the new width or height value if you change the original values
+                        You can also select to keep the new width or height
+                        value if you change the original values
                     </h2>
                 </div>
 
@@ -75,66 +81,96 @@ export const AspectRatio = ({ setError }) => {
                     <div>
                         <label>
                             Original Width
-                            <input type="number"
+                            <input
+                                type="number"
                                 value={originalWidth}
-                                onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
-                                onChange={(e) => { setOriginalWidth(e.target.value) }} />
+                                onKeyDown={(e) =>
+                                    exceptThisSymbols.includes(e.key) &&
+                                    e.preventDefault()
+                                }
+                                onChange={(e) => {
+                                    setOriginalWidth(e.target.value);
+                                }}
+                            />
                         </label>
                     </div>
 
                     <div>
                         <label>
                             Original Height
-                            <input type="number"
+                            <input
+                                type="number"
                                 value={originalHeight}
-                                onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
-                                onChange={(e) => { setOriginalHeight(e.target.value) }} />
+                                onKeyDown={(e) =>
+                                    exceptThisSymbols.includes(e.key) &&
+                                    e.preventDefault()
+                                }
+                                onChange={(e) => {
+                                    setOriginalHeight(e.target.value);
+                                }}
+                            />
                         </label>
                     </div>
 
                     <div>
                         <label>
                             New Width
-                            { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                             <label htmlFor="width" className="customRadio">
-                                <input type="radio"
+                                <input
+                                    type="radio"
                                     id="width"
                                     name="keepValue"
                                     value="width"
                                     tabIndex="-1"
                                     checked={selectedRadio === "width"}
-                                    onChange={() => setSelectedRadio("width")} />
+                                    onChange={() => setSelectedRadio("width")}
+                                />
                             </label>
-
-                            <input type="number"
+                            <input
+                                type="number"
                                 value={newWidth}
-                                onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
-                                onChange={(e) => { calculateNewHeight(e.target.value) }} />
+                                onKeyDown={(e) =>
+                                    exceptThisSymbols.includes(e.key) &&
+                                    e.preventDefault()
+                                }
+                                onChange={(e) => {
+                                    calculateNewHeight(e.target.value);
+                                }}
+                            />
                         </label>
                     </div>
 
                     <div>
                         <label>
                             New Height
-                            { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                            <label htmlFor="height"
-                                className="customRadio">
-                                <input type="radio"
+                            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                            <label htmlFor="height" className="customRadio">
+                                <input
+                                    type="radio"
                                     id="height"
                                     name="keepValue"
                                     value="height"
                                     tabIndex="-1"
                                     checked={selectedRadio === "height"}
-                                    onChange={() => setSelectedRadio("height")} />
+                                    onChange={() => setSelectedRadio("height")}
+                                />
                             </label>
-                            <input type="number"
+                            <input
+                                type="number"
                                 value={newHeight}
-                                onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
-                                onChange={(e) => { calculateNewWidth(e.target.value) }} />
+                                onKeyDown={(e) =>
+                                    exceptThisSymbols.includes(e.key) &&
+                                    e.preventDefault()
+                                }
+                                onChange={(e) => {
+                                    calculateNewWidth(e.target.value);
+                                }}
+                            />
                         </label>
                     </div>
-                </form >
+                </form>
             </div>
         </main>
-    )
-}
+    );
+};

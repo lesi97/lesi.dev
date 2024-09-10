@@ -1,6 +1,6 @@
 import "./video-controls.scss";
 import { useEffect, useState } from "react";
-import { ButtonPlayPause } from "./components/buttonPlayPause/buttonPlayPause"
+import { ButtonPlayPause } from "./components/buttonPlayPause/buttonPlayPause";
 import { VideoTimeLine } from "./components/videoTimeline/videoTimeLine";
 
 export const VideoControls = ({ video, blobUrl }) => {
@@ -19,10 +19,10 @@ export const VideoControls = ({ video, blobUrl }) => {
             const durationMilliseconds = Math.floor((videoDuration % 1) * 1000);
             const duration = `${pad(durationMinutes, "m")}:${pad(durationSeconds, "s")}.${pad(durationMilliseconds, "ms")}`;
             setDuration(duration);
-        };
+        }
         video.addEventListener("loadedmetadata", handleMetadataLoaded);
         return () => {
-            video.removeEventListener('loadedmetadata', handleMetadataLoaded);
+            video.removeEventListener("loadedmetadata", handleMetadataLoaded);
         };
     }, [video]);
 
@@ -32,7 +32,9 @@ export const VideoControls = ({ video, blobUrl }) => {
         const updateTimestamp = () => {
             const videoMinutes = Math.floor(video.currentTime / 60);
             const videoSeconds = Math.floor(video.currentTime % 60);
-            const videoMilliseconds = Math.floor((video.currentTime % 1) * 1000);
+            const videoMilliseconds = Math.floor(
+                (video.currentTime % 1) * 1000
+            );
             const timeStamp = `${pad(videoMinutes, "m")}:${pad(videoSeconds, "s")}.${pad(videoMilliseconds, "ms")}`;
             setTimeStamp(timeStamp);
 
@@ -52,14 +54,14 @@ export const VideoControls = ({ video, blobUrl }) => {
             }
         };
 
-        video.addEventListener('play', startUpdate);
-        video.addEventListener('pause', stopUpdate);
-        video.addEventListener('ended', stopUpdate);
+        video.addEventListener("play", startUpdate);
+        video.addEventListener("pause", stopUpdate);
+        video.addEventListener("ended", stopUpdate);
 
         return () => {
-            video.removeEventListener('play', startUpdate);
-            video.removeEventListener('pause', stopUpdate);
-            video.removeEventListener('ended', stopUpdate);
+            video.removeEventListener("play", startUpdate);
+            video.removeEventListener("pause", stopUpdate);
+            video.removeEventListener("ended", stopUpdate);
             if (animationFrameId !== null) {
                 cancelAnimationFrame(animationFrameId);
             }
@@ -69,13 +71,13 @@ export const VideoControls = ({ video, blobUrl }) => {
     function pad(value, type) {
         switch (type) {
             case "m":
-                return value.toString().padStart(2, '0');
+                return value.toString().padStart(2, "0");
             case "s":
-                return value.toString().padStart(2, '0');
+                return value.toString().padStart(2, "0");
             case "ms":
-                return value.toString().padStart(3, '0');
+                return value.toString().padStart(3, "0");
             default:
-                return value.toString().padStart(2, '0');
+                return value.toString().padStart(2, "0");
         }
     }
 
@@ -97,25 +99,29 @@ export const VideoControls = ({ video, blobUrl }) => {
 
     return (
         <>
-            {video && (<>
-                <div className="controlBar">
-                    <div className="controls">
-                        <label>{timeStamp}</label>
-                        <ButtonPlayPause video={video} />
-                        <label>{duration}</label>
-                    </div>
+            {video && (
+                <>
+                    <div className="controlBar">
+                        <div className="controls">
+                            <label>{timeStamp}</label>
+                            <ButtonPlayPause video={video} />
+                            <label>{duration}</label>
+                        </div>
 
-                    {/* <div className="videoSeekbar">
+                        {/* <div className="videoSeekbar">
                         <input type="range" id="seekBar" value="0" min="0" max="100" step="0.1" />
                         <progress value="0" max="100" step="1" id="progressBar" className="progressBar"></progress>
                         <progress value="0" max="100" step="1" id="bufferBar" className="bufferBar"></progress>
                         
                     </div> */}
-                    <VideoTimeLine video={video} duration={rawDuration} blobUrl={blobUrl} />
-                </div>
-
-            </>)}
+                        <VideoTimeLine
+                            video={video}
+                            duration={rawDuration}
+                            blobUrl={blobUrl}
+                        />
+                    </div>
+                </>
+            )}
         </>
-    )
-
-}
+    );
+};

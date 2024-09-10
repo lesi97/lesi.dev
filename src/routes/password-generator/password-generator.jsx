@@ -22,7 +22,6 @@ export const PasswordGenerator = ({ setError }) => {
         }
     }, [sliderVal, includeNum, includeSymbols]);
 
-
     function generatePassword() {
         const numbers = "0123456789";
         const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -43,14 +42,22 @@ export const PasswordGenerator = ({ setError }) => {
 
         if (includeNum && !/\d/.test(tempPassword)) {
             const randomIndex = Math.floor(Math.random() * tempPassword.length);
-            const randomNumber = numbers[Math.floor(Math.random() * numbers.length)];
-            tempPassword = tempPassword.substring(0, randomIndex) + randomNumber + tempPassword.substring(randomIndex + 1);
+            const randomNumber =
+                numbers[Math.floor(Math.random() * numbers.length)];
+            tempPassword =
+                tempPassword.substring(0, randomIndex) +
+                randomNumber +
+                tempPassword.substring(randomIndex + 1);
         }
 
         if (includeSymbols && !/!@#$£%^&*()+=-.,/.test(tempPassword)) {
             const randomIndex = Math.floor(Math.random() * tempPassword.length);
-            const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
-            tempPassword = tempPassword.substring(0, randomIndex) + randomSymbol + tempPassword.substring(randomIndex + 1);
+            const randomSymbol =
+                symbols[Math.floor(Math.random() * symbols.length)];
+            tempPassword =
+                tempPassword.substring(0, randomIndex) +
+                randomSymbol +
+                tempPassword.substring(randomIndex + 1);
         }
 
         setPassword(tempPassword);
@@ -81,37 +88,53 @@ export const PasswordGenerator = ({ setError }) => {
         setIncludeNum(e.target.checked);
     };
 
-
-
     return (
         <main>
             <div className="passwordGenerator">
                 <div className="description">
                     <h1>Password Generator</h1>
                     <h2>
-                        Create a random password, adjust the slider to increase the password length
+                        Create a random password, adjust the slider to increase
+                        the password length
                     </h2>
                 </div>
 
                 <div className="passwordField">
-                    <input type="text" value={password} id="password" onChange={e => handleTyping(e)} spellCheck="false"></input>
-                    <div className="reloadSvg"
+                    <input
+                        type="text"
+                        value={password}
+                        id="password"
+                        onChange={(e) => handleTyping(e)}
+                        spellCheck="false"
+                    ></input>
+                    <div
+                        className="reloadSvg"
                         tabIndex="0"
                         role="button"
                         onClick={() => {
                             generatePassword();
                             document.getElementById("password").focus();
                         }}
-                        onKeyDown={(e) => { if (e.code === "Enter") generatePassword() }}>
+                        onKeyDown={(e) => {
+                            if (e.code === "Enter") generatePassword();
+                        }}
+                    >
                         <RefreshSvg />
                     </div>
-                    <div className="copySvg" tabIndex="0" role="button" onClick={copyPassword} onKeyDown={(e) => { if (e.code === "Enter") copyPassword() }}>
+                    <div
+                        className="copySvg"
+                        tabIndex="0"
+                        role="button"
+                        onClick={copyPassword}
+                        onKeyDown={(e) => {
+                            if (e.code === "Enter") copyPassword();
+                        }}
+                    >
                         <Copy />
                     </div>
                 </div>
 
                 <div className="options">
-
                     <div className="sliderSection">
                         <p>Password Length: {sliderVal}</p>
                         <input
@@ -120,12 +143,16 @@ export const PasswordGenerator = ({ setError }) => {
                             min="8"
                             max="128"
                             value={sliderVal}
-                            onChange={e => handleSliderChange(e)}></input>
+                            onChange={(e) => handleSliderChange(e)}
+                        ></input>
                     </div>
                     <div className="additionalOptions">
                         <div>
                             <label>
-                                <Checkbox checked={includeNum} onChange={handleIncludeNumbersChange} />
+                                <Checkbox
+                                    checked={includeNum}
+                                    onChange={handleIncludeNumbersChange}
+                                />
                                 {/* <input
                                     type="checkbox"
                                     checked={includeNum}
@@ -135,7 +162,10 @@ export const PasswordGenerator = ({ setError }) => {
                         </div>
                         <div>
                             <label>
-                                <Checkbox checked={includeSymbols} onChange={handleIncludeSymbolsChange} />
+                                <Checkbox
+                                    checked={includeSymbols}
+                                    onChange={handleIncludeSymbolsChange}
+                                />
                                 {/* <input
                                     type="checkbox"
                                     checked={includeSymbols}
@@ -144,16 +174,12 @@ export const PasswordGenerator = ({ setError }) => {
                             </label>
                         </div>
 
-
-
                         {/* <div>
                             <button onClick={copyPassword}>COPY TO CLIPBOARD</button>
                         </div> */}
                     </div>
                 </div>
-
-
             </div>
         </main>
-    )
-}
+    );
+};

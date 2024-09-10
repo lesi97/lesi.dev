@@ -32,7 +32,7 @@ export const WeightConverter = ({ setError }) => {
 
     function sourceOunces(e) {
         setOunces(e.target.value);
-        setPounds((e.target.value * 0.062500).toFixed(4));
+        setPounds((e.target.value * 0.0625).toFixed(4));
         setKilograms((e.target.value / 35.274).toFixed(4));
         setGrams((e.target.value / 0.035274).toFixed(4));
         setStones((e.target.value * 0.0044643).toFixed(4));
@@ -62,19 +62,25 @@ export const WeightConverter = ({ setError }) => {
                 <div className="description">
                     <h1>Weight Converter</h1>
                     <h2>
-                        Type a value in any of the fields to convert between weight measurements<br />&nbsp;
+                        Type a value in any of the fields to convert between
+                        weight measurements
+                        <br />
+                        &nbsp;
                     </h2>
                 </div>
 
                 <div className="weights">
-
                     <label>
                         Kilograms (kg)
                         <input
                             type="number"
                             value={kilograms}
-                            onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
-                            onChange={sourceKilograms}></input>
+                            onKeyDown={(e) =>
+                                exceptThisSymbols.includes(e.key) &&
+                                e.preventDefault()
+                            }
+                            onChange={sourceKilograms}
+                        ></input>
                     </label>
 
                     <label>
@@ -82,8 +88,12 @@ export const WeightConverter = ({ setError }) => {
                         <input
                             type="number"
                             value={pounds}
-                            onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
-                            onChange={sourcePounds}></input>
+                            onKeyDown={(e) =>
+                                exceptThisSymbols.includes(e.key) &&
+                                e.preventDefault()
+                            }
+                            onChange={sourcePounds}
+                        ></input>
                     </label>
 
                     <label>
@@ -91,8 +101,12 @@ export const WeightConverter = ({ setError }) => {
                         <input
                             type="number"
                             value={ounces}
-                            onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
-                            onChange={sourceOunces}></input>
+                            onKeyDown={(e) =>
+                                exceptThisSymbols.includes(e.key) &&
+                                e.preventDefault()
+                            }
+                            onChange={sourceOunces}
+                        ></input>
                     </label>
 
                     <label>
@@ -100,8 +114,12 @@ export const WeightConverter = ({ setError }) => {
                         <input
                             type="number"
                             value={grams}
-                            onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
-                            onChange={sourceGrams}></input>
+                            onKeyDown={(e) =>
+                                exceptThisSymbols.includes(e.key) &&
+                                e.preventDefault()
+                            }
+                            onChange={sourceGrams}
+                        ></input>
                     </label>
 
                     <label>
@@ -109,11 +127,15 @@ export const WeightConverter = ({ setError }) => {
                         <input
                             type="number"
                             value={stones}
-                            onKeyDown={e => exceptThisSymbols.includes(e.key) && e.preventDefault()}
-                            onChange={sourceStones}></input>
+                            onKeyDown={(e) =>
+                                exceptThisSymbols.includes(e.key) &&
+                                e.preventDefault()
+                            }
+                            onChange={sourceStones}
+                        ></input>
                     </label>
                 </div>
             </div>
         </main>
-    )
-}
+    );
+};

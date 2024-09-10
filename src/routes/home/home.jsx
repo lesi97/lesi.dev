@@ -61,9 +61,9 @@ export const Home = ({ setError }) => {
 
     const handleTempTypeChange = (e) => {
         if (e.code === "Enter" || e.code === "Space") {
-            toggleTemperatureUnit()
+            toggleTemperatureUnit();
         }
-    }
+    };
 
     return (
         <main>
@@ -77,19 +77,27 @@ export const Home = ({ setError }) => {
                     <div className="values">
                         Current weather in {weatherInfo?.location?.name}
                     </div>
-                    <div className="values clickable"
+                    <div
+                        className="values clickable"
                         onClick={toggleTemperatureUnit}
                         onKeyDown={(e) => handleTempTypeChange(e)}
                         tabIndex="0"
-                        role="button">
-                        Temperature: {isCelsius ? `${tempCelsius}°C` : `${tempFahrenheit}°F`}
+                        role="button"
+                    >
+                        Temperature:{" "}
+                        {isCelsius ? `${tempCelsius}°C` : `${tempFahrenheit}°F`}
                     </div>
-                    <div className="values clickable"
+                    <div
+                        className="values clickable"
                         onClick={toggleTemperatureUnit}
                         onKeyDown={(e) => handleTempTypeChange(e)}
                         tabIndex="0"
-                        role="button">
-                        Feels Like: {isCelsius ? `${feelsLikeCelsius}°C` : `${feelsLikeFahrenheit}°F`}
+                        role="button"
+                    >
+                        Feels Like:{" "}
+                        {isCelsius
+                            ? `${feelsLikeCelsius}°C`
+                            : `${feelsLikeFahrenheit}°F`}
                     </div>
                     <div className="values">
                         Humidity: {weatherInfo?.current?.humidity}&#37;
@@ -99,11 +107,6 @@ export const Home = ({ setError }) => {
                     </div>
                 </div>
             </div>
-
-
-
-
-
         </main>
-    )
-}
+    );
+};

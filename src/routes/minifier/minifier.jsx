@@ -31,24 +31,31 @@ export const Minifier = ({ setError }) => {
         document.execCommand("copy");
     }
 
-
     return (
         <main>
             <div className="minifier">
                 <div className="description">
                     <h1>Minifier</h1>
                     <h2>
-                        Minify or unminfiy CSS, JS, XML &amp; JSON<br />&nbsp;
+                        Minify or unminfiy CSS, JS, XML &amp; JSON
+                        <br />
+                        &nbsp;
                     </h2>
                 </div>
-                <textarea id="code" className="codeArea" rows="10" spellCheck="false" value={code} onChange={(e) => setCode(e.target.value)}></textarea>
+                <textarea
+                    id="code"
+                    className="codeArea"
+                    rows="10"
+                    spellCheck="false"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                ></textarea>
                 <div className="buttons">
                     <button onClick={handleMinify}>MINIFY</button>
                     <button onClick={handleUnminify}>UNMINIFY</button>
                     <button onClick={copyCode}>COPY</button>
                 </div>
-
             </div>
         </main>
-    )
-}
+    );
+};

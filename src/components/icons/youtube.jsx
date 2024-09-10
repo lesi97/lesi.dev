@@ -7,9 +7,7 @@ export const YouTube = () => {
             data-name="Layer 1"
         >
             <defs>
-                <style>
-
-                </style>
+                <style></style>
             </defs>
             <path
                 className="cls-1"

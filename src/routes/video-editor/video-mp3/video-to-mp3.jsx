@@ -6,7 +6,6 @@ import { useEffect, useState, useRef } from "react";
 import { writeToMemory } from "../video-editor/src/write-to-memory";
 import { useLocation } from "react-router-dom";
 
-
 const ffmpeg = createFFmpeg({ log: true });
 
 export const VideoToMp3 = ({ setError }) => {
@@ -44,21 +43,25 @@ export const VideoToMp3 = ({ setError }) => {
     useEffect(() => {
         if (!video) return;
         convertToMp3();
-    }, [video])
+    }, [video]);
 
     const timeToSeconds = (time) => {
-        const parts = time.split(':');
-        return parseFloat(parts[0]) * 3600 + parseFloat(parts[1]) * 60 + parseFloat(parts[2]);
+        const parts = time.split(":");
+        return (
+            parseFloat(parts[0]) * 3600 +
+            parseFloat(parts[1]) * 60 +
+            parseFloat(parts[2])
+        );
     };
 
     const loadMetadata = (vidPlayer) => {
         return new Promise((resolve, reject) => {
             vidPlayer.onloadedmetadata = () => {
-                console.log('Metadata loaded!');
+                console.log("Metadata loaded!");
                 resolve(vidPlayer.duration);
             };
             vidPlayer.onerror = (e) => {
-                console.error('Failed to load metadata:', e);
+                console.error("Failed to load metadata:", e);
                 reject(e);
             };
         });
@@ -69,11 +72,11 @@ export const VideoToMp3 = ({ setError }) => {
         label.innerHTML = `Converting file, please wait a moment<br><br><span class="wrongFileType">${video.name}</span>`;
         setLoading(true);
 
-        const vidPlayer = document.getElementById('video');
+        const vidPlayer = document.getElementById("video");
         const duration = await loadMetadata(vidPlayer);
 
         if (!ffmpeg.isLoaded()) {
-            await ffmpeg.load()
+            await ffmpeg.load();
         }
 
         ffmpeg.setLogger(({ message }) => {
@@ -82,22 +85,34 @@ export const VideoToMp3 = ({ setError }) => {
                 const currentTime = timeToSeconds(timeMatch[1]);
                 const percentage = (currentTime / duration) * 100;
                 setProgress(percentage);
-                return label.innerHTML = `Converting video, please wait a moment<br><br><span class="wrongFileType">${video.name}</span><br>${percentage.toFixed(2)}% Complete`;
+                return (label.innerHTML = `Converting video, please wait a moment<br><br><span class="wrongFileType">${video.name}</span><br>${percentage.toFixed(2)}% Complete`);
             }
         });
 
-
         ffmpeg.FS("writeFile", video.name, await fetchFile(video));
         const mp3Name = video.name.replace(/\.(mp4|avi|mov|wmv|mkv)$/i, ".mp3");
-        await ffmpeg.run("-i", video.name, "-vn", "-ar", "44100", "-ac", "2", "-b:a", "192k", mp3Name);
+        await ffmpeg.run(
+            "-i",
+            video.name,
+            "-vn",
+            "-ar",
+            "44100",
+            "-ac",
+            "2",
+            "-b:a",
+            "192k",
+            mp3Name
+        );
 
-        setLoading(false)
+        setLoading(false);
         label.innerHTML = `<span class="wrongFileType">${video.name}</span><br>
             has now finished converting, check your Downloads folder for this file<br><br>
             You can also drag and drop a new file to convert`;
 
         const data = ffmpeg.FS("readFile", mp3Name);
-        const url = URL.createObjectURL(new Blob([data.buffer], { type: "audio/mpeg" }));
+        const url = URL.createObjectURL(
+            new Blob([data.buffer], { type: "audio/mpeg" })
+        );
         setMp3(url);
 
         const downloadLink = document.createElement("a");
@@ -141,13 +156,25 @@ export const VideoToMp3 = ({ setError }) => {
                 <div className="description">
                     <h1>Video To MP3 Converter</h1>
                     <h2>
-                        Drag and drop a video file to convert it to MP3 and download it<br />
-                        Press the play button once loaded to play the audio in your browser
+                        Drag and drop a video file to convert it to MP3 and
+                        download it
+                        <br />
+                        Press the play button once loaded to play the audio in
+                        your browser
                     </h2>
                 </div>
-                {ready && <DropBox loadVideo={loadVideo} mp3url={mp3} type="videoToMp3" loading={loading} progressBar={progress} progressBarTotal={progressBarTotalRef} />}
+                {ready && (
+                    <DropBox
+                        loadVideo={loadVideo}
+                        mp3url={mp3}
+                        type="videoToMp3"
+                        loading={loading}
+                        progressBar={progress}
+                        progressBarTotal={progressBarTotalRef}
+                    />
+                )}
                 {video && <video id="video" muted src={originalVideoBlobUrl} />}
             </div>
         </main>
     );
-}
+};

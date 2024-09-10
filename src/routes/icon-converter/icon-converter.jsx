@@ -42,21 +42,20 @@ export const IconConverter = ({ setError }) => {
         setImage(file);
     };
 
-
-
     return (
         <main>
             <div className="iconConverter">
                 <div className="description">
                     <h1>Icon Converter</h1>
                     <h2>
-                        Drag and drop an image to convert it to a .ico file<br />&nbsp;
+                        Drag and drop an image to convert it to a .ico file
+                        <br />
+                        &nbsp;
                     </h2>
                 </div>
 
                 <DropBox type="imgToIco" fn={loadImage} />
-
             </div>
         </main>
-    )
-}
+    );
+};

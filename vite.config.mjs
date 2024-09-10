@@ -10,7 +10,10 @@ export default defineConfig({
         hmr: false,
     },
     esbuild: {
-        target: 'esnext'
+        target: 'esnext',
+        support: {
+            'top-level-await': true
+        }
     },
     plugins: [react()],
     root: 'src/',

@@ -1,7 +1,6 @@
-
 import { useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import WaveSurfer from "wavesurfer.js";
-import "./waveform.scss"
+import "./waveform.scss";
 
 export const Waveform = forwardRef(({ url, setPlaying }, ref) => {
     const waveformRef = useRef(null);
@@ -30,7 +29,7 @@ export const Waveform = forwardRef(({ url, setPlaying }, ref) => {
         });
 
         wavesurfer.current.load(url);
-        document.addEventListener('keydown', handleSpacebar);
+        document.addEventListener("keydown", handleSpacebar);
 
         const seek = (e) => {
             if (isSeeking) {
@@ -64,31 +63,28 @@ export const Waveform = forwardRef(({ url, setPlaying }, ref) => {
             mouseUp();
         };
 
-        waveformRef.current.addEventListener('mousedown', mouseDown);
-        waveformRef.current.addEventListener('mouseup', mouseUp);
-        waveformRef.current.addEventListener('mouseleave', mouseUp);
-        waveformRef.current.addEventListener('mousemove', seek);
+        waveformRef.current.addEventListener("mousedown", mouseDown);
+        waveformRef.current.addEventListener("mouseup", mouseUp);
+        waveformRef.current.addEventListener("mouseleave", mouseUp);
+        waveformRef.current.addEventListener("mousemove", seek);
 
-        waveformRef.current.addEventListener('touchstart', touchStart);
-        waveformRef.current.addEventListener('touchmove', touchMove);
-        waveformRef.current.addEventListener('touchend', touchEnd);
-
-
+        waveformRef.current.addEventListener("touchstart", touchStart);
+        waveformRef.current.addEventListener("touchmove", touchMove);
+        waveformRef.current.addEventListener("touchend", touchEnd);
 
         return () => {
             wavesurfer.current.destroy();
-            waveformRef.current?.removeEventListener('mousedown', mouseDown);
-            waveformRef.current?.removeEventListener('mouseup', mouseUp);
-            waveformRef.current?.removeEventListener('mouseleave', mouseUp);
-            waveformRef.current?.removeEventListener('mousemove', seek);
+            waveformRef.current?.removeEventListener("mousedown", mouseDown);
+            waveformRef.current?.removeEventListener("mouseup", mouseUp);
+            waveformRef.current?.removeEventListener("mouseleave", mouseUp);
+            waveformRef.current?.removeEventListener("mousemove", seek);
 
-            waveformRef.current?.removeEventListener('touchstart', touchStart);
-            waveformRef.current?.removeEventListener('touchmove', touchMove);
-            waveformRef.current?.removeEventListener('touchend', touchEnd);
+            waveformRef.current?.removeEventListener("touchstart", touchStart);
+            waveformRef.current?.removeEventListener("touchmove", touchMove);
+            waveformRef.current?.removeEventListener("touchend", touchEnd);
 
-            document?.removeEventListener('keydown', handleSpacebar);
+            document?.removeEventListener("keydown", handleSpacebar);
         };
-
     }, [url]);
 
     const handleSpacebar = (e) => {
@@ -99,9 +95,7 @@ export const Waveform = forwardRef(({ url, setPlaying }, ref) => {
         }
     };
 
-
-
     return <div id="waveform" className="waveformMp3" ref={waveformRef}></div>;
-})
+});
 
 Waveform.displayName = "Waveform";

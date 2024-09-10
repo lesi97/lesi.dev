@@ -57,30 +57,46 @@ export const VideoEditor = ({ setError }) => {
         setOriginalVideoBlobUrl(url);
     }
 
-
     return (
         <div className="videoEditor">
-            {!originalVideoBlobUrl &&
+            {!originalVideoBlobUrl && (
                 <main>
                     <div className="videoToMp3">
                         {/* {loading && <LoaderRing />} */}
                         <div className="description">
                             <h1>Video To MP3 Converter</h1>
                             <h2>
-                                Drag and drop a video file to convert it to MP3 and download it<br />
-                                Press the play button once loaded to play the audio in your browser
+                                Drag and drop a video file to convert it to MP3
+                                and download it
+                                <br />
+                                Press the play button once loaded to play the
+                                audio in your browser
                             </h2>
                         </div>
-                        {ready && <DropBox loadVideo={loadVideo} type="videoToMp3" /*loading={loading}*/ />}
+                        {ready && (
+                            <DropBox
+                                loadVideo={loadVideo}
+                                type="videoToMp3" /*loading={loading}*/
+                            />
+                        )}
                     </div>
-                </main>}
+                </main>
+            )}
 
-            {originalVideoBlobUrl &&
+            {originalVideoBlobUrl && (
                 <>
-                    <video id="video" muted src={originalVideoBlobUrl} controls />
-                    <VideoControls video={video} blobUrl={originalVideoBlobUrl} />
+                    <video
+                        id="video"
+                        muted
+                        src={originalVideoBlobUrl}
+                        controls
+                    />
+                    <VideoControls
+                        video={video}
+                        blobUrl={originalVideoBlobUrl}
+                    />
                 </>
-            }
+            )}
         </div>
     );
-}
+};

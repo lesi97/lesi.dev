@@ -1,4 +1,3 @@
-
 async function updateCounter() {
     let counter = await fetch("./php/homePageCounter");
     let counterResponse = await counter.text();
@@ -7,16 +6,36 @@ async function updateCounter() {
 updateCounter();
 
 export async function getTime() {
-
     let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     let time = await fetch(`./php/time?timezone=${timeZone}`, {
-        method: 'GET'
+        method: "GET",
     });
     let timeResponse = await time.text();
 
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const daysOfWeek = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ];
+    const monthsOfYear = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
 
     const currentDate = new Date();
 
@@ -29,47 +48,55 @@ export async function getTime() {
     let dateResponse = `${dayName} ${dayNumber}${ordinal} ${monthName} ${year}`;
 
     return [timeResponse, dateResponse];
-
 }
 
 function getSuffix(number) {
     if (number % 10 == 1 && number != 11) {
-        return 'st';
+        return "st";
     } else if (number % 10 == 2 && number != 12) {
-        return 'nd';
+        return "nd";
     } else if (number % 10 == 3 && number != 13) {
-        return 'rd';
+        return "rd";
     } else {
-        return 'th';
+        return "th";
     }
 }
 
 async function getGeoLocationData() {
     try {
         let response = await fetch("./php/geolocationApi", {
-            method: "GET"
+            method: "GET",
         });
         let data = await response.json();
         if (data.status === "success") {
             return {
                 latitude: data.lat,
-                longitude: data.lon
+                longitude: data.lon,
             };
         }
     } catch (error) {
-        console.error('There was an error fetching the weather information:', error);
+        console.error(
+            "There was an error fetching the weather information:",
+            error
+        );
     }
 }
 
 export async function getWeatherInfo() {
     try {
         const { latitude, longitude } = await getGeoLocationData();
-        let response = await fetch("./php/weatherApi?latitude=" + latitude + "&longitude=" + longitude, {
-            method: "GET"
-        });
+        let response = await fetch(
+            "./php/weatherApi?latitude=" + latitude + "&longitude=" + longitude,
+            {
+                method: "GET",
+            }
+        );
         let data = await response.text();
         return data;
     } catch (error) {
-        console.error('There was an error fetching the weather information:', error);
+        console.error(
+            "There was an error fetching the weather information:",
+            error
+        );
     }
 }

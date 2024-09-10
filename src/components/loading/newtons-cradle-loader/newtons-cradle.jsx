@@ -9,5 +9,5 @@ export const LoaderNewtonsCradle = () => {
             <div className="dot"></div>
             <div className="dot"></div>
         </div>
-    )
-}
+    );
+};

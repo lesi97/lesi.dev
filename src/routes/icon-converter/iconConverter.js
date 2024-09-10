@@ -15,7 +15,7 @@ export class PngIcoConverter {
         const inLen = inputs.length;
 
         const headersLen = FileHeaderSize + ImageHeaderSize * inLen;
-        const totalLen = headersLen + await this.sumInputLen(inputs);
+        const totalLen = headersLen + (await this.sumInputLen(inputs));
         const arr = new Uint8Array(totalLen);
 
         // File Header
@@ -28,22 +28,27 @@ export class PngIcoConverter {
             const input = inputs[i];
             const pngBlob = await this.convertToPngBlob(input.png);
             const img = await this.loadImageAsync(pngBlob);
-            const w = img.naturalWidth, h = img.naturalHeight;
+            const w = img.naturalWidth,
+                h = img.naturalHeight;
 
             if (!input.ignoreSize && (w > MaxSize || h > MaxSize)) {
                 throw new Error("INVALID_SIZE");
             }
             // Header
-            arr.set([
-                w > MaxSize ? 0 : w,
-                h > MaxSize ? 0 : h,
-                0,
-                0,
-                0, 0,
-                ...(input.bpp ? this.to2Bytes(input.bpp) : [0, 0]),
-                ...this.to4Bytes(pngBlob.size),
-                ...this.to4Bytes(imgPos),
-            ], currPos);
+            arr.set(
+                [
+                    w > MaxSize ? 0 : w,
+                    h > MaxSize ? 0 : h,
+                    0,
+                    0,
+                    0,
+                    0,
+                    ...(input.bpp ? this.to2Bytes(input.bpp) : [0, 0]),
+                    ...this.to4Bytes(pngBlob.size),
+                    ...this.to4Bytes(imgPos),
+                ],
+                currPos
+            );
             // Image
             const buffer = await pngBlob.arrayBuffer();
             arr.set(new Uint8Array(buffer), imgPos);
@@ -81,9 +86,11 @@ export class PngIcoConverter {
     }
 
     toBlob(input, type = "image/png") {
-        return input instanceof Blob ? input : new Blob([input], {
-            type: type,
-        });
+        return input instanceof Blob
+            ? input
+            : new Blob([input], {
+                  type: type,
+              });
     }
 
     to2Bytes(n) {

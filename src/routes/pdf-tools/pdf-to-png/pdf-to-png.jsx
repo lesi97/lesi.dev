@@ -1,10 +1,10 @@
 import "./pdf-to-png.scss";
 import { useEffect, useState } from "react";
 import { DropBox } from "../../../components/dropbox/dropbox";
-import * as pdfjsLib from 'pdfjs-dist/build/pdf';
+import * as pdfjsLib from "pdfjs-dist/build/pdf";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.0.279/pdf.worker.min.js'
-
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.0.279/pdf.worker.min.js";
 
 export const PdfToPng = ({ setError }) => {
     const [pdf, setPdf] = useState(null);
@@ -16,7 +16,7 @@ export const PdfToPng = ({ setError }) => {
 
     useEffect(() => {
         pdfToPng(pdf);
-    }, [pdf])
+    }, [pdf]);
 
     const loadPdf = () => {
         const fileInput = document.getElementById("fileInput");
@@ -42,7 +42,6 @@ export const PdfToPng = ({ setError }) => {
         setPdf(file);
     };
 
-
     const pdfToPng = async (pdfFile) => {
         if (!pdfFile) return;
 
@@ -58,9 +57,14 @@ export const PdfToPng = ({ setError }) => {
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
                 const context = canvas.getContext("2d");
-                await page.render({ canvasContext: context, viewport: viewport }).promise;
+                await page.render({
+                    canvasContext: context,
+                    viewport: viewport,
+                }).promise;
 
-                const pngBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+                const pngBlob = await new Promise((resolve) =>
+                    canvas.toBlob(resolve, "image/png")
+                );
                 const downloadLink = document.createElement("a");
                 const objectUrl = URL.createObjectURL(pngBlob);
                 downloadLink.href = objectUrl;
@@ -78,14 +82,15 @@ export const PdfToPng = ({ setError }) => {
         }
     };
 
-
     return (
         <main>
             <div className="pdfToPng">
                 <div className="description">
                     <h1>PDF To PNG Converter</h1>
                     <h2>
-                        Drag and drop a PDF file to convert it to a PNG and download it<br />
+                        Drag and drop a PDF file to convert it to a PNG and
+                        download it
+                        <br />
                         Each page will be an individual PNG file
                     </h2>
                 </div>

@@ -2,12 +2,7 @@ import "./ring.scss";
 
 export const LoaderRing = () => {
     return (
-        <svg
-            className="ringLoader"
-            viewBox="0 0 40 40"
-            height="40"
-            width="40"
-        >
+        <svg className="ringLoader" viewBox="0 0 40 40" height="40" width="40">
             <circle
                 className="track"
                 cx="20"
@@ -27,6 +22,5 @@ export const LoaderRing = () => {
                 fill="none"
             />
         </svg>
-    )
-}
-
+    );
+};

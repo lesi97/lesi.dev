@@ -8,7 +8,8 @@ export const Checkbox = ({ checked, onChange }) => {
                 type="checkbox"
                 checked={checked}
                 onChange={onChange}
-                tabIndex="0"></input>
+                tabIndex="0"
+            ></input>
             <span className="checkmark"></span>
         </label>
     );

@@ -1,9 +1,9 @@
-import { minify as minifyJS } from 'terser';
-import xmlFormatter from 'xml-formatter';
-import prettier from 'prettier/standalone';
-import parserBabel from 'prettier/parser-babel';
-import cssbeautify from 'cssbeautify';
-import { css as beautifyCss } from 'js-beautify';
+import { minify as minifyJS } from "terser";
+import xmlFormatter from "xml-formatter";
+import prettier from "prettier/standalone";
+import parserBabel from "prettier/parser-babel";
+import cssbeautify from "cssbeautify";
+import { css as beautifyCss } from "js-beautify";
 
 export function minify(code) {
     const type = determineCodeType(code);
@@ -64,7 +64,6 @@ function determineCodeType(code) {
     return "unknown";
 }
 
-
 function minifyJson(code) {
     return JSON.stringify(JSON.parse(code));
 }
@@ -74,7 +73,7 @@ function unminifyJson(code) {
 }
 
 function minifyXml(code) {
-    return code.replace(/\>\s+\</g, '><').trim();
+    return code.replace(/\>\s+\</g, "><").trim();
 }
 
 function unminifyXml(code) {
@@ -87,11 +86,14 @@ async function minifyJs(code) {
 }
 
 function unminifyJs(code) {
-    return prettier.format(code, { parser: 'babel', plugins: [parserBabel] });
+    return prettier.format(code, { parser: "babel", plugins: [parserBabel] });
 }
 
 function minifyCss(code) {
-    return cssbeautify(code, { indent: '', autosemicolon: true }).replace(/\n\s*/g, '');
+    return cssbeautify(code, { indent: "", autosemicolon: true }).replace(
+        /\n\s*/g,
+        ""
+    );
 }
 
 function unminifyCss(code) {

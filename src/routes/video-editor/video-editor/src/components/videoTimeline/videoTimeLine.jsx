@@ -8,12 +8,13 @@ export const VideoTimeLine = ({ videoSrc, duration, blobUrl }) => {
     useEffect(() => {
         const updateCanvasDimensions = () => {
             if (canvasRef.current) {
-                const containerWidth = canvasRef.current.parentElement.offsetWidth;
+                const containerWidth =
+                    canvasRef.current.parentElement.offsetWidth;
                 setCanvasWidth(containerWidth);
             }
         };
 
-        updateCanvasDimensions();  // Initialize dimensions
+        updateCanvasDimensions(); // Initialize dimensions
         const resizeObserver = new ResizeObserver(updateCanvasDimensions);
         if (canvasRef.current && canvasRef.current.parentElement) {
             resizeObserver.observe(canvasRef.current.parentElement);
@@ -32,20 +33,34 @@ export const VideoTimeLine = ({ videoSrc, duration, blobUrl }) => {
         }
     };
 
-    const drawImage = useCallback((thumbnailWidth, thumbnailHeight) => {
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
-        let x = 0;
-        return () => {
-            // Calculate vertical centering
-            // const dy = (canvas.height - thumbnailHeight);
-            context.drawImage(thumbnailVideoRef.current, 0, 0, thumbnailVideoRef.current.videoWidth, 70, x, 0, thumbnailWidth, 70);
-            x += thumbnailWidth;
-            if (x < canvasWidth) {
-                thumbnailVideoRef.current.currentTime = thumbnailWidth * (x / thumbnailWidth);
-            }
-        };
-    }, [canvasWidth]);
+    const drawImage = useCallback(
+        (thumbnailWidth, thumbnailHeight) => {
+            const canvas = canvasRef.current;
+            const context = canvas.getContext("2d");
+            let x = 0;
+            return () => {
+                // Calculate vertical centering
+                // const dy = (canvas.height - thumbnailHeight);
+                context.drawImage(
+                    thumbnailVideoRef.current,
+                    0,
+                    0,
+                    thumbnailVideoRef.current.videoWidth,
+                    70,
+                    x,
+                    0,
+                    thumbnailWidth,
+                    70
+                );
+                x += thumbnailWidth;
+                if (x < canvasWidth) {
+                    thumbnailVideoRef.current.currentTime =
+                        thumbnailWidth * (x / thumbnailWidth);
+                }
+            };
+        },
+        [canvasWidth]
+    );
 
     useEffect(() => {
         if (!canvasWidth) return; // Skip if canvas width is not set yet
@@ -53,31 +68,44 @@ export const VideoTimeLine = ({ videoSrc, duration, blobUrl }) => {
         const thumbnailVideo = thumbnailVideoRef.current;
         thumbnailVideo.src = blobUrl;
 
-        const maxThumbnails = calculateNumberOfThumbnails(duration) < 10 ? 10 : calculateNumberOfThumbnails(duration);
+        const maxThumbnails =
+            calculateNumberOfThumbnails(duration) < 10
+                ? 10
+                : calculateNumberOfThumbnails(duration);
         console.log(maxThumbnails);
         const thumbnailHeight = 70; // Maximum height set to 70px
         const thumbnailWidth = (thumbnailHeight * 9) / 16; // Width calculated based on 9:16 aspect ratio
 
-        const timestamps = Array.from({ length: maxThumbnails }, (_, i) => (duration / maxThumbnails) * i);
+        const timestamps = Array.from(
+            { length: maxThumbnails },
+            (_, i) => (duration / maxThumbnails) * i
+        );
 
         const handleSeeked = drawImage(thumbnailWidth, thumbnailHeight);
-        thumbnailVideo.addEventListener('seeked', handleSeeked);
+        thumbnailVideo.addEventListener("seeked", handleSeeked);
 
-        thumbnailVideo.addEventListener('loadedmetadata', () => {
+        thumbnailVideo.addEventListener("loadedmetadata", () => {
             thumbnailVideo.currentTime = timestamps[0];
         });
 
         return () => {
-            thumbnailVideo.removeEventListener('seeked', handleSeeked);
-            thumbnailVideo.removeEventListener('loadedmetadata', handleSeeked);
+            thumbnailVideo.removeEventListener("seeked", handleSeeked);
+            thumbnailVideo.removeEventListener("loadedmetadata", handleSeeked);
         };
-
     }, [videoSrc, duration, blobUrl, canvasWidth, drawImage]);
 
     return (
         <div className="timeLineContainer">
-            <canvas className="thumbnails" ref={canvasRef} style={{ width: '100%' }}></canvas>
-            <video className="hidden" ref={thumbnailVideoRef} style={{ display: 'none' }}></video>
+            <canvas
+                className="thumbnails"
+                ref={canvasRef}
+                style={{ width: "100%" }}
+            ></canvas>
+            <video
+                className="hidden"
+                ref={thumbnailVideoRef}
+                style={{ display: "none" }}
+            ></video>
         </div>
     );
 };
