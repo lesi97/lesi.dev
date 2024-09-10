@@ -30,6 +30,7 @@ jobs:
                   FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
                   FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
               run: |
+                  ls -la
                   echo "open $FTP_HOST
                   user $FTP_USERNAME $FTP_PASSWORD
                   binary
