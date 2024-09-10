@@ -14,7 +14,8 @@
         "deploy-cloudfare": "npm run build && wrangler pages deploy ./build",
         "preview": "npm run build && wrangler pages dev ./build",
         "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
-        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --quiet"
+        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --quiet",
+        "diff": "git -c core.pager=cat diff"
     },
     "devDependencies": {
         "@vitejs/plugin-react": "^4.2.1",

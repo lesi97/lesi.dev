@@ -1,0 +1,21 @@
+.privacy {
+    div {
+        padding: 10px 30px 20px 30px;
+
+        p {
+            text-align: justify;
+
+            a {
+                transition: font-size 0.5s ease-in-out;
+                line-height: 1rem;
+                vertical-align: middle;
+                text-decoration: underline;
+                &:focus-visible {
+                    font-size: 1.3rem;
+                    line-height: 1rem;
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+}

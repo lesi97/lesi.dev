@@ -88,7 +88,7 @@ if ($cacheData !== null) {
         echo "trials isn't here yet dummy, gift a sub and come back later";
     } else {
         if ($elapsedMinutes < 60) {
-            echo "There are currently " . number_format($playerCount) . " players in Trials of Osiris across all platforms | Last updated: " . $elapsedMinutes . " minutes ago";
+            echo "There are currently " . number_format($playerCount) . " players in Trials of Osiris across all platforms | Last updated: " . $elapsedMinutes . " minutes ago from https://trials.report";
         } else {
             $hours = floor($elapsedMinutes / 60);
             $minutes = $elapsedMinutes % 60;
@@ -97,7 +97,7 @@ if ($cacheData !== null) {
             if ($minutes > 0) {
                 $timeString .= " and " . $minutes . " minute" . ($minutes != 1 ? "s" : "");
             }
-            echo "There are currently " . number_format($playerCount) . " players in Trials of Osiris across all platforms | " . $timeString . " ago";
+            echo "There are currently " . number_format($playerCount) . " players in Trials of Osiris across all platforms | " . $timeString . " ago from https://trials.report";
         }
     }
 }

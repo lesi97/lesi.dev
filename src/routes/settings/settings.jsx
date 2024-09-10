@@ -1,6 +1,7 @@
 import { DayNightToggle } from "../../components/dayNightToggle";
 import "./settings.scss";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export const Settings = ({ toggleNightMode, nigthModeState, setError }) => {
 
@@ -29,6 +30,12 @@ export const Settings = ({ toggleNightMode, nigthModeState, setError }) => {
                 </p>
                 <p>
                     Background by <a href="https://heropatterns.com" target="blank" rel="noreferrer" >Hero Patterns</a>
+                </p>
+                <p>
+                    <Link to="/privacy"
+                        tabIndex={0}>
+                        Privacy Policy
+                    </Link>
                 </p>
             </div>
         </main>

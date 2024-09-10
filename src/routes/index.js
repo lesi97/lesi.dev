@@ -10,3 +10,4 @@ export { PasswordGenerator } from "./password-generator/password-generator";
 export { WeightConverter } from "./weight-converter/weight-converter";
 export { IconConverter } from "./icon-converter/icon-converter";
 export { Minifier } from "./minifier/minifier";
+export { Privacy } from "./privacy/privacy"

@@ -19,6 +19,7 @@ import {
     WeightConverter,
     IconConverter,
     Minifier,
+    Privacy,
 } from "./routes";
 
 const queryClient = new QueryClient({
@@ -127,6 +128,7 @@ const App = () => {
                         <Route path="/video-to-mp3" element={<VideoToMp3 setError={(e) => setIsErrorPage(e)} />} />
                         <Route path="/video-cropper" element={<CropToShort setError={(e) => setIsErrorPage(e)} />} />
                         <Route path="/minifier" element={<Minifier setError={(e) => setIsErrorPage(e)} />} />
+                        <Route path="/privacy" element={<Privacy setError={(e) => setIsErrorPage(e)} />} />
                         <Route path="/settings" element={<Settings toggleNightMode={toggleNightMode} nigthModeState={isNightMode} setError={(e) => setIsErrorPage(e)} />} />
                     </Routes>
                     {!isErrorPage && <Footer />}
