@@ -24,6 +24,15 @@ jobs:
             - name: Build project
               run: npm run build
 
+            - name: Check dist directory
+              run: |
+                  if [ ! -d "dist" ]; then
+                    echo "Dist directory does not exist";
+                    exit 1;
+                  fi
+                  echo "Dist directory exists and contains:"
+                  ls dist
+
             - name: Deploy to FTP
               env:
                   FTP_HOST: ${{ secrets.FTP_HOST }}
