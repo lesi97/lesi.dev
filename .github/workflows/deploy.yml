@@ -33,7 +33,7 @@ jobs:
                   echo "open $FTP_HOST
                   user $FTP_USERNAME $FTP_PASSWORD
                   binary
-                  lcd build
+                  lcd dist
                   cd /htdocs/
                   mput *
                   bye" > ftp_commands.txt
