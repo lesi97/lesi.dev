@@ -29,12 +29,6 @@
         }
 
         .values {
-            &:first-child {
-                justify-self: center;
-                grid-column: span 2;
-                width: 50%;
-            }
-
             display: inline-block;
             vertical-align: bottom;
             margin-left: 5%;
@@ -45,6 +39,12 @@
             -webkit-user-select: none;
             -ms-user-select: none;
             user-select: none;
+
+            &:first-child {
+                justify-self: center;
+                grid-column: span 2;
+                width: 50%;
+            }
 
             div {
                 display: inline-block;
