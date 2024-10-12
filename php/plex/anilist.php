@@ -40,10 +40,10 @@ function plexSearch($plexPayload) {
         preg_match($mediaTypeRegex, $mediaType) &&
         $plexUsername === "C_Lesi") {	
             
-            if (isset($plexData["Metadata"]["grandparentTitle"])) {
-                $showName = $plexData["Metadata"]["grandparentTitle"];
+            if (isset($plexData["Metadata"]["parentTitle"]) && strpos($plexData["Metadata"]["parentTitle"], 'Season') === false) {
+                $showName = $plexData["Metadata"]["parentTitle"];
             } else {
-                $showName = $plexData["Metadata"]["title"];
+                $showName = $plexData["Metadata"]["grandparentTitle"];
             }
             
             if ($plexData["Metadata"]["type"] === "episode") {
