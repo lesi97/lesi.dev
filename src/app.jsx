@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Nav } from "./components/nav/nav";
 import { Footer } from "./components/footer/footer";
 import ltoe from "./assets/images/ltoe.png";
+import Snowfall from 'react-snowfall'
 import {
     Home,
     Error404,
@@ -34,6 +35,7 @@ const queryClient = new QueryClient({
 const App = () => {
     const [isNightMode, setIsNightMode] = useState();
     const [isErrorPage, setIsErrorPage] = useState(false);
+    const [isChristmas,] = useState(false);
     const memeRef = useRef(null);
 
     useEffect(() => {
@@ -112,7 +114,14 @@ const App = () => {
                     <Nav
                         toggleNightMode={toggleNightMode}
                         nigthModeState={isNightMode}
+                        christmas={isChristmas}
                     />
+                    {(isChristmas && isNightMode) ? (
+                        <Snowfall
+                            style={{
+                                top: "47px",
+                            }} />
+                    ) : null}
                     <Routes>
                         <Route
                             path=""

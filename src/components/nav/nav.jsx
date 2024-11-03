@@ -1,11 +1,12 @@
 import "./nav.scss";
 import "./nav-mobile.scss";
 import { Link } from "react-router-dom";
-import { BurgerMenu, Settings } from "../icons";
+import { BurgerMenu, Settings, SantaHat } from "../icons";
 import emote56 from "../../assets/images/emote56.webp";
 import { useState } from "react";
 
-export function Nav() {
+
+export function Nav({ christmas }) {
     const [currentPage, setCurrentPage] = useState(window.location.pathname);
     const [isMobile] = useState(window.innerWidth < 767);
 
@@ -31,6 +32,7 @@ export function Nav() {
         <header>
             <nav>
                 <Link id="homeLink" to="/" tabIndex="-1">
+                    {christmas ? <SantaHat /> : null}
                     <img src={emote56} height={47} width={47} alt="Lesi" />
                 </Link>
 

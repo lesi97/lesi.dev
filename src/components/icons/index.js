@@ -13,3 +13,4 @@ export { Saturn } from "./saturn";
 export { Alien } from "./alien";
 export { RefreshSvg } from "./refresh";
 export { Copy } from "./copy";
+export { SantaHat } from "./santa-hat";

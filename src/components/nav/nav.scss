@@ -7,8 +7,23 @@ header {
         position: relative;
         background-color: var(--nav-background-colour);
 
+        #homeLink {
+            position: relative;
+            overflow: hidden;
+            width: 47px;
+            min-width: 47px;
+
+            svg {
+                position: absolute;
+                transform: rotate(20deg);
+                height: 100px;
+                top: -45px;
+                right: -35px;
+            }
+        }
+
         ul {
-            margin: 0px;
+            margin: 0px 0px 0px 0px;
             padding: 0px;
             display: flex;
             flex-direction: row;
