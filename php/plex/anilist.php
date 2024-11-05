@@ -40,11 +40,13 @@ function plexSearch($plexPayload) {
         preg_match($mediaTypeRegex, $mediaType) &&
         $plexUsername === "C_Lesi") {	
             
-            if (isset($plexData["Metadata"]["parentTitle"]) && strpos($plexData["Metadata"]["parentTitle"], 'Season') === false) {
+            if (isset($plexData["Metadata"]["parentTitle"]) && strpos($plexData["Metadata"]["parentTitle"], "Season") === false) {
                 $showName = $plexData["Metadata"]["parentTitle"];
+            } elseif (isset($plexData["Metadata"]["parentTitle"]) && strpos($plexData["Metadata"]["parentTitle"], "Season") !== false) {
+                $showName = $plexData["Metadata"]["grandparentTitle"] . " " . $plexData["Metadata"]["parentTitle"];
             } else {
                 $showName = $plexData["Metadata"]["grandparentTitle"];
-            }
+            }         
             
             if ($plexData["Metadata"]["type"] === "episode") {
                 $episodeNumber = $plexData["Metadata"]["index"];
