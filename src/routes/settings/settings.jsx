@@ -27,7 +27,7 @@ export const Settings = ({ toggleNightMode, nigthModeState, setError, toggleSnow
                     <h3>Night Mode</h3>{" "}
                     <DayNightToggle isChecked={nigthModeState} />
                 </div>
-                {christmas ?
+                {(christmas && nigthModeState) ?
                     <div
                         className="settingsOptions"
                         role="button"

@@ -125,8 +125,6 @@ const App = () => {
         };
     }, []);
 
-    console.log(isChristmas, isNightMode, isSnowing)
-
     return (
         <>
             <BrowserRouter>

@@ -33,7 +33,7 @@ export function Nav({ christmas }) {
             <nav>
                 <Link id="homeLink" to="/" tabIndex="-1">
                     {christmas ? <SantaHat /> : null}
-                    <img src={emote56} height={47} width={47} alt="Lesi" />
+                    <img src="../../assets/images/emote56.webp" height={47} width={47} alt="Lesi" />
                 </Link>
 
                 <ul id="myLinks" className="myLinks">
