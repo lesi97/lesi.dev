@@ -36,6 +36,7 @@ const App = () => {
     const [isNightMode, setIsNightMode] = useState();
     const [isErrorPage, setIsErrorPage] = useState(false);
     const [isChristmas,] = useState(true);
+    const [isSnowing, setIsSnowing] = useState();
     const memeRef = useRef(null);
 
     useEffect(() => {
@@ -52,6 +53,17 @@ const App = () => {
     }, []);
 
     useEffect(() => {
+        if (!isChristmas) return;
+        const snowPreference = localStorage.getItem("snow");
+        if (snowPreference) {
+            setIsSnowing(snowPreference === "true");
+        } else {
+            localStorage.setItem("snow", 'true');
+            setIsSnowing(true);
+        }
+    }, []);
+
+    useEffect(() => {
         if (isNightMode) {
             document.body.classList.add("night");
         } else {
@@ -63,6 +75,12 @@ const App = () => {
         const newMode = !isNightMode;
         setIsNightMode(newMode);
         localStorage.setItem("nightmode", String(newMode));
+    }
+
+    function toggleSnow() {
+        const newMode = !isSnowing;
+        setIsSnowing(newMode);
+        localStorage.setItem("snow", String(newMode));
     }
 
     const randomPosition = () => {
@@ -107,6 +125,8 @@ const App = () => {
         };
     }, []);
 
+    console.log(isChristmas, isNightMode, isSnowing)
+
     return (
         <>
             <BrowserRouter>
@@ -116,10 +136,13 @@ const App = () => {
                         nigthModeState={isNightMode}
                         christmas={isChristmas}
                     />
-                    {(isChristmas && isNightMode) ? (
+                    {(isChristmas && isNightMode && isSnowing) ? (
                         <Snowfall
                             style={{
                                 top: "47px",
+                                height: "calc(100vh - 47px)",
+                                position: "fixed",
+                                pointerEvents: "none",
                             }} />
                     ) : null}
                     <Routes>
@@ -219,6 +242,9 @@ const App = () => {
                                     toggleNightMode={toggleNightMode}
                                     nigthModeState={isNightMode}
                                     setError={(e) => setIsErrorPage(e)}
+                                    christmas={isChristmas}
+                                    toggleSnow={toggleSnow}
+                                    snowState={isSnowing}
                                 />
                             }
                         />
