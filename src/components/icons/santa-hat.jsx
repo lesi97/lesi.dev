@@ -7,10 +7,10 @@ export const SantaHat = () => {
                         fill: #fff;
                     }
 
-                    .cls-1 {
-                        stroke: #201600;
-                        stroke-miterlimit: 10;
-                    }
+                    // .cls-1 {
+                    //     stroke: #201600;
+                    //     stroke-miterlimit: 10;
+                    // }
 
                     .cls-2 {
                         fill: red;
