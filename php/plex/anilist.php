@@ -47,6 +47,10 @@ function plexSearch($plexPayload) {
             } else {
                 $showName = $plexData["Metadata"]["grandparentTitle"];
             }         
+
+            if (isset($plexData["Metadata"]["title"]) && strpos($plexData["Metadata"]["type"], "Movie") !== false) {
+                $showName = $plexData["Metadata"]["title"];
+            }
             
             if ($plexData["Metadata"]["type"] === "episode") {
                 $episodeNumber = $plexData["Metadata"]["index"];

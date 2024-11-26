@@ -35,7 +35,7 @@ const queryClient = new QueryClient({
 const App = () => {
     const [isNightMode, setIsNightMode] = useState();
     const [isErrorPage, setIsErrorPage] = useState(false);
-    const [isChristmas,] = useState(false);
+    const [isChristmas,] = useState(true);
     const memeRef = useRef(null);
 
     useEffect(() => {

@@ -9,6 +9,9 @@ error_reporting(E_ALL);
 
 //	Variables
 
+http_response_code(200);
+header('Content-Type: text/plain');
+
 	include '../../private/loadEnv.php';
 	$api_key = $_ENV['BUNGIE_KEY'];
 	$user = $_GET['user'];
