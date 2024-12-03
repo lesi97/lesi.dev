@@ -25,7 +25,6 @@ import {
     Minifier,
     Privacy,
 } from "./routes";
-import { Alien } from "./components/icons";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -39,7 +38,10 @@ const queryClient = new QueryClient({
 const App = () => {
     const [isNightMode, setIsNightMode] = useState();
     const [isErrorPage, setIsErrorPage] = useState(false);
-    const [isChristmas,] = useState(true);
+    const today = new Date();
+    const month = today.getMonth();
+    const day = today.getDate();
+    const [isChristmas,] = useState(month === 11 && day <= 26);
     const [isSnowing, setIsSnowing] = useState();
     const memeRef = useRef(null);
 
