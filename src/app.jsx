@@ -6,6 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Nav } from "./components/nav/nav";
 import { Footer } from "./components/footer/footer";
 import ltoe from "./assets/images/ltoe.png";
+import snowflakeImg1 from "./assets/images/snowflake-1.webp";
+import snowflakeImg2 from "./assets/images/snowflake-2.webp";
+import snowflakeImg3 from "./assets/images/snowflake-3.webp";
 import Snowfall from 'react-snowfall'
 import {
     Home,
@@ -22,6 +25,7 @@ import {
     Minifier,
     Privacy,
 } from "./routes";
+import { Alien } from "./components/icons";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -125,6 +129,14 @@ const App = () => {
         };
     }, []);
 
+    const snowflake1 = document.createElement('img')
+    snowflake1.src = snowflakeImg1;
+    const snowflake2 = document.createElement('img')
+    snowflake2.src = snowflakeImg2;
+    const snowflake3 = document.createElement('img')
+    snowflake3.src = snowflakeImg3;
+    const images = [snowflake1, snowflake2, snowflake3]
+
     return (
         <>
             <BrowserRouter>
@@ -134,8 +146,12 @@ const App = () => {
                         nigthModeState={isNightMode}
                         christmas={isChristmas}
                     />
-                    {(isChristmas && isNightMode && isSnowing) ? (
+                    {(isChristmas && isSnowing) ? (
                         <Snowfall
+                            color={isNightMode ? "#dee4fd" : "#B1F4E7"}
+                            snowflakeCount={isNightMode ? 150 : 500}
+                            images={images}
+                            radius={[0.25, 15]}
                             style={{
                                 top: "47px",
                                 height: "calc(100vh - 47px)",
