@@ -12,9 +12,9 @@ export default function IllustrationImagePost() {
                 fill="#cacaca"
             />
 
-            <ellipse cx="132.14886" cy="11.16881" rx="10.92534" ry="11.16881" fill="#ff5f57" />
-            <ellipse cx="169.89093" cy="11.16881" rx="10.92534" ry="11.16881" fill="#febc2e" />
-            <ellipse cx="207.633" cy="11.16881" rx="10.92534" ry="11.16881" fill="#29c840" />
+            <ellipse cx="132.14886" cy="11.16881" rx="10.92534" ry="11.16881" className="fill-error" />
+            <ellipse cx="169.89093" cy="11.16881" rx="10.92534" ry="11.16881" className="fill-warning" />
+            <ellipse cx="207.633" cy="11.16881" rx="10.92534" ry="11.16881" className="fill-success" />
 
             <path
                 d="M947.94494,158.35132h-26.81a2.0304,2.0304,0,0,0,0,4.06h26.81a2.0304,2.0304,0,0,0,0-4.06Z"

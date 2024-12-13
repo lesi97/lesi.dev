@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { selectSql } from '@/lib/server/data/database/helpers';
 import Image from 'next/image';
@@ -25,14 +25,15 @@ export default function Home() {
                 setServerTime((prevTime) => {
                     if (!prevTime) return null;
                     const newTime = new Date(prevTime.getTime() + 1000);
-                    const hours = newTime.getHours().toString().padStart(2, '0');                    const minutes = newTime.getMinutes().toString().padStart(2, '0');
+                    const hours = newTime.getHours().toString().padStart(2, '0');
+                    const minutes = newTime.getMinutes().toString().padStart(2, '0');
                     const seconds = newTime.getSeconds().toString().padStart(2, '0');
                     setTime(`${hours}:${minutes}:${seconds}`);
-                    
+
                     if (prevTime.getDate() !== newTime.getDate()) {
                         updateDate(newTime);
                     }
-                    
+
                     return newTime;
                 });
             }, 1000);
@@ -41,19 +42,20 @@ export default function Home() {
 
         const updateDate = (date: Date) => {
             const day = date.getDate();
-            const suffix = ['th', 'st', 'nd', 'rd'][(day % 10 > 3 ? 0 : day % 10) * (day < 10 || day > 20 ? 1 : 0)] || 'th';
+            const suffix =
+                ['th', 'st', 'nd', 'rd'][(day % 10 > 3 ? 0 : day % 10) * (day < 10 || day > 20 ? 1 : 0)] || 'th';
             const formattedDate = date.toLocaleDateString('en-US', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
-                year: 'numeric'
+                year: 'numeric',
             });
             const [weekday, month, dayNum, year] = formattedDate.replace(',', '').split(' ');
             setDate(`${weekday} ${day}${suffix} ${month} ${year}`);
         };
 
         fetchInitialTime();
-        
+
         const initialDate = new Date();
         updateDate(initialDate);
 
