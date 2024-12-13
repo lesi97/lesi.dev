@@ -4,18 +4,18 @@ import React, { useEffect, useState } from 'react';
 import Snowfall from 'react-snowfall';
 import { StaticImageData } from 'next/image';
 
-import heartImg1 from '../../_assets/_images/heart-1.webp';
-import heartImg2 from '../../_assets/_images/heart-2.webp';
-import heartImg3 from '../../_assets/_images/heart-3.webp';
+import heartImg1 from '@/app/_assets/_images/heart-1.webp';
+import heartImg2 from '@/app/_assets/_images/heart-2.webp';
+import heartImg3 from '@/app/_assets/_images/heart-3.webp';
 
-import pumpkinImg1 from '../../_assets/_images/pumpkin-1.webp';
-import spiderWebImg1 from '../../_assets/_images/spider-web-1.webp';
+import pumpkinImg1 from '@/app/_assets/_images/pumpkin-1.webp';
+import spiderWebImg1 from '@/app/_assets/_images/spider-web-1.webp';
 
-import snowflakeImg1 from '../../_assets/_images/snowflake-1.webp';
-import snowflakeImg2 from '../../_assets/_images/snowflake-2.webp';
-import snowflakeImg3 from '../../_assets/_images/snowflake-3.webp';
+import snowflakeImg1 from '@/app/_assets/_images/snowflake-1.webp';
+import snowflakeImg2 from '@/app/_assets/_images/snowflake-2.webp';
+import snowflakeImg3 from '@/app/_assets/_images/snowflake-3.webp';
 
-import fireworkImg1 from '../../_assets/_images/firework-1.webp';
+import fireworkImg1 from '@/app/_assets/_images/firework-1.webp';
 
 const SnowfallWrapper: React.FC<{ season: string | null }> = ({ season }) => {
     const [snowfallData, setSnowfallData] = useState({
