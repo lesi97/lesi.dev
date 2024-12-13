@@ -31,6 +31,8 @@ export default function DropBox({
 
     if (!isBrowser) return null;
 
+    // IGNORE THE FILE CHANGE FOR NOW
+
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         console.log('file change', e.target.files);
         const file = e.target.files?.[0];
