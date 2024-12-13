@@ -11,7 +11,8 @@ function checkFileTypeValidity(acceptableFileType: string, fileType: string) {
         return { valid: true, message };
     }
 
-    const message = `File type not valid!\n\nPlease use a valid ${checkAcceptableFileType(acceptableFileType)} file\n\nOr click here to browse\n your PC for a ${checkAcceptableFileType(acceptableFileType)} file to upload`;
+    const validFileType = checkAcceptableFileType(acceptableFileType);
+    const message = `File type not valid!\n\nPlease use a valid ${validFileType} file\n\nOr click here to browse\n your PC for a ${validFileType} file to upload`;
     return { valid: false, message };
 }
 
