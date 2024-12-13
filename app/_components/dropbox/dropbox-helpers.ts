@@ -11,7 +11,7 @@ function checkFileTypeValidity(acceptableFileType: string, fileType: string) {
         return { valid: true, message };
     }
 
-    const message = `File type not valid!\n\nPlease use a valid ${checkAcceptableFileType(acceptableFileType).toUpperCase()} file\n\nOr click here to browse\n your PC for a ${checkAcceptableFileType(acceptableFileType)} file to upload`;
+    const message = `File type not valid!\n\nPlease use a valid ${checkAcceptableFileType(acceptableFileType)} file\n\nOr click here to browse\n your PC for a ${checkAcceptableFileType(acceptableFileType)} file to upload`;
     return { valid: false, message };
 }
 
@@ -22,7 +22,7 @@ function checkAcceptableFileType(fileType: string) {
         case 'video/*':
             return 'video';
         case 'application/pdf':
-            return 'pdf';
+            return 'PDF';
         case 'audio/*':
             return 'audio';
         default:
