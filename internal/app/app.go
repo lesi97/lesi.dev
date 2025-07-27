@@ -4,14 +4,29 @@ import (
 	"log"
 	"os"
 
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/lesi97/api.lesi.dev/internal/api"
 	"github.com/lesi97/api.lesi.dev/internal/database"
 	"github.com/lesi97/api.lesi.dev/internal/store"
 )
 
 type Application struct {
-	Logger			*log.Logger
-	TarotHandler	*api.TarotHandler
+	Logger				*log.Logger
+	DB 					*database.Supabase
+	TarotHandler		*api.TarotHandler
+	CountdownHandler	*api.CountdownHandler
+}
+
+func init() {
+	err := godotenv.Overload()
+	if err != nil {
+		panic(".env file not loaded")
+	}
+	if os.Getenv("GO_ENV") != "development" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 }
 
 func NewApplication() (*Application, error) {
@@ -20,18 +35,17 @@ func NewApplication() (*Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer database.Disconnect(supabase)
 	
-
 	tarotStore := store.NewTarotStore()
-	// countdownStore := store.NewSupabaseCountdownStore()
+	countdownStore := store.NewSupabaseCountdownStore(supabase)
 
 	tarotHandler := api.NewTarotHandler(logger, tarotStore)
-	// countdownHandler := api.NewTarotHandler(logger, tarotStore)
+	countdownHandler := api.NewCountdownHandler(logger, countdownStore)
 
 	app := &Application{
 		Logger: logger,
 		TarotHandler: tarotHandler,
+		CountdownHandler: countdownHandler,
 
 	}
 

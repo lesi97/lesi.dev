@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -30,13 +29,13 @@ func (h *CountdownHandler) HandleGetCountdown(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	countdownData, err := h.countdownStore.GetCountdownByID(idParam)
+	countdownMessage, err := h.countdownStore.GetCountdownByID(r.Context(), idParam)
 	if err != nil {
 		h.logger.Printf("ERROR: GetCountdownByID: %v", err)
 		utils.TextResponse(w, http.StatusInternalServerError, "internal server error")
 		return
 	}
 
-	fmt.Println(countdownData)
+	utils.TextResponse(w, http.StatusOK, *countdownMessage)
 
 }
