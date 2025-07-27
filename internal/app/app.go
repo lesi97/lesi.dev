@@ -16,6 +16,7 @@ type Application struct {
 	DB 					*database.Supabase
 	TarotHandler		*api.TarotHandler
 	CountdownHandler	*api.CountdownHandler
+	TimeapiHandler		*api.TimeapiHandler
 }
 
 func init() {
@@ -41,12 +42,13 @@ func NewApplication() (*Application, error) {
 
 	tarotHandler := api.NewTarotHandler(logger, tarotStore)
 	countdownHandler := api.NewCountdownHandler(logger, countdownStore)
+	timeapiHandler := api.NewTimeapiHandler(logger)
 
 	app := &Application{
 		Logger: logger,
 		TarotHandler: tarotHandler,
 		CountdownHandler: countdownHandler,
-
+		TimeapiHandler: timeapiHandler,
 	}
 
 	return app, nil

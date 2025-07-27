@@ -37,5 +37,4 @@ func (h *CountdownHandler) HandleGetCountdown(w http.ResponseWriter, r *http.Req
 	}
 
 	utils.TextResponse(w, http.StatusOK, *countdownMessage)
-
 }

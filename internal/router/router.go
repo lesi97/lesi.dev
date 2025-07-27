@@ -11,6 +11,8 @@ func SetupRoutes(app *app.Application) *chi.Mux {
 
 	routes.Get("/tarot", app.TarotHandler.HandleGetRandomTarot)
 	routes.Get("/countdown/{id}", app.CountdownHandler.HandleGetCountdown)
+	routes.Get("/time", app.TimeapiHandler.HandleGetDateTime)
+	
 
 	return routes
 }
