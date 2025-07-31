@@ -9,6 +9,7 @@ import (
 
 	"github.com/lesi97/api.lesi.dev/internal/app"
 	"github.com/lesi97/api.lesi.dev/internal/router"
+	"github.com/lesi97/api.lesi.dev/internal/utils"
 )
 
 func main() {
@@ -32,7 +33,7 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	application.Logger.Printf("we are running on port %d\n", port)
+	utils.Startup(fmt.Sprintf(":%d", port))
 
 	err = server.ListenAndServe() 
 	if err != nil {

@@ -2,6 +2,7 @@ package store
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 
 	"github.com/lesi97/api.lesi.dev/internal/utils"
@@ -9,26 +10,28 @@ import (
 
 type TarotStore interface {
 	GetRandomTarot() *string
+	GetAllCards() *[]TarotCard
 }
 
 type StaticTarotStore struct {
 	Cards []TarotCard
+	logger *log.Logger
 }
 
 type TarotCard struct {
-	Name        string
-	NameShort   string
-	Value       string
-	ValueInt    int
-	Suit        string
-	CardType    string
-	MeaningUp   string
-	MeaningRev  string
-	Desc        string
+	Name        string 	`json:"name"`
+	NameShort   string 	`json:"name_short"`
+	Value       string 	`json:"value"`
+	ValueInt    int		`json:"value_int"`
+	Suit        string	`json:"suit"`
+	CardType    string	`json:"card_type"`
+	MeaningUp   string	`json:"meaning_up"`
+	MeaningRev  string	`json:"meaning_rev"`
+	Desc        string	`json:"desc"`
 }
 
 func NewTarotStore() *StaticTarotStore {
-	return &StaticTarotStore{Cards: TarotCards}
+	return &StaticTarotStore{Cards: tarotCards}
 }
 
 
@@ -41,7 +44,11 @@ func (s *StaticTarotStore) GetRandomTarot() *string {
 	return &message
 }
 
-var TarotCards = []TarotCard{
+func (s *StaticTarotStore) GetAllCards() *[]TarotCard {
+	return &tarotCards
+}
+
+var tarotCards = []TarotCard{
 	{
 		Name:       "The Magician",
 		NameShort:  "ar01",

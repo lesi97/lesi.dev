@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/lesi97/api.lesi.dev/internal/database"
@@ -16,6 +17,7 @@ type CountdownStore interface {
 
 type SupabaseCountdownStore struct {
 	db *database.Supabase
+	logger *log.Logger
 }
 
 type CountdownData struct {
