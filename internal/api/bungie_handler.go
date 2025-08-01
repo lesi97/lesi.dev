@@ -45,9 +45,48 @@ func (h *BungieHandler) HandleGetPrimary(w http.ResponseWriter, r *http.Request)
 		utils.TextResponse(w, http.StatusBadRequest, "invalid ID")
 		return
 	}
-	h.bungieStore.GetEquippedPrimary(r.Context(), idParam, platform)
-	// h.bungieStore.SearchDestinyPlayer(r.Context(), "Lesi%235934")
-	// h.bungieStore.SearchDestinyPlayer(r.Context(), "4611686018475555326")
+	message, err := h.bungieStore.GetEquippedWeapon(r.Context(), idParam, platform, 0)
+	if err != nil {
+		h.logger.Printf("ERROR: GetEquippedWeapon: No ID provided")
+		utils.TextResponse(w, http.StatusBadRequest, "internal server error")
+		return
+	}
 
-	utils.TextResponse(w, http.StatusOK, "All good")
+	utils.TextResponse(w, http.StatusOK, *message)
+}
+
+func (h *BungieHandler) HandleGetSecondary(w http.ResponseWriter, r *http.Request) {
+	platform := r.URL.Query().Get("platform")
+	idParam := chi.URLParam(r, "id")
+	if idParam == "" {
+		h.logger.Printf("ERROR: handleSearchUser: No ID provided")
+		utils.TextResponse(w, http.StatusBadRequest, "invalid ID")
+		return
+	}
+	message, err := h.bungieStore.GetEquippedWeapon(r.Context(), idParam, platform, 1)
+	if err != nil {
+		h.logger.Printf("ERROR: GetEquippedWeapon: No ID provided")
+		utils.TextResponse(w, http.StatusBadRequest, "internal server error")
+		return
+	}
+
+	utils.TextResponse(w, http.StatusOK, *message)
+}
+
+func (h *BungieHandler) HandleGetHeavy(w http.ResponseWriter, r *http.Request) {
+	platform := r.URL.Query().Get("platform")
+	idParam := chi.URLParam(r, "id")
+	if idParam == "" {
+		h.logger.Printf("ERROR: handleSearchUser: No ID provided")
+		utils.TextResponse(w, http.StatusBadRequest, "invalid ID")
+		return
+	}
+	message, err := h.bungieStore.GetEquippedWeapon(r.Context(), idParam, platform, 2)
+	if err != nil {
+		h.logger.Printf("ERROR: GetEquippedWeapon: No ID provided")
+		utils.TextResponse(w, http.StatusBadRequest, "internal server error")
+		return
+	}
+
+	utils.TextResponse(w, http.StatusOK, *message)
 }

@@ -61,12 +61,12 @@ type characters struct {
 }
 
 type equipmentItem struct {
-	ItemHash                    int64  `json:"itemHash"`
+	ItemHash                    int  `json:"itemHash"`
 	ItemInstanceID              string `json:"itemInstanceId"`
 	Quantity                    int    `json:"quantity"`
 	BindStatus                  int    `json:"bindStatus"`
 	Location                    int    `json:"location"`
-	BucketHash                  int64  `json:"bucketHash"`
+	BucketHash                  int  `json:"bucketHash"`
 	TransferStatus              int    `json:"transferStatus"`
 	Lockable                    bool   `json:"lockable"`
 	State                       int    `json:"state"`
@@ -76,12 +76,14 @@ type equipmentItem struct {
 	VersionNumber               int    `json:"versionNumber"`
 }
 
+type individualSocket struct {
+	PlugHash  int64 `json:"plugHash"`
+	IsEnabled bool  `json:"isEnabled"`
+	IsVisible bool  `json:"isVisible"`
+}
+
 type itemSockets struct {
-	Sockets []struct {
-		PlugHash  int64 `json:"plugHash"`
-		IsEnabled bool  `json:"isEnabled"`
-		IsVisible bool  `json:"isVisible"`
-	} `json:"sockets"`
+	Sockets []individualSocket `json:"sockets"`
 }
 
 type sockets struct {
@@ -146,7 +148,7 @@ type bungieProfileResponse struct {
 	ItemComponents 						itemComponents		`json:"itemComponents"`
 }
 
-type bungieProfile struct {
+type BungieProfile struct {
 	Response        bungieProfileResponse `json:"Response"`
 	ErrorCode       int                   `json:"ErrorCode"`
 	ThrottleSeconds int                   `json:"ThrottleSeconds"`

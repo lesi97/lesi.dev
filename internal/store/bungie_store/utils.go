@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
+
+	"github.com/dustin/go-humanize"
 )
 
 func ValidateID(id string) bool {
@@ -20,10 +23,10 @@ func ValidateID(id string) bool {
 }
 
 // interface is the arugment type to accept null values and return -1
-func getPlatformEnum(platform interface{}) string {
+func getPlatformEnum(platform interface{}, user *user) string {
 	platformString, ok := platform.(string)
 	if !ok {
-		return "-1"
+		return strconv.Itoa(user.MembershipType)
 	}
 
 	switch strings.ToLower(platformString) {
@@ -40,7 +43,7 @@ func getPlatformEnum(platform interface{}) string {
 	case "demon":
 		return "10"
 	default:
-		return "-1"
+		return strconv.Itoa(user.MembershipType)
 	}
 }
 
@@ -89,4 +92,54 @@ func plural(n int) string {
 		return ""
 	}
 	return "s"
+}
+
+func getPerkHashIDs(plugHashes []individualSocket) []string {
+	var perkHashIDs []string
+	for _, plug := range plugHashes {
+		perkHashIDs = append(perkHashIDs, strconv.FormatInt(plug.PlugHash, 10))
+	}
+	return perkHashIDs
+}
+
+
+func getPerkNames(perks []databasePerk) string {
+	var perkNames []string
+	for _, perk := range perks {
+		if strings.Contains(perk.ItemType, "Enhanced") {
+			perkName := fmt.Sprintf("Enhanced %s", perk.Name)
+			perkNames = append(perkNames, perkName)
+		} else {
+			perkNames = append(perkNames, perk.Name)
+		}
+	}
+	return strings.Join(perkNames, ", ")
+}
+
+func generateString(gt string, weapon *weaponResult, category string, killCount int) string {
+	var responseMessage string;
+
+	perkNamesString := getPerkNames(weapon.weaponPerks.Perks)
+
+	responseMessage += fmt.Sprintf("%s: ", gt)
+	responseMessage += fmt.Sprintf("%s | ", weapon.weaponData.DisplayName)
+	responseMessage += fmt.Sprintf("Perks: %s ", perkNamesString)
+
+	if len(weapon.weaponPerks.Mods) != 0 {
+		responseMessage += fmt.Sprintf("| Mod: %s ", weapon.weaponPerks.Mods[0].Name)
+	}
+
+	if len(weapon.weaponPerks.Shaders) != 0 {
+		responseMessage += fmt.Sprintf("| Shader: %s ", weapon.weaponPerks.Shaders[0].Name)
+	}
+
+	if len(weapon.weaponPerks.Ornaments) != 0 {
+		responseMessage += fmt.Sprintf("| Ornament: %s ", weapon.weaponPerks.Ornaments[0].Name)
+	}
+
+	if category != ""  {
+		responseMessage += fmt.Sprintf("| %s Kill Count: %v", category, humanize.Comma(int64(killCount)),)
+	}
+
+	return responseMessage
 }

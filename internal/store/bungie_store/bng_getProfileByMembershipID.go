@@ -6,8 +6,7 @@ import (
 	"fmt"
 )
 
-func getBungieProfileByMembershipID(membershipID string, preferredPlatform string, components string) (*bungieProfile, error) {
-	//200,205,302,305,309
+func getBungieProfileByMembershipID(membershipID string, preferredPlatform string, components string) (*BungieProfile, error) {
 	url := fmt.Sprintf("%s/Destiny2/%s/Profile/%s/?components=%s", bungie_url, preferredPlatform, membershipID, components)
 
 	body, err := bungieGET(url)
@@ -15,7 +14,7 @@ func getBungieProfileByMembershipID(membershipID string, preferredPlatform strin
 		return nil, err
 	}
 
-	result := &bungieProfile{}
+	result := &BungieProfile{}
 	err = json.NewDecoder(bytes.NewReader(body)).Decode(result)
 	if err != nil {
 		fmt.Printf("Decode error: %v\n", err)

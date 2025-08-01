@@ -5,27 +5,29 @@ import (
 	"log"
 	"os"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type Supabase = pgx.Conn
+type Supabase = pgxpool.Pool
 
-/*
-Function that initiates a connection to a postgres db and sets the public Supabase var to be equal to that connection
-*/
 func Connect(logger *log.Logger) (*Supabase, error) {
 	url := os.Getenv("DATABASE_URL")
-	supabase, err := pgx.Connect(context.Background(), url)
+
+	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
-		logger.Fatalf("Failed to connect to the database: %v", err)
+		logger.Fatalf("Failed to parse pool config: %v", err)
 		return nil, err
 	}
-	return supabase, nil
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), config)
+	if err != nil {
+		logger.Fatalf("Failed to create connection pool: %v", err)
+		return nil, err
+	}
+
+	return pool, nil
 }
 
-/*
-Function to disconnect from the database once a connection is no longer required
-*/
 func Disconnect(supabase *Supabase) {
-	supabase.Close(context.Background())
+	supabase.Close()
 }

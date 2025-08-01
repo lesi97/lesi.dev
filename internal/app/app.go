@@ -18,6 +18,7 @@ type Application struct {
 	CountdownHandler	*api.CountdownHandler
 	TimeapiHandler		*api.TimeapiHandler
 	BungieHandler		*api.BungieHandler
+	TrialsHandler		*api.TrialsHandler
 }
 
 func init() {
@@ -38,11 +39,13 @@ func NewApplication() (*Application, error) {
 	tarotStore := store.NewTarotStore()
 	countdownStore := store.NewSupabaseCountdownStore(supabase)
 	bungieStore := bungie_store.NewSupabaseBungieStore(supabase, logger)
+	trialsStore := store.NewSupabaseTrialsStore(supabase, logger)
 
 	tarotHandler := api.NewTarotHandler(logger, tarotStore)
 	countdownHandler := api.NewCountdownHandler(logger, countdownStore)
 	timeapiHandler := api.NewTimeapiHandler(logger)
 	bungieHandler := api.NewBungieHandler(logger, bungieStore)
+	trialsHandler := api.NewTrialsHandler(logger, trialsStore)
 
 	app := &Application{
 		Logger: logger,
@@ -50,6 +53,7 @@ func NewApplication() (*Application, error) {
 		CountdownHandler: countdownHandler,
 		TimeapiHandler: timeapiHandler,
 		BungieHandler: bungieHandler,
+		TrialsHandler: trialsHandler,
 	}
 
 	return app, nil

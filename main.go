@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"net/http"
@@ -21,7 +20,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer application.DB.Close(context.Background())
+	defer application.DB.Close()
 
 	routes := router.SetupRoutes(application)
 

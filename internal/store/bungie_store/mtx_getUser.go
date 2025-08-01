@@ -26,6 +26,7 @@ func (s *SupabaseBungieStoreStore) getUser(ctx context.Context, gt string) (*use
 	go func() {
 		dbUser, err := s.getUserFromDatabaseByGamertag(ctx, gt)
 		if err != nil || dbUser == nil {
+			fmt.Println("ERROR in Matrix - getUserFromDatabase")
 			ch <- result{nil, err}
 			return
 		}
@@ -41,6 +42,7 @@ func (s *SupabaseBungieStoreStore) getUser(ctx context.Context, gt string) (*use
 	go func() {
 		apiUser, err := getUserFromBungieByGamertag(gt)
 		if err != nil || apiUser == nil || len(apiUser.Response) == 0 {
+			fmt.Println("ERROR in Matrix - getUserFromBungie")
 			ch <- result{nil, err}
 			return
 		}

@@ -14,7 +14,7 @@ const bungie_url = "https://www.bungie.net/Platform"
 
 type BungieStore interface {
 	GetCharacterPlayTime(ctx context.Context, gt string, platform string) (*string, error)
-	GetEquippedPrimary(ctx context.Context, gt string, platform string) (*string, error)
+	GetEquippedWeapon(ctx context.Context, gt string, platform string, weaponIndex int) (*string, error)
 }
 
 type SupabaseBungieStoreStore struct {
@@ -30,12 +30,13 @@ func NewSupabaseBungieStore(db *database.Supabase, logger *log.Logger) *Supabase
 }
 
 func (s *SupabaseBungieStoreStore) GetCharacterPlayTime(ctx context.Context, gt string, platform string) (*string, error) {
-	preferredPlatform := getPlatformEnum(platform)
 	user, err := s.getUser(ctx, gt)
 	if err != nil {
 		s.logger.Printf("ERROR: getCharacterPlayTime %v\n", err)
 		return nil, err
 	}
+	preferredPlatform := getPlatformEnum(platform, user)
+	fmt.Printf("User: %+v\n", user)
 	characters, err := getBungieProfileByMembershipID(user.MembershipID, preferredPlatform, "200")
 	if err != nil {
 		s.logger.Printf("ERROR: getBungieProfileByMembershipID %v\n", err)
@@ -71,17 +72,36 @@ func (s *SupabaseBungieStoreStore) GetCharacterPlayTime(ctx context.Context, gt 
 
 }
 
-func (s *SupabaseBungieStoreStore) GetEquippedPrimary(ctx context.Context, gt string, platform string) (*string, error) {
+func (s *SupabaseBungieStoreStore) GetEquippedWeapon(ctx context.Context, gt string, platform string, weaponIndex int) (*string, error) {
 	user, err := s.getUser(ctx, gt)
 	if err != nil {
-		s.logger.Printf("ERROR: getCharacterPlayTime %v\n", err)
+		s.logger.Printf("ERROR: GetEquippedPrimary: getUser: %v\n", err)
 		return nil, err
 	}
-	// user, err := getBungieProfileByMembershipID(id, "3", "200")
+	preferredPlatform := getPlatformEnum(platform, user)
+	profile, err := getBungieProfileByMembershipID(user.MembershipID, preferredPlatform, "200,205,302,305,309")
 	if err != nil {
-		fmt.Printf("ERROR: %v", err)
+		fmt.Printf("ERROR: GetEquippedPrimary: getBungieProfileByMembershipID: %v\n", err)
 		return nil, err
 	}
-	fmt.Printf("User: %+v\n", user)
-	return nil, nil
+
+	mainCharId := findLastPlayedChar(profile.Response.Characters).CharacterID
+
+	itemInstanceID := profile.Response.CharacterEquipment.Data[mainCharId].Items[weaponIndex].ItemInstanceID
+	itemHashID := strconv.Itoa(profile.Response.CharacterEquipment.Data[mainCharId].Items[weaponIndex].ItemHash)
+
+	plugHashes := profile.Response.ItemComponents.Sockets.Data[itemInstanceID].Sockets
+	perkHashIDs := getPerkHashIDs(plugHashes)
+	
+	plugObjectives := profile.Response.ItemComponents.PlugObjectives.Data[itemInstanceID].ObjectivesPerPlug
+	killCount, category := getKillCounts(plugObjectives)
+
+	weapon, err := s.getWeapon(ctx, itemHashID, perkHashIDs)
+	if err != nil {
+		fmt.Printf("ERROR: GetEquippedWeapon: getWeaponData: %v\n", err)
+		return nil, err
+	}
+
+	responseMessage := generateString(gt, weapon, category, killCount)
+	return &responseMessage, nil
 }

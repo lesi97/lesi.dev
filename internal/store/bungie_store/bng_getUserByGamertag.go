@@ -35,6 +35,7 @@ func getUserFromBungieByGamertag(id string) (*bungieSearch, error) {
 
 	body, err := bungieGET(url)
 	if err != nil {
+		fmt.Println("ERROR in getUserFromBungieByGamertag")
 		return nil, err
 	}
 
