@@ -117,7 +117,7 @@ func (s *SupabaseBungieStoreStore) GetEquippedWeapon(ctx context.Context) (*stri
 		go func() {
 			s.getNewWeapons()
 		}()
-		return nil, err
+		return nil, fmt.Errorf("weapon not found, please try again shortly, I'm updating my records 🤓")
 	}
 
 	go func() {

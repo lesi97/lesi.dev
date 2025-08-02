@@ -3,6 +3,9 @@ package bungie_store
 import (
 	"context"
 	"database/sql"
+	"time"
+
+	"github.com/lesi97/api.lesi.dev/internal/utils"
 )
 
 type bungieDBData struct {
@@ -13,13 +16,14 @@ type bungieDBData struct {
 }
 
 func (supabase *SupabaseBungieStoreStore) getUserFromDatabaseByGamertag(ctx context.Context, bungieID string) (*bungieDBData, error) {
+	defer utils.LogExecutionTime("getUserFromDatabaseByGamertag", time.Now())
 	query := `
 		SELECT 
 			membership_id, 
 			preferred_platform, 
 			friendly_name 
 		FROM destiny_users 
-		WHERE bungie_id ILIKE $1
+		WHERE lower(bungie_id) = lower($1)
 	`
 	data := &bungieDBData{
 		BungieID: bungieID,

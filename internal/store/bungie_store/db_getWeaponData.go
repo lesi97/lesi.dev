@@ -3,6 +3,9 @@ package bungie_store
 import (
 	"context"
 	"database/sql"
+	"time"
+
+	"github.com/lesi97/api.lesi.dev/internal/utils"
 )
 
 type weaponData struct {
@@ -12,6 +15,7 @@ type weaponData struct {
 }
 
 func (supabase *SupabaseBungieStoreStore) getWeaponData(ctx context.Context, hashID string) (*weaponData, error) {
+	defer utils.LogExecutionTime("getWeaponData", time.Now())
 	query := `
 		SELECT 
 			display_name, 

@@ -8,6 +8,7 @@ func (supabase *SupabaseBungieStoreStore) insertDestinyUser(user *bungieDBData) 
 			(membership_id, bungie_id, preferred_platform, friendly_name)
 		VALUES 
 			($1, $2, $3, $4)
+		ON CONFLICT (bungie_id) DO NOTHING
 	`
 	_, err := supabase.db.Exec(context.Background(), query, user.MembershipID, user.BungieID, user.PreferredPlatform, user.FriendlyName)
 	if err != nil {

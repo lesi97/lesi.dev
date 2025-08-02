@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
+
+	"github.com/lesi97/api.lesi.dev/internal/utils"
 )
 
 type databasePerk struct {
@@ -26,6 +29,7 @@ type filteredPerksResult struct {
 
 
 func (supabase *SupabaseBungieStoreStore) getWeaponPerks(ctx context.Context, perkHashIDs []string) (*filteredPerksResult, error) {
+	defer utils.LogExecutionTime("getWeaponPerks", time.Now())
 	if len(perkHashIDs) == 0 {
 		return nil, fmt.Errorf("perk list not provided")
 	}

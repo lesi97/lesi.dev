@@ -5,6 +5,9 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
+
+	"github.com/lesi97/api.lesi.dev/internal/utils"
 )
 
 type errorResponse struct {
@@ -17,6 +20,7 @@ type errorResponse struct {
 
 
 func bungieGET(url string) ([]byte, error) {
+	defer utils.LogExecutionTime(url, time.Now())
 	apiKey := os.Getenv("BUNGIE_KEY")
 	if apiKey == "" {
 		return nil, fmt.Errorf("missing BUNGIE_KEY in environment")

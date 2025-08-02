@@ -3,6 +3,9 @@ package bungie_store
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/lesi97/api.lesi.dev/internal/utils"
 )
 
 type user struct {
@@ -18,6 +21,7 @@ type result struct {
 }
 
 func (s *SupabaseBungieStoreStore) getUser(ctx context.Context, gt string) (*user, error) {
+	defer utils.LogExecutionTime("getUser", time.Now())
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
