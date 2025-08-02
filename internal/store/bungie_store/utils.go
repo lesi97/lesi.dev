@@ -36,7 +36,7 @@ func getPlatformEnum(platform interface{}, user *user) string {
 		return "2"
 	case "pc":
 		return "3"
-	case "bnet":
+	case "bnet", "b-net", "b_net", "battlenet", "battle-net", "battle_net":
 		return "4"
 	case "st", "steam":
 		return "5"

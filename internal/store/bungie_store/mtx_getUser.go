@@ -26,8 +26,8 @@ func (s *SupabaseBungieStoreStore) getUser(ctx context.Context, gt string) (*use
 	go func() {
 		dbUser, err := s.getUserFromDatabaseByGamertag(ctx, gt)
 		if err != nil || dbUser == nil {
-			fmt.Println("ERROR in Matrix - getUserFromDatabase")
-			ch <- result{nil, err}
+			fmt.Printf("ERROR in Matrix\n - getUserFromDatabase: %v\n", err)
+			ch <- result{nil, fmt.Errorf("no users found in db with gt: %v", gt)}
 			return
 		}
 		user := &user{
@@ -40,33 +40,34 @@ func (s *SupabaseBungieStoreStore) getUser(ctx context.Context, gt string) (*use
 	}()
 
 	go func() {
-		apiUser, err := getUserFromBungieByGamertag(gt)
-		if err != nil || apiUser == nil || len(apiUser.Response) == 0 {
-			fmt.Println("ERROR in Matrix - getUserFromBungie")
-			ch <- result{nil, err}
+		apiUser, err := s.getUserFromBungieByGamertag(gt)
+		if err != nil || apiUser == nil || apiUser.Response == nil || len(apiUser.Response) == 0 {
+			fmt.Printf("ERROR in Matrix\n - getUserFromBungie: %v\n", err)
+			ch <- result{nil, fmt.Errorf("bungie response was empty")}
 			return
+		} else {			
+			bungie := apiUser.Response[0]
+			user := &user{
+				MembershipID:   bungie.MembershipID,
+				MembershipType: bungie.MembershipType,
+				DisplayName:    bungie.BungieGlobalDisplayName,
+				Source:         "api",
+			}
+			ch <- result{user, nil}
 		}
-		bungie := apiUser.Response[0]
-		user := &user{
-			MembershipID:   bungie.MembershipID,
-			MembershipType: bungie.MembershipType,
-			DisplayName:    bungie.BungieGlobalDisplayName,
-			Source:         "api",
-		}
-		ch <- result{user, nil}
 	}()
 
 	for range 2 {
 		select {
-		case result := <-ch:
-			if result.err == nil && result.user != nil {
+		case res := <-ch:
+			if res.err == nil && res.user != nil {
 				cancel()
-				return result.user, nil
+				return res.user, nil
 			}
 		case <-ctx.Done():
 			return nil, ctx.Err()
 		}
 	}
 
-	return nil, fmt.Errorf("no result found from either source")
+	return nil, fmt.Errorf("unable to find player %v", gt)
 }

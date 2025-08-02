@@ -7,7 +7,7 @@ import (
 )
 
 func getBungieProfileByMembershipID(membershipID string, preferredPlatform string, components string) (*BungieProfile, error) {
-	url := fmt.Sprintf("%s/Destiny2/%s/Profile/%s/?components=%s", bungie_url, preferredPlatform, membershipID, components)
+	url := fmt.Sprintf("%s/Platform/Destiny2/%s/Profile/%s/?components=%s", bungie_url, preferredPlatform, membershipID, components)
 
 	body, err := bungieGET(url)
 	if err != nil {

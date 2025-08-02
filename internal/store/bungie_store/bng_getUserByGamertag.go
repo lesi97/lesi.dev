@@ -29,9 +29,9 @@ type bungieSearch struct {
 
 }
 
-func getUserFromBungieByGamertag(id string) (*bungieSearch, error) {
+func (supabase *SupabaseBungieStoreStore) getUserFromBungieByGamertag(id string) (*bungieSearch, error) {
 	escapedID := url.PathEscape(id)
-	url := fmt.Sprintf("%s/Destiny2/SearchDestinyPlayer/-1/%s/", bungie_url, escapedID)
+	url := fmt.Sprintf("%s/Platform/Destiny2/SearchDestinyPlayer/-1/%s/", bungie_url, escapedID)
 
 	body, err := bungieGET(url)
 	if err != nil {
@@ -45,6 +45,18 @@ func getUserFromBungieByGamertag(id string) (*bungieSearch, error) {
 		fmt.Printf("Decode error: %v\n", err)
 		return nil, err
 	}
+
+	go func() {
+		if len(result.Response) > 0 {
+			user := bungieDBData{
+				BungieID: id,
+				MembershipID: result.Response[0].MembershipID,
+				PreferredPlatform: int64(result.Response[0].MembershipType),
+				FriendlyName: result.Response[0].BungieGlobalDisplayName,
+			}
+		supabase.insertDestinyUser(&user)
+		}
+	}()
 
 	return result, nil
 }

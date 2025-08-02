@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strings"
-
-	"github.com/lesi97/api.lesi.dev/internal/utils"
 )
 
 type databasePerk struct {
@@ -79,7 +77,6 @@ func filterWeaponPerks(perks []databasePerk) filteredPerksResult  {
 	var ornaments []databasePerk
 
 	for _, perk := range perks {
-		utils.PrintPrettyJSON(perk)
 		name := strings.ToLower(perk.Name)
 		itemType := strings.ToLower(perk.ItemType)
 
