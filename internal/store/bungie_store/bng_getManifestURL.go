@@ -11,7 +11,7 @@ type manifestDefinitions struct {
 		JsonWorldComponentContentPaths struct {
 			En struct {
 				DestinyInventoryItemDefinition string
-			} `json:"en`
+			} `json:"en"`
 		} `json:"jsonWorldComponentContentPaths"`
 	} `json:"Response"`
 }
