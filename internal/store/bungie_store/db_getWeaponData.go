@@ -14,7 +14,7 @@ type weaponData struct {
 	TierTypeName 		string 	`json:"tier_type_name"`
 }
 
-func (supabase *SupabaseBungieStoreStore) getWeaponData(ctx context.Context, hashID string) (*weaponData, error) {
+func (supabase *SupabaseBungieStore) getWeaponData(ctx context.Context, hashID string) (*weaponData, error) {
 	defer utils.LogExecutionTime("getWeaponData", time.Now())
 	query := `
 		SELECT 

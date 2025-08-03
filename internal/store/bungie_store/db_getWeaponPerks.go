@@ -28,7 +28,7 @@ type filteredPerksResult struct {
 
 
 
-func (supabase *SupabaseBungieStoreStore) getWeaponPerks(ctx context.Context, perkHashIDs []string) (*filteredPerksResult, error) {
+func (supabase *SupabaseBungieStore) getWeaponPerks(ctx context.Context, perkHashIDs []string) (*filteredPerksResult, error) {
 	defer utils.LogExecutionTime("getWeaponPerks", time.Now())
 	if len(perkHashIDs) == 0 {
 		return nil, fmt.Errorf("perk list not provided")

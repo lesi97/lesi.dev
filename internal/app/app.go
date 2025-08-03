@@ -2,6 +2,7 @@ package app
 
 import (
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/lesi97/api.lesi.dev/internal/api"
@@ -22,11 +23,12 @@ type Application struct {
 }
 
 func init() {
-	err := godotenv.Overload()
-	if err != nil {
-		panic(".env file not loaded")
+	if os.Getenv("GO_ENV") != "production" {
+		err := godotenv.Overload()
+		if err != nil {
+			panic(".env file not loaded")
+		}
 	}
-
 }
 
 func NewApplication() (*Application, error) {

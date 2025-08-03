@@ -11,7 +11,7 @@ type userCharacters struct {
 	MinutesPlayed  string
 }
 
-func (supabase *SupabaseBungieStoreStore) insertUserCharacters(user *userCharacters) {
+func (supabase *SupabaseBungieStore) insertUserCharacters(user *userCharacters) {
 	query := `
 		INSERT INTO destiny_user_characters
 			(membership_id, character_id, character_type, minutes_played)

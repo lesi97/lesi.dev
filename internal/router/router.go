@@ -33,15 +33,12 @@ func SetupRoutes(app *app.Application) *chi.Mux {
 
 	routes.Get("/d2/{id}/primary", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
 	routes.Get("/d2/{id}/kinetic", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
-
 	routes.Get("/d2/{id}/secondary", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
 	routes.Get("/d2/{id}/energy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
-	
 	routes.Get("/d2/{id}/heavy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetHeavy)))
+	routes.Get("/d2/terror/weapons", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetTerrorKillCount)))
 
 	routes.Get("/d2/trials/loot", http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetLoot)))
 	routes.Get("/d2/playercount", http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetPlayercount)))
-
-
 	return routes
 }

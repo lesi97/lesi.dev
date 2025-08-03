@@ -11,7 +11,7 @@ type dbKillCounts struct {
 	WeaponHash 		string
 }
 
-func (supabase *SupabaseBungieStoreStore) insertKillCounts(dbData *dbKillCounts) {
+func (supabase *SupabaseBungieStore) insertKillCounts(dbData *dbKillCounts) {
 	query := `
 		INSERT INTO destiny_weapon_kill_counts 
 			(membership_id, weapon_id, pvp_kills, pve_kills, trials_kills, weapon_hash)

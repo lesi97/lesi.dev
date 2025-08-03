@@ -47,7 +47,7 @@ type bungieWeaponRaw struct {
 	} `json:"talentGrid"`
 }
 
-func (supabase *SupabaseBungieStoreStore) getNewWeapons() {
+func (supabase *SupabaseBungieStore) getNewWeapons() {
 	urlPath, err := getManifestURL()
 	if err != nil {
 		fmt.Printf("failed to generate manifest URL")
@@ -121,7 +121,7 @@ func processPerks(rawData map[string]bungieWeaponRaw) []dbPerk {
 }
 
 
-func (s *SupabaseBungieStoreStore) insertWeapons(weapons []dbWeapons) {
+func (s *SupabaseBungieStore) insertWeapons(weapons []dbWeapons) {
 	for _, weapon := range weapons {
 		query := `
 			INSERT INTO destiny_weapons 
@@ -148,7 +148,7 @@ func (s *SupabaseBungieStoreStore) insertWeapons(weapons []dbWeapons) {
 	}
 }
 
-func (s *SupabaseBungieStoreStore) insertPerks(perks []dbPerk) {
+func (s *SupabaseBungieStore) insertPerks(perks []dbPerk) {
 	for _, perk := range perks {
 		query := `
 			INSERT INTO destiny_weapon_perks

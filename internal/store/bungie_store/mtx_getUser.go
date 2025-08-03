@@ -20,7 +20,7 @@ type result struct {
 	err  error
 }
 
-func (s *SupabaseBungieStoreStore) getUser(ctx context.Context, gt string) (*user, error) {
+func (s *SupabaseBungieStore) getUser(ctx context.Context, gt string) (*user, error) {
 	defer utils.LogExecutionTime("getUser", time.Now())
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()

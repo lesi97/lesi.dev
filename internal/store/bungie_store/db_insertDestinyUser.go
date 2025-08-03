@@ -2,7 +2,7 @@ package bungie_store
 
 import "context"
 
-func (supabase *SupabaseBungieStoreStore) insertDestinyUser(user *bungieDBData) {
+func (supabase *SupabaseBungieStore) insertDestinyUser(user *bungieDBData) {
 	query := `
 		INSERT INTO destiny_users 
 			(membership_id, bungie_id, preferred_platform, friendly_name)

@@ -129,3 +129,26 @@ func (h *BungieHandler) HandleGetHeavy(w http.ResponseWriter, r *http.Request) {
 
 	utils.TextResponse(w, http.StatusOK, *message)
 }
+
+func (h *BungieHandler) HandleGetTerrorKillCount(w http.ResponseWriter, r *http.Request) {
+	weaponName := r.URL.Query().Get("name")
+	if weaponName == "" {
+		utils.TextResponse(w, http.StatusBadRequest, "you must specify a weapon name")
+		return
+	}
+
+	reqInfo := bungie_store.BungieContextInfo{
+		Handler:  "HandleGetTerrorKillCount",
+		WeaponName: weaponName,
+	}
+	ctx := context.WithValue(r.Context(), bungieContextKey, reqInfo)
+
+	message, err := h.bungieStore.GetTerrorWeapon(ctx)
+	if err != nil {
+		h.logger.Printf("ERROR: GetEquippedWeapon: No ID provided")
+		utils.TextResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	utils.TextResponse(w, http.StatusOK, *message)
+}
