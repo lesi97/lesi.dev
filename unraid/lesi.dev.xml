@@ -10,7 +10,7 @@
   <Category>Web</Category>
   <WebUI>http://[IP]:[PORT:8080]</WebUI>
   <Shell>sh</Shell>
-  <Icon>https://raw.githubusercontent.com/lesi97/lesi.dev/main/client/public/images/lesi.webp</Icon>
+  <Icon>https://raw.githubusercontent.com/lesi97/lesi.dev/main/apps/web/public/images/lesi.webp</Icon>
 
   <Config 
     Name="GO_ENV" 
