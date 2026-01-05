@@ -15,6 +15,7 @@ import (
 type Application struct {
 	Logger				*log.Logger
 	DB 					*database.Supabase
+	FrontendHandler		*api.FrontendHandler
 	TarotHandler		*api.TarotHandler
 	CountdownHandler	*api.CountdownHandler
 	TimeapiHandler		*api.TimeapiHandler
@@ -43,6 +44,7 @@ func NewApplication() (*Application, error) {
 	bungieStore := bungie_store.NewSupabaseBungieStore(supabase, logger)
 	trialsStore := store.NewSupabaseTrialsStore(supabase, logger)
 
+	frontendHandler := api.NewFrontendHandler(logger)
 	tarotHandler := api.NewTarotHandler(logger, tarotStore)
 	countdownHandler := api.NewCountdownHandler(logger, countdownStore)
 	timeapiHandler := api.NewTimeapiHandler(logger)
@@ -51,6 +53,7 @@ func NewApplication() (*Application, error) {
 
 	app := &Application{
 		Logger: logger,
+		FrontendHandler: frontendHandler,
 		TarotHandler: tarotHandler,
 		CountdownHandler: countdownHandler,
 		TimeapiHandler: timeapiHandler,

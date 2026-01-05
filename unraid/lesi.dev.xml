@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>lesi.dev</Name>
+  <Repository>ghcr.io/lesi97/api.lesi.dev:latest</Repository>
+  
+  <Network>bridge</Network>
+  <MyID>lesi.dev</MyID>
+  <Privileged>false</Privileged>
+  <Overview>lesi.dev Webpage</Overview>
+  <Category>Web</Category>
+  <WebUI>http://[IP]:[PORT:8080]</WebUI>
+  <Shell>sh</Shell>
+  <Icon>https://raw.githubusercontent.com/lesi97/api.lesi.dev/main/client/public/images/lesi.webp</Icon>
+
+  <Config 
+    Name="GO_ENV" 
+    Target="GO_ENV" 
+    Default="production" 
+    Mode="rw" 
+    Description="" 
+    Type="Variable" 
+    Display="never" 
+    Required="false" 
+    Mask="false">production</Config>
+
+  <Config 
+    Name="DATABASE_URL_IPV6" 
+    Target="DATABASE_URL_IPV6" 
+    Default="" 
+    Mode="rw" 
+    Description="" 
+    Type="Variable" 
+    Display="never" 
+    Required="false" 
+    Mask="false"></Config>
+
+  <Config 
+    Name="DATABASE_URL" 
+    Target="DATABASE_URL" 
+    Default="" 
+    Mode="rw" 
+    Description="" 
+    Type="Variable" 
+    Display="never" 
+    Required="false" 
+    Mask="false"></Config>
+
+  <Config 
+    Name="BUNGIE_KEY" 
+    Target="BUNGIE_KEY" 
+    Default="" 
+    Mode="rw" 
+    Description="" 
+    Type="Variable" 
+    Display="never" 
+    Required="false" 
+    Mask="false"></Config>
+
+  <Config 
+    Name="STEAM_CLIENT_ID" 
+    Target="STEAM_CLIENT_ID" 
+    Default="" 
+    Mode="rw" 
+    Description="" 
+    Type="Variable" 
+    Display="never" 
+    Required="false" 
+    Mask="false"></Config>
+</Container>

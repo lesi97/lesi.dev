@@ -100,7 +100,6 @@ type plugObjectives struct {
 	Privacy int                         `json:"privacy"`
 }
 
-
 type items struct {
 	Items []equipmentItem `json:"items"`
 }
