@@ -1,0 +1,8 @@
+{
+    "scripts": {
+        "api": "go run ./api/cmd/main.go"
+    },
+    "name": "apps",
+    "private": true,
+    "version": "0.0.0"
+}

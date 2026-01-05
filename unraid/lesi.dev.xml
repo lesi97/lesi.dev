@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>lesi.dev</Name>
-  <Repository>ghcr.io/lesi97/api.lesi.dev:latest</Repository>
+  <Repository>ghcr.io/lesi97/lesi.dev:latest</Repository>
   
   <Network>bridge</Network>
   <MyID>lesi.dev</MyID>
@@ -10,7 +10,7 @@
   <Category>Web</Category>
   <WebUI>http://[IP]:[PORT:8080]</WebUI>
   <Shell>sh</Shell>
-  <Icon>https://raw.githubusercontent.com/lesi97/api.lesi.dev/main/client/public/images/lesi.webp</Icon>
+  <Icon>https://raw.githubusercontent.com/lesi97/lesi.dev/main/client/public/images/lesi.webp</Icon>
 
   <Config 
     Name="GO_ENV" 
@@ -46,8 +46,8 @@
     Mask="false"></Config>
 
   <Config 
-    Name="BUNGIE_KEY" 
-    Target="BUNGIE_KEY" 
+    Name="BUNGIE_CLIENT_ID" 
+    Target="BUNGIE_CLIENT_ID" 
     Default="" 
     Mode="rw" 
     Description="" 

@@ -18,7 +18,7 @@ services:
             - GO_ENV=production
             - DATABASE_URL_IPV6=${DATABASE_URL_IPV6}
             - DATABASE_URL=${DATABASE_URL}
-            - BUNGIE_KEY=${BUNGIE_KEY}
+            - BUNGIE_CLIENT_ID=${BUNGIE_CLIENT_ID}
             - STEAM_CLIENT_ID=${STEAM_CLIENT_ID}
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
