@@ -4,7 +4,7 @@ ARG GO_VERSION=1.24.5
 ARG NODE_VERSION=22.13.1
 ARG ALPINE_VERSION=3.20
 
-FROM --platform=$BUILDPLATFORM node:${NODE_VERSION}-alpine AS web-build
+FROM --platform=$BUILDPLATFORM node:${NODE_VERSION}-bookworm-slim AS web-build
 WORKDIR /src
 
 COPY package.json package-lock.json ./
