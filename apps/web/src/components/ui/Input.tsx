@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { mergeClassNames } from '@/utils';
-import { Icons } from './Icons';
+import { cn } from '@/utils';
+import { Icons } from './icons';
 
 const inputVariants = cva(
     'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-white transition-colors focus-visible:!outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed select-none placeholder:italic',
@@ -33,8 +33,7 @@ const inputVariants = cva(
 );
 
 export interface InputProps
-    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
-        VariantProps<typeof inputVariants> {
+    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>, VariantProps<typeof inputVariants> {
     asChild?: boolean;
     error?: string | undefined | null;
     id: string;
@@ -91,7 +90,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         if (tags) {
             return (
                 <div
-                    className={mergeClassNames(
+                    className={cn(
                         inputVariants({ variant, size, className }),
                         'flex flex-wrap items-center gap-2 px-4 py-1',
                         error && '!border-error/60'
@@ -138,10 +137,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         return (
             <>
                 <Component
-                    className={mergeClassNames(
-                        inputVariants({ variant, size, className }),
-                        error && '!border-error/60'
-                    )}
+                    className={cn(inputVariants({ variant, size, className }), error && '!border-error/60')}
                     id={id}
                     ref={ref}
                     {...props}

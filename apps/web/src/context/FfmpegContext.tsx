@@ -1,10 +1,10 @@
-import { createContext, useContext, useState, ReactNode, useEffect, useRef } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect, useRef, RefObject } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { toBlobURL } from '@ffmpeg/util';
 
 interface FfmpegContextType {
     ready: boolean;
-    ffmpegRef: React.MutableRefObject<FFmpeg>;
+    ffmpegRef: RefObject<FFmpeg>;
 }
 
 export const FfmpegContext = createContext<FfmpegContextType | undefined>(undefined);
@@ -14,26 +14,28 @@ export function FfmpegProvider({ children }: { children: ReactNode }) {
     const [ready, setReady] = useState(false);
 
     useEffect(() => {
-        load();
+        loadFfmpeg();
     }, []);
 
-    const load = async () => {
-        const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
-        const ffmpeg = ffmpegRef.current;
-        ffmpeg.on('log', ({ message }) => {
-            console.log(message);
-        });
-        // toBlobURL is used to bypass CORS issue, urls with the same domain can be used directly.
-        // await ffmpeg.load({
-        //     coreURL: await toBlobURL('/ffmpeg/ffmpeg-core.js', ' text/javascript'),
-        //     wasmURL: await toBlobURL('/ffmpeg/ffmpeg-core.wasm', 'application/wasm'),
-        // });
-        await ffmpeg.load({
-            coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-            wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-        });
-        setReady(true);
-    };
+    async function loadFfmpeg() {
+        try {
+            const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm';
+            const ffmpeg = ffmpegRef.current;
+            ffmpeg.on('log', ({ message }) => {
+                console.log(message);
+            });
+
+            const [coreURL, wasmURL] = await Promise.all([
+                toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+                toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+            ]);
+
+            await ffmpeg.load({ coreURL, wasmURL });
+            setReady(true);
+        } catch (err) {
+            console.error('ffmpeg loading error', err);
+        }
+    }
 
     return <FfmpegContext.Provider value={{ ready, ffmpegRef }}>{children}</FfmpegContext.Provider>;
 }

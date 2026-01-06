@@ -1,4 +1,4 @@
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 
 interface DescriptionProps {
     title: string;
@@ -9,7 +9,7 @@ interface DescriptionProps {
 export function Description({ title, subtitle, className }: DescriptionProps) {
     return (
         <div
-            className={mergeClassNames(
+            className={cn(
                 'border-b-accent mb-5 border border-l-0 border-r-0 border-t-0 pb-4 text-center sm:border-0',
                 className
             )}>

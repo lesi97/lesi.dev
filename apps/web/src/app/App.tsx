@@ -5,42 +5,28 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import * as Page from './pages';
 import { PopoverImageProvider } from '@/context/PopoverImageContext';
 import { SeasonProvider } from '@/context/SeasonContext';
-import { Ltoe } from '@/components/layout';
 import { ErrorBoundary } from './ErrorBoundary';
-import { PlainLayout } from '@/components/layout/homeLayout';
-import { ContentLayout } from '@/components/layout/contentLayout';
+import { DefaultLayout, FfmpegLayout, Ltoe, Nav } from '@/components/layout';
 
-function App() {
-    const hexColours = [
-        { offset: 0, colour: 'rgba(0,229,255,0.20)' },
-        { offset: 0.5, colour: 'rgba(244,63,94,0.20)' },
-        { offset: 1, colour: 'rgba(192,38,211, 0.20)' },
-    ];
-    const gradient = `linear-gradient(to right, ${hexColours.map((obj) => obj.colour).join(', ')})`;
-
-    useEffect(() => {
-        fetch('/api/tarot')
-            .then((res) => {
-                return res.text();
-            })
-            .then((data) => {
-                console.log(data);
-            });
-    }, []);
-
+function Router() {
     return (
-        <>
-            <Routes>
-                <Route element={<PlainLayout />}>
-                    <Route path='/' element={<Page.Home />} />
-                </Route>
+        <Routes>
+            <Route element={<DefaultLayout />}>
+                <Route path='/' element={<Page.Home />} />
+                <Route path='/aspect-ratio-calculator' element={<Page.AspectRatio />} />
+                <Route path='/pdf-to-png' element={<Page.PdfToPng />} />
+                <Route path='/ico-converter' element={<Page.ImageToIcon />} />
+                <Route path='/aim-trainer' element={<Page.AimTrainer />} />
+                <Route path='/settings' element={<Page.Settings />} />
+            </Route>
 
-                <Route element={<ContentLayout gradient={gradient} stops={hexColours} />}>
-                    <Route path='/tools' element={<Page.Tools />} />
-                    <Route path='/aim-trainer' element={<Page.AimTrainer />} />
-                </Route>
-            </Routes>
-        </>
+            <Route element={<FfmpegLayout hasAudio={true} />}>
+                <Route path='/video-to-mp3' element={<Page.VideoToMp3 />} />
+            </Route>
+            <Route element={<FfmpegLayout hasAudio={false} />}>
+                <Route path='/video-cropper' element={<Page.VideoCropper />} />
+            </Route>
+        </Routes>
     );
 }
 
@@ -50,7 +36,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <SeasonProvider>
                 <PopoverImageProvider>
                     <BrowserRouter>
-                        <App />
+                        <Nav />
+                        <Router />
                         <Ltoe />
                     </BrowserRouter>
                 </PopoverImageProvider>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 
 const radioVariants = cva(
     'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer relative peer-checked:*:flex border-2 select-none group-focus:ring-2 group-focus:ring-neutral/50 group-focus:ring-offset-2 ',
@@ -27,7 +27,7 @@ const radioVariants = cva(
             size: {
                 default: 'h-10 px-4 py-2',
                 sm: 'w-4 h-4 rounded',
-                circle: 'border border-white/20 w-6 h-6 rounded-full peer-checked:before:w-full peer-checked:before:content-["."] peer-checked:before:h-full peer-checked:before:flex peer-checked:before:flex-row peer-checked:before:items-center peer-checked:before:justify-center peer-checked:before:absolute peer-checked:before:-top-[35px] peer-checked:before:-right-[0.2px] peer-checked:before:text-8xl',
+                circle: 'w-6 h-6 rounded-full peer-checked:before:w-full peer-checked:before:content-["."] peer-checked:before:h-full peer-checked:before:flex peer-checked:before:flex-row peer-checked:before:items-center peer-checked:before:justify-center peer-checked:before:absolute peer-checked:before:-top-[29px] peer-checked:before:text-8xl',
             },
         },
         defaultVariants: {
@@ -38,13 +38,12 @@ const radioVariants = cva(
 );
 
 export interface RadioProps
-    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
-        VariantProps<typeof radioVariants> {
+    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>, VariantProps<typeof radioVariants> {
     asChild?: boolean;
     label?: React.ReactNode;
 }
 
-const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
+export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
     ({ className, variant, size, asChild = false, id, label, ...props }, ref) => {
         const Component = asChild ? Slot : 'input';
         return (
@@ -58,7 +57,7 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
                 }}
                 tabIndex={0}>
                 <Component id={id} type='radio' className='peer hidden' ref={ref} {...props} />
-                <div className={mergeClassNames(radioVariants({ variant, size, className }))}>
+                <div className={cn(radioVariants({ variant, size, className }))}>
                     <span>{label}</span>
                 </div>
             </label>
@@ -66,5 +65,3 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
     }
 );
 Radio.displayName = 'Radio';
-
-export default Radio;

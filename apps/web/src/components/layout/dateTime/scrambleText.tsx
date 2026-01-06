@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 
 gsap.registerPlugin(SplitText, ScrambleTextPlugin);
 
@@ -135,7 +135,7 @@ export function ScrambledText({
     );
 
     return (
-        <span ref={rootRef} className={mergeClassNames('inline-block text-primary', className)} style={style}>
+        <span ref={rootRef} className={cn('inline-block text-primary', className)} style={style}>
             <span data-role='text'>{children}</span>
         </span>
     );

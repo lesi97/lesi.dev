@@ -1,13 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="cupcake">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Lesi</title>
-        <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+            rel="stylesheet"
+        />
     </head>
-    <body class="h-screen w-screen">
-        <div id="root" class="flex h-full w-full flex-row bg-base-100"></div>
-        <script type="module" src="/App.tsx"></script>
+    <body class="h-dvh w-dvw inter">
+        <div
+            id="root"
+            class="flex h-full w-full flex-col items-center overflox-x-hidden bg-base-200 text-base-content"
+        ></div>
+        <script type="module" src="./App.tsx"></script>
     </body>
 </html>

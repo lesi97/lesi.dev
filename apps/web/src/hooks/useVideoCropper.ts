@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, Dispatch, SetStateAction, MutableRefObject } from 'react';
+import { useState, useRef, useEffect, Dispatch, SetStateAction, MutableRefObject, RefObject } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { cropVideo, writeToMemory } from '../lib/web-app';
-import { useFfmpeg } from '../context/FfmpegContext';
+import { writeToMemory } from '@/lib/ffmpeg/writeToMemory';
+import { cropVideo } from '@/lib/ffmpeg/cropVideo';
 
 type UseVideoCropperReturnType = {
     loading: boolean;
@@ -10,22 +10,19 @@ type UseVideoCropperReturnType = {
     setVideo: Dispatch<SetStateAction<any>>;
     progress: number;
     setProgress: Dispatch<SetStateAction<number>>;
-    videoRef: MutableRefObject<any>;
+    videoRef: RefObject<any>;
     originalVideoBlobUrl: string | undefined;
     setOriginalVideoBlobUrl: Dispatch<SetStateAction<string | undefined>>;
-    progressBarTotalRef: MutableRefObject<any>;
-    ffmpeg: { ready: boolean; ffmpegRef: MutableRefObject<FFmpeg> };
+    progressBarTotalRef: RefObject<any>;
+    ffmpeg: { ready: boolean; ffmpegRef: RefObject<FFmpeg> };
 };
 
-export default function useVideoCropper(ffmpeg: {
-    ready: boolean;
-    ffmpegRef: React.MutableRefObject<FFmpeg>;
-}): UseVideoCropperReturnType {
+export function useVideoCropper(ffmpeg: { ready: boolean; ffmpegRef: RefObject<FFmpeg> }): UseVideoCropperReturnType {
     const [loading, setLoading] = useState(false);
     const [video, setVideo] = useState();
     const [progress, setProgress] = useState(0);
     const [originalVideoBlobUrl, setOriginalVideoBlobUrl] = useState<string | undefined>();
-    const videoRef = useRef(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
     const progressBarTotalRef = useRef(null);
 
     useEffect(() => {
@@ -34,8 +31,10 @@ export default function useVideoCropper(ffmpeg: {
             try {
                 const url = await writeToMemory(video, ffmpeg);
                 setOriginalVideoBlobUrl(url);
-                if (!videoRef.current) return;
-                cropVideo(ffmpeg.ffmpegRef, video, videoRef, setProgress, setLoading);
+                if (!videoRef.current) {
+                    return;
+                }
+                cropVideo(ffmpeg.ffmpegRef, video, videoRef as RefObject<HTMLVideoElement>, setProgress, setLoading);
             } catch (error) {
                 console.error(error);
             }

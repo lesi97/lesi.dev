@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 
 const textareaVariants = cva(
     'inline-flex items-center justify-start whitespace-pre-wrap rounded-lg text-sm font-medium ring-offset-white transition-colors focus-visible:!outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed select-text placeholder:italic',
@@ -29,8 +29,7 @@ const textareaVariants = cva(
 );
 
 export interface TextareaProps
-    extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'>,
-        VariantProps<typeof textareaVariants> {
+    extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'>, VariantProps<typeof textareaVariants> {
     id: string;
     error?: string;
     tags?: boolean;
@@ -78,7 +77,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         if (tags) {
             return (
                 <div
-                    className={mergeClassNames(
+                    className={cn(
                         textareaVariants({ variant, size, className }),
                         'flex flex-wrap items-start gap-2 overflow-y-auto px-4 py-2'
                     )}>
@@ -114,10 +113,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             <>
                 <textarea
                     id={id}
-                    className={mergeClassNames(
-                        textareaVariants({ variant, size, className }),
-                        error && '!border-error/60'
-                    )}
+                    className={cn(textareaVariants({ variant, size, className }), error && '!border-error/60')}
                     ref={ref}
                     {...props}
                 />

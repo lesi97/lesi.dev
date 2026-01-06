@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Icons } from '../ui';
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 import { useState, useEffect } from 'react';
 
 export function Footer() {
@@ -176,7 +176,7 @@ export function Footer() {
             icon: () => (
                 <Icons.Socials.YouTube
                     width={32}
-                    className={mergeClassNames(
+                    className={cn(
                         'drop-shadow-md duration-200 ease-in-out hover:scale-110',
                         getColorClass('text-error')
                     )}
@@ -188,7 +188,7 @@ export function Footer() {
             icon: () => (
                 <Icons.Socials.Twitch
                     width={25}
-                    className={mergeClassNames(
+                    className={cn(
                         'drop-shadow-md duration-200 ease-in-out hover:scale-110',
                         getColorClass('text-primary')
                     )}
@@ -200,7 +200,7 @@ export function Footer() {
             icon: () => (
                 <Icons.Socials.Discord
                     width={30}
-                    className={mergeClassNames(
+                    className={cn(
                         'drop-shadow-md duration-200 ease-in-out hover:scale-110',
                         getColorClass('text-secondary')
                     )}
@@ -212,7 +212,7 @@ export function Footer() {
             icon: () => (
                 <Icons.Socials.X
                     width={22}
-                    className={mergeClassNames(
+                    className={cn(
                         'drop-shadow-md duration-200 ease-in-out hover:scale-110',
                         getColorClass('text-accent')
                     )}
@@ -224,7 +224,7 @@ export function Footer() {
             icon: () => (
                 <Icons.Socials.Instagram
                     width={25}
-                    className={mergeClassNames(
+                    className={cn(
                         'drop-shadow-md duration-200 ease-in-out hover:scale-110',
                         getColorClass('text-primary')
                     )}
@@ -236,7 +236,7 @@ export function Footer() {
             icon: () => (
                 <Icons.Socials.TikTok
                     width={32}
-                    className={mergeClassNames(
+                    className={cn(
                         'drop-shadow-md duration-200 ease-in-out hover:scale-110',
                         getColorClass('text-secondary')
                     )}
@@ -248,7 +248,7 @@ export function Footer() {
             icon: () => (
                 <Icons.Socials.BuyMeACoffe
                     width={19}
-                    className={mergeClassNames(
+                    className={cn(
                         'drop-shadow-md duration-200 ease-in-out hover:scale-110',
                         getColorClass('text-neutral')
                     )}

@@ -1,14 +1,14 @@
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 import { useEffect, useState, SVGAttributes, RefObject } from 'react';
 
 type SvgProps = SVGAttributes<SVGElement>;
 
-type InfluencerProps = {
-    progressBar: RefObject<SVGPathElement>;
-    progressBarTotal: RefObject<SVGPathElement>;
+type InfluencerProps = SvgProps & {
+    progressBar: RefObject<SVGPathElement | null>;
+    progressBarTotal: RefObject<SVGPathElement | null>;
 };
 
-type MusicProps = {
+type MusicProps = SvgProps & {
     playPause: () => void;
     isPlaying: boolean;
     progressBar: number;
@@ -192,7 +192,7 @@ export const illustrations = {
             />
         </svg>
     ),
-    Music: ({ playPause, isPlaying, progressBar }: MusicProps, props: SvgProps) => {
+    Music: ({ playPause, isPlaying, progressBar, ...props }: MusicProps) => {
         const [clipHeight, setClipHeight] = useState(0);
 
         useEffect(() => {
@@ -206,7 +206,7 @@ export const illustrations = {
                 xmlns='http://www.w3.org/2000/svg'
                 data-name='Layer 1'
                 viewBox='0 0 797.58746 517.33747'
-                className={mergeClassNames('h-full w-full', progressBar > 100 ? 'z-100' : '')}
+                className={cn('h-full w-full', progressBar > 100 ? 'z-100' : '')}
                 onClick={playPause}
                 {...props}>
                 <defs>
@@ -464,7 +464,7 @@ export const illustrations = {
         );
     },
 
-    Influencer: ({ progressBar, progressBarTotal }: InfluencerProps, props: SvgProps) => (
+    Influencer: ({ progressBar, progressBarTotal, ...props }: InfluencerProps) => (
         <svg xmlns='http://www.w3.org/2000/svg' viewBox='-100 0 797.58746 574.09078' {...props}>
             <g>
                 <polygon

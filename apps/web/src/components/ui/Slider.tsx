@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { mergeClassNames } from '@/utils';
-import { Icons } from './Icons';
+import { cn } from '@/utils';
+import { Icons } from './icons';
 import { useState, useRef, useEffect, Fragment } from 'react';
 
 const sliderContainerVariants = cva(
@@ -28,7 +28,8 @@ const sliderContainerVariants = cva(
 );
 
 export interface SliderProps
-    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'>,
+    extends
+        Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'>,
         VariantProps<typeof sliderContainerVariants> {
     asChild?: boolean;
     onChange?: (value: number) => void;
@@ -102,7 +103,7 @@ const Slider = ({
     const Component = asChild ? Slot : 'input';
     return (
         <Fragment>
-            <div className={mergeClassNames(sliderContainerVariants({ variant, size, className }))}>
+            <div className={cn(sliderContainerVariants({ variant, size, className }))}>
                 <Component type='range' className='peer hidden' value={value} disabled {...props} />
                 <div
                     className='relative w-full rounded-full'

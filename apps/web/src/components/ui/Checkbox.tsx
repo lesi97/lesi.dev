@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { mergeClassNames } from '@/utils';
-import { Icons } from './Icons';
+import { cn } from '@/utils';
+import { Icons } from './icons';
 
 const checkboxVariants = cva(
     'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer relative *:invisible peer-checked:*:visible peer-checked:*:inline-flex border-2 select-none group-focus:ring-2 group-focus:ring-offset-2 ',
@@ -34,8 +34,7 @@ const checkboxVariants = cva(
 );
 
 export interface InputProps
-    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
-        VariantProps<typeof checkboxVariants> {
+    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>, VariantProps<typeof checkboxVariants> {
     asChild?: boolean;
 }
 
@@ -53,7 +52,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, InputProps>(
                 }}
                 tabIndex={0}>
                 <Component id={id} type='checkbox' className='peer hidden' ref={ref} {...props} />
-                <div className={mergeClassNames(checkboxVariants({ variant, size, className }), '')}>
+                <div className={cn(checkboxVariants({ variant, size, className }), '')}>
                     <Icons.Checkmark className='h-full w-full' />
                 </div>
             </label>

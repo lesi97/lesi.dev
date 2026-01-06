@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTime } from '@/hooks';
 import { TextType } from './textType';
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 
 export function DateTime({ containerClassNames }: { containerClassNames?: string }) {
     const { time, date } = useTime();
@@ -17,7 +17,7 @@ export function DateTime({ containerClassNames }: { containerClassNames?: string
     const isOver = showDate && showTime;
 
     return (
-        <div className={mergeClassNames('flex text-left align- flex-col leading-none w-[608px]', containerClassNames)}>
+        <div className={cn('flex text-left align- flex-col leading-none w-[608px]', containerClassNames)}>
             <div className='flex flex-row items-start text-left align-start'>
                 <TextType
                     text={[title]}
@@ -32,7 +32,7 @@ export function DateTime({ containerClassNames }: { containerClassNames?: string
                     }}
                 />
             </div>
-            <div className={mergeClassNames('flex h-12 flex-row justify-between')}>
+            <div className={cn('flex h-12 flex-row justify-between')}>
                 {showDate && (
                     <TextType
                         text={[dateLine]}

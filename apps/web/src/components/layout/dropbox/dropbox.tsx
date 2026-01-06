@@ -3,7 +3,7 @@ import { checkFileTypeValidity, uploadBoxDropOverOrEnter, removeDropZone, upload
 import parseMessage from './message-parser';
 import { MimeType } from '@/schema';
 import { highlightText } from './dropbox-helpers';
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 import { Waveform } from './waveform';
 
 export function Dropbox({
@@ -76,9 +76,9 @@ export function Dropbox({
         <>
             <div className='relative z-10 mx-auto flex h-fit w-full flex-row items-center rounded-lg bg-base-200'>
                 <div className='flex h-full w-full flex-col-reverse items-center justify-start pt-4 md:flex-row md:pt-0'>
-                    <div className={mergeClassNames('relative flex h-full w-full rounded-lg bg-inherit md:w-[70%]')}>
+                    <div className={cn('relative flex h-full w-full rounded-lg bg-inherit md:w-[70%]')}>
                         <div
-                            className={mergeClassNames(
+                            className={cn(
                                 'm-5 h-full w-full cursor-pointer rounded-lg bg-base-100 p-4 lg:p-[60px_80px]',
                                 url ? '!pb-[143px]' : ''
                             )}
@@ -87,7 +87,7 @@ export function Dropbox({
                             }}>
                             {illustration}
                         </div>
-                        {url && <Waveform url={url} />}
+                        {/* {url && <Waveform url={url} />} */}
                     </div>
                     <label
                         htmlFor='fileInput'

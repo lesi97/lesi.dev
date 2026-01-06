@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "api": "npm run -w app api",
+        "api": "npm run --prefix ./apps api",
         "ui": "npm run -w apps/web dev"
     },
     "workspaces": [

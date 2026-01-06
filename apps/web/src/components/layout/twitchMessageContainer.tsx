@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 
 export function TwitchMessageContainer({
     children,
@@ -57,7 +57,7 @@ export function TwitchMessageContainer({
     return (
         <>
             <div
-                className={mergeClassNames(
+                className={cn(
                     'flex flex-row place-content-start items-start justify-start gap-x-1 break-all',
                     className
                 )}>
@@ -75,11 +75,7 @@ export function TwitchMessageContainer({
                         );
                     })}
                     <Link to={isNightbot ? nightbot.href : me.href} target='_blank' className='inline-block'>
-                        <span
-                            className={mergeClassNames(
-                                'font-bold',
-                                isNightbot ? `text-${nightbot.colour}` : `text-${me.colour}`
-                            )}>
+                        <span className={cn('font-bold', isNightbot ? `text-${nightbot.colour}` : `text-${me.colour}`)}>
                             {user}:
                         </span>
                     </Link>

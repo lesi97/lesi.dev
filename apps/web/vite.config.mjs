@@ -6,6 +6,9 @@ export default defineConfig({
     root: './src/app',
     plugins: [react()],
     base: './',
+    optimizeDeps: {
+        exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util'],
+    },
     build: {
         outDir: '../../dist',
         emptyOutDir: true,

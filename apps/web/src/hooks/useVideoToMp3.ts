@@ -1,8 +1,7 @@
-import { useState, useRef, useEffect, Dispatch, SetStateAction, MutableRefObject } from 'react';
+import { useState, useRef, useEffect, Dispatch, SetStateAction, MutableRefObject, RefObject } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-// import useFfmpeg from './useFfmpeg';
-import { convertToMp3, writeToMemory } from '../lib/web-app';
-import { useFfmpeg } from '../context/FfmpegContext';
+import { convertToMp3 } from '@/lib/ffmpeg/convertToMp3';
+import { writeToMemory } from '@/lib/ffmpeg/writeToMemory';
 
 type UseVideoToMp3ReturnType = {
     loading: boolean;
@@ -13,23 +12,20 @@ type UseVideoToMp3ReturnType = {
     setMp3: Dispatch<SetStateAction<string>>;
     progress: number;
     setProgress: Dispatch<SetStateAction<number>>;
-    videoRef: MutableRefObject<any>;
+    videoRef: RefObject<any>;
     originalVideoBlobUrl: string | undefined;
     setOriginalVideoBlobUrl: Dispatch<SetStateAction<string | undefined>>;
-    progressBarTotalRef: MutableRefObject<any>;
-    ffmpeg: { ready: boolean; ffmpegRef: MutableRefObject<FFmpeg> };
+    progressBarTotalRef: RefObject<any>;
+    ffmpeg: { ready: boolean; ffmpegRef: RefObject<FFmpeg> };
 };
 
-export default function useVideoToMp3(ffmpeg: {
-    ready: boolean;
-    ffmpegRef: React.MutableRefObject<FFmpeg>;
-}): UseVideoToMp3ReturnType {
+export function useVideoToMp3(ffmpeg: { ready: boolean; ffmpegRef: RefObject<FFmpeg> }): UseVideoToMp3ReturnType {
     const [loading, setLoading] = useState(false);
     const [video, setVideo] = useState();
     const [mp3, setMp3] = useState('');
     const [progress, setProgress] = useState(0);
     const [originalVideoBlobUrl, setOriginalVideoBlobUrl] = useState<string | undefined>();
-    const videoRef = useRef(null);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
     const progressBarTotalRef = useRef(null);
 
     useEffect(() => {
@@ -38,8 +34,17 @@ export default function useVideoToMp3(ffmpeg: {
             try {
                 const url = await writeToMemory(video, ffmpeg);
                 setOriginalVideoBlobUrl(url);
-                if (!videoRef.current) return;
-                convertToMp3(ffmpeg.ffmpegRef, video, videoRef, setProgress, setLoading, setMp3);
+                if (!videoRef.current) {
+                    return;
+                }
+                convertToMp3(
+                    ffmpeg.ffmpegRef,
+                    video,
+                    videoRef as RefObject<HTMLVideoElement>,
+                    setProgress,
+                    setLoading,
+                    setMp3
+                );
             } catch (error) {
                 console.error(error);
             }

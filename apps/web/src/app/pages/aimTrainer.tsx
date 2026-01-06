@@ -4,7 +4,7 @@ import { Button, Icons, Loaders } from '@/components/ui';
 // import signInOauth from '@/lib/auth/signIn-OAuth';
 // import createClient from '@/lib/supabase/client';
 // import { Session } from '@supabase/supabase-js';
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 import { Link } from 'react-router-dom';
 
 declare global {
@@ -171,7 +171,7 @@ export function AimTrainer() {
             <div className='flex-1 overflow-hidden w-fit place-self-center'>
                 {/* The canvas ref must exist for unityInstance to become populated so rather than an early return, hide elements depending on the instance state */}
                 <div
-                    className={mergeClassNames(
+                    className={cn(
                         'group relative flex h-full w-full min-w-[1180px] items-center justify-center rounded bg-base-300 motion-safe:animate-pulse xl:h-full xl:w-full',
                         unityInstance ? 'hidden' : 'visible'
                     )}>
@@ -191,14 +191,14 @@ export function AimTrainer() {
                 </div>
 
                 <div
-                    className={mergeClassNames(
+                    className={cn(
                         'group relative h-full w-full items-center place-content-center place-items-center',
                         unityInstance ? 'visible' : 'hidden'
                     )}>
                     <canvas
                         ref={canvasRef}
                         id='unity-canvas'
-                        className={mergeClassNames(
+                        className={cn(
                             'max-h-[calc(100vh-4rem)] w-[min(100%,calc((100vh-4rem)*1.4))] min-w-[1180px] aspect-[9/16] peer max-w-full rounded h-full bg-base-100',
                             unityInstance ? 'visible' : 'hidden'
                         )}
@@ -299,7 +299,7 @@ function GameButtons({
                 </Button>
             ) : (
                 <Button
-                    className={mergeClassNames('w-fit gap-4 bg-twitchPurple text-white hover:bg-twitchPurple/80')}
+                    className={cn('w-fit gap-4 bg-twitchPurple text-white hover:bg-twitchPurple/80')}
                     // onClick={() => {
                     //     signInOauth(
                     //         'twitch',
@@ -316,7 +316,7 @@ function GameButtons({
                 <Button
                     variant='accent'
                     size='icon'
-                    className={mergeClassNames('p-2', session ? 'null' : 'bg-twitchPurple hover:bg-twitchPurple/80')}
+                    className={cn('p-2', session ? 'null' : 'bg-twitchPurple hover:bg-twitchPurple/80')}
                     onClick={handleEnterFullscreen}>
                     <Icons.FullScreen width={20} height={20} className='text-white' />
                 </Button>

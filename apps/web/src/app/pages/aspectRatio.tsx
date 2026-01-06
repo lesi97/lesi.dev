@@ -1,8 +1,6 @@
-import { Description } from '@/components/layout';
+import { Description, Input, Radio } from '@/components/ui';
+import { KeyboardEvent } from 'react';
 import { useAspectRatio } from '@/hooks';
-import { Input, Radio } from '@/components/ui';
-import { KeyboardEvent, useCallback } from 'react';
-import { preventCharsInInput } from '@/utils';
 
 export function AspectRatio() {
     const {
@@ -18,10 +16,14 @@ export function AspectRatio() {
         setSelectedRadio,
     } = useAspectRatio();
 
-    const disallowedChars = ['e', '+', '-'];
-
+    function preventLetters(e: KeyboardEvent<HTMLInputElement>) {
+        const chars = ['e', '+', '-'];
+        if (chars.includes(e.key.toLocaleLowerCase())) {
+            e.preventDefault();
+        }
+    }
     return (
-        <div className='flex w-11/12 flex-col gap-4'>
+        <div>
             <Description
                 title='Aspect Ratio Calculator'
                 subtitle='Input your old width and height then input your new width or height to automatically calculate the former or the latter'
@@ -30,12 +32,9 @@ export function AspectRatio() {
                 <label className='user-select-none flex flex-col gap-2 text-center'>
                     Original Width
                     <Input
-                        id='originalWidth'
+                        id='original-width'
                         value={originalWidth ?? ''}
-                        onKeyDown={useCallback(
-                            (e: KeyboardEvent<HTMLInputElement>) => preventCharsInInput(e, disallowedChars),
-                            []
-                        )}
+                        onKeyDown={preventLetters}
                         onChange={(e) => {
                             const newVal = parseInt(e.target.value) || 0;
                             setOriginalWidth(newVal);
@@ -49,12 +48,9 @@ export function AspectRatio() {
                 <label className='user-select-none flex flex-col gap-2 text-center'>
                     Original Height
                     <Input
-                        id='originalHeight'
+                        id='original-height'
                         value={originalHeight ?? ''}
-                        onKeyDown={useCallback(
-                            (e: KeyboardEvent<HTMLInputElement>) => preventCharsInInput(e, disallowedChars),
-                            []
-                        )}
+                        onKeyDown={preventLetters}
                         onChange={(e) => {
                             const newVal = parseInt(e.target.value) || 0;
                             setOriginalHeight(newVal);
@@ -67,6 +63,7 @@ export function AspectRatio() {
 
                 <label className='user-select-none relative flex flex-col gap-2 text-center'>
                     New Width
+                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                     <Radio
                         name='keepValue'
                         checked={selectedRadio === 'width'}
@@ -77,12 +74,9 @@ export function AspectRatio() {
                         value='width'
                     />
                     <Input
-                        id='newWidth'
+                        id='new-width'
                         value={newWidth ?? ''}
-                        onKeyDown={useCallback(
-                            (e: KeyboardEvent<HTMLInputElement>) => preventCharsInInput(e, disallowedChars),
-                            []
-                        )}
+                        onKeyDown={preventLetters}
                         onChange={(e) => {
                             const newVal = e.target.value || '0';
                             calculateNewHeight(newVal);
@@ -95,6 +89,7 @@ export function AspectRatio() {
 
                 <label className='user-select-none relative flex flex-col gap-2 text-center'>
                     New Height
+                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                     <Radio
                         name='keepValue'
                         size='circle'
@@ -105,12 +100,9 @@ export function AspectRatio() {
                         value='height'
                     />
                     <Input
-                        id='newHeight'
+                        id='new-height'
                         value={newHeight ?? ''}
-                        onKeyDown={useCallback(
-                            (e: KeyboardEvent<HTMLInputElement>) => preventCharsInInput(e, disallowedChars),
-                            []
-                        )}
+                        onKeyDown={preventLetters}
                         onChange={(e) => {
                             const newVal = e.target.value || '0';
                             calculateNewWidth(newVal);

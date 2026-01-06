@@ -1,6 +1,6 @@
 import { ElementType, useEffect, useRef, useState, createElement, useMemo, useCallback } from 'react';
 import { gsap } from 'gsap';
-import { mergeClassNames } from '@/utils';
+import { cn } from '@/utils';
 import { ScrambledText } from './scrambleText';
 
 interface TextTypeProps {
@@ -208,7 +208,7 @@ export function TextType({
         Component,
         {
             ref: containerRef,
-            className: mergeClassNames('tracking-tight inline-flex items-baseline', className),
+            className: cn('tracking-tight inline-flex items-baseline', className),
             ...props,
         },
         useScramble ? (
@@ -219,9 +219,7 @@ export function TextType({
             <span className='text-primary'>{displayedText}</span>
         ),
         showCursor && (
-            <span
-                ref={cursorRef}
-                className={mergeClassNames('ml-1 opacity-100', shouldHideCursor ? 'hidden' : '', cursorClassName)}>
+            <span ref={cursorRef} className={cn('ml-1 opacity-100', shouldHideCursor ? 'hidden' : '', cursorClassName)}>
                 {cursorCharacter}
             </span>
         )

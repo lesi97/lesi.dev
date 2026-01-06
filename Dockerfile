@@ -43,5 +43,7 @@ COPY --from=go-build /out/server /app/apps/api/server
 COPY --from=web-build /src/apps/web/dist /app/apps/api/web/dist
 COPY --from=web-build /src/apps/web/public /app/apps/api/web/public
 
+ENV GO_ENV=production
+
 EXPOSE 8080
 ENTRYPOINT ["/app/apps/api/server"]
