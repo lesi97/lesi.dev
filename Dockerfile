@@ -7,6 +7,8 @@ ARG ALPINE_VERSION=3.20
 FROM --platform=$BUILDPLATFORM node:${NODE_VERSION}-bookworm-slim AS web-build
 WORKDIR /src
 
+RUN npm i -g npm@11.7.0
+
 COPY package.json package-lock.json ./
 COPY apps/web/package.json ./apps/web/package.json
 COPY .npmrc ./
