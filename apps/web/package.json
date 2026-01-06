@@ -6,7 +6,8 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "vite",
         "start": "vite start",
-        "build": "vite build"
+        "build": "vite build",
+        "typecheck": "tsc --noEmit"
     },
     "keywords": [],
     "author": "",

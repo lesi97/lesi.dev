@@ -133,5 +133,17 @@ export function useCountdown() {
         return countdownParts.join(', ');
     }
 
-    return { transformCountdown, countdownPlaceholders, CountdownSchema, form, updateState, commandName };
+    return {
+        transformCountdown,
+        countdownPlaceholders,
+        CountdownSchema,
+        form,
+        updateState,
+        commandName,
+        placeholders,
+        handleSubmit,
+        setEditCommand,
+        editCommand,
+        setCommandName,
+    };
 }

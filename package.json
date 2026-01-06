@@ -4,7 +4,10 @@
     "description": "",
     "scripts": {
         "api": "npm run --prefix ./apps api",
-        "ui": "npm run -w apps/web dev"
+        "ui": "npm run -w apps/web dev",
+        "typecheck": "npm run -w apps/web typecheck",
+        "docker:build": "docker build -t lesi.dev .",
+        "docker:run": "docker run --rm -p 8080:8080 lesi.dev"
     },
     "workspaces": [
         "apps/web"

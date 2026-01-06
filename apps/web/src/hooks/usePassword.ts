@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import generatePassword from '@/src/app/(routes)/(default)/password-generator/helpers/generatePassword';
+// import generatePassword from '@/src/app/(routes)/(default)/password-generator/helpers/generatePassword';
 type usePasswordType = {
     password: string;
     setPassword: (password: string) => void;
@@ -22,7 +22,8 @@ export default function usePassword(): usePasswordType {
 
     useEffect(() => {
         if (!isUserTyping) {
-            setPassword(generatePassword(includeNum, includeSymbols, sliderVal));
+            setPassword(' ');
+            // setPassword(generatePassword(includeNum, includeSymbols, sliderVal));
         }
     }, [sliderVal, includeNum, includeSymbols]);
 

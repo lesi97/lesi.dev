@@ -15,7 +15,8 @@
         "plugins": [],
         "paths": {
             "@/*": ["./src/*"]
-        }
+        },
+        "forceConsistentCasingInFileNames": true
     },
     "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     "exclude": ["node_modules"]

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import { useSeason } from '@/context/SeasonContext';
 import { cn } from '@/utils';
