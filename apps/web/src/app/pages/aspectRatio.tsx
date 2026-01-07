@@ -1,8 +1,9 @@
 import { Description, Input, Radio } from '@/components/ui';
 import { KeyboardEvent } from 'react';
-import { useAspectRatio } from '@/hooks';
+import { useAspectRatio, usePageMeta } from '@/hooks';
 
 export function AspectRatio() {
+    usePageMeta({ title: 'Aspect Ratio Calculator | Lesi', description: 'Calculate the aspect ratio of an image' });
     const {
         originalWidth,
         originalHeight,

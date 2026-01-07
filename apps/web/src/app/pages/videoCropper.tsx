@@ -3,9 +3,13 @@ import { useFfmpeg } from '@/context/FfmpegContext';
 import { Dropbox } from '@/components/layout';
 import { illustrations } from '@/components/ui';
 import { useRef, useEffect } from 'react';
-import { useVideoCropper } from '@/hooks';
+import { usePageMeta, useVideoCropper } from '@/hooks';
 
 export function VideoCropper() {
+    usePageMeta({
+        title: 'Video Cropper | Lesi',
+        description: 'Crop a video to a 9:16 aspect ratio',
+    });
     const ffmpeg = useFfmpeg();
     const progressBarRef = useRef<SVGPathElement | null>(null);
     const progressBarTotalRef = useRef<SVGPathElement | null>(null);

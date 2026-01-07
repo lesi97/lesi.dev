@@ -1,8 +1,13 @@
 import { useState, useRef } from 'react';
 import { Description, Button} from '@/components/ui';
 import { useMinifier } from '@/hooks/useMinifier';
+import { usePageMeta } from '@/hooks';
 
 export function Minifier() {
+    usePageMeta({
+        title: 'Minifier | Lesi',
+        description: 'Minify or unminify CSS, JS, XML & JSON',
+    })
     const {minify, unminify} = useMinifier()
     const [code, setCode] = useState('');
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);

@@ -1,9 +1,13 @@
 import { Dropbox, Description } from '@/components/layout';
-import { useVideoToMp3 } from '@/hooks';
+import { usePageMeta, useVideoToMp3 } from '@/hooks';
 import { illustrations } from '@/components/ui';
 import { useMusic } from '@/context/MusicContext';
 
 export function VideoToMp3() {
+    usePageMeta({
+        title: 'Video To MP3 | Lesi',
+        description: 'Convert a video to MP3 file format',
+    });
     const { isPlaying, setIsPlaying, ffmpeg } = useMusic();
     const videoToMp3 = useVideoToMp3(ffmpeg);
 

@@ -2,8 +2,13 @@ import { Description } from '@/components/ui';
 import { useRef } from 'react';
 import { usePassword } from '@/hooks/usePassword';
 import { Input, Icons, Slider, Checkbox } from '@/components/ui';
+import { usePageMeta } from '@/hooks';
 
 export function PasswordGenerator() {
+    usePageMeta({
+        title: 'Password Generator | Lesi',
+        description: 'Create a random password',
+    })
     const ref = useRef<HTMLInputElement>(null);
     const {
         password,

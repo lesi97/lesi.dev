@@ -1,5 +1,6 @@
 import { Description, Button, Input, Checkbox } from '@/components/ui';
 import { useSeason } from '@/context/SeasonContext';
+import { usePageMeta } from '@/hooks';
 import { type MouseEvent } from 'react';
 
 function changeTheme(e: MouseEvent<HTMLButtonElement>) {
@@ -39,6 +40,10 @@ const themes = [
 ];
 
 export function Settings() {
+    usePageMeta({
+        title: 'Settings | Lesi',
+        description: 'Edit your settings and preferences on lesi.dev',
+    });
     const { season, effectsEnabled, setEffectsEnabled } = useSeason();
 
     function toggleSeasonEffects() {

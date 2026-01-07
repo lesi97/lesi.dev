@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { countdownPlaceholders } from '@/lib';
 import { Link } from 'react-router-dom';
 import { ZodError } from 'zod';
-import { useCountdown } from '@/hooks';
+import { useCountdown, usePageMeta } from '@/hooks';
 import { TwitchMessageContainer } from '@/components/layout';
 import { countdownSchema } from '@/schema/countdownSchema';
 
@@ -14,6 +14,10 @@ type ErrorsType = {
 };
 
 export function Countdown() {
+    usePageMeta({
+        title: 'Countdown Generator | Lesi',
+        description: 'Generate a countdown to use as a Nightbot command',
+    });
     const {
         command,
         commandRef,

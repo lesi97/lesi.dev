@@ -85,15 +85,24 @@ function NavItem({ item, onNavigate }: NavItemProps) {
     return (
         <li className='group flex max-h-47px list-none items-center text-primary-content hover:bg-secondary/30'>
             <div className='relative h-full w-full'>
-                <Link
-                    to={item.to}
-                    onClick={onNavigate}
-                    className='relative flex h-full max-h-[47px] w-full flex-row items-center gap-2 px-4 py-4 text-center text-[17px] text-primary-content no-underline xl:py-0'>
-                    <span>{item.label}</span>
-                    {hasChildren ? (
-                        <Icons.Chevron className='hidden h-4 w-4 rotate-180 text-accent transition-transform duration-500 ease-in-out group-hover:rotate-0 xl:inline-flex' />
-                    ) : null}
-                </Link>
+                {hasChildren ? (
+                    <div className='cursor-default relative flex h-full max-h-[47px] w-full flex-row items-center gap-2 px-4 py-4 text-center text-[17px] text-primary-content no-underline xl:py-0'>
+                        <span>{item.label}</span>
+                        {hasChildren ? (
+                            <Icons.Chevron className='hidden h-4 w-4 rotate-180 text-accent transition-transform duration-500 ease-in-out group-hover:rotate-0 xl:inline-flex' />
+                        ) : null}
+                    </div>
+                ) : (
+                    <Link
+                        to={item.to}
+                        onClick={onNavigate}
+                        className='relative flex h-full max-h-[47px] w-full flex-row items-center gap-2 px-4 py-4 text-center text-[17px] text-primary-content no-underline xl:py-0'>
+                        <span>{item.label}</span>
+                        {hasChildren ? (
+                            <Icons.Chevron className='hidden h-4 w-4 rotate-180 text-accent transition-transform duration-500 ease-in-out group-hover:rotate-0 xl:inline-flex' />
+                        ) : null}
+                    </Link>
+                )}
 
                 {hasChildren ? (
                     <div className='min-w-parent absolute left-0 top-[47px] hidden w-max min-w-full transform divide-y divide-solid divide-neutral shadow-xl xl:flex-col xl:group-hover:flex'>

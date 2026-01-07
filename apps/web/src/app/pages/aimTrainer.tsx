@@ -6,6 +6,7 @@ import { signInOauth } from '@/lib/supabase/signIn-OAuth';
 import { supabase } from '@/lib/supabase/createClient';
 import { cn } from '@/utils';
 import { Link } from 'react-router-dom';
+import { usePageMeta } from '@/hooks';
 
 declare global {
     interface Window {
@@ -26,6 +27,7 @@ declare global {
 const isDev = import.meta.env.MODE === 'development';
 
 export function AimTrainer() {
+    usePageMeta({ title: 'Aim Trainer | Lesi', description: 'Aim Trainer Game' });
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [loadingProgress, setLoadingProgress] = useState<number>(0);
     const [unityInstance, setUnityInstance] = useState<any>(null);

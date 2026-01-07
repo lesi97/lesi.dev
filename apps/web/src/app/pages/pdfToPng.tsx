@@ -4,8 +4,13 @@ import { useCallback } from 'react';
 import { Dropbox } from '@/components/layout';
 import { Description, illustrations } from '@/components/ui';
 import { usePdfToPng } from '@/hooks/usePdfToPng';
+import { usePageMeta } from '@/hooks';
 
 export function PdfToPng() {
+    usePageMeta({
+        title: 'PDF To PNG | Lesi',
+        description: 'Convert a PDF to a PNG',
+    });
     const { convertPdfToPng } = usePdfToPng();
 
     const handleFileDrop = useCallback((file: File) => {

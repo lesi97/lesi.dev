@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Description, Input } from '@/components/ui';
 import useWeightConverter from '@/hooks/useWeightConverter';
+import { usePageMeta } from '@/hooks';
 
 function Label({ children, htmlFor }: { children: ReactNode; htmlFor: string }) {
     return (
@@ -11,6 +12,10 @@ function Label({ children, htmlFor }: { children: ReactNode; htmlFor: string }) 
 }
 
 export function WeightConverter() {
+    usePageMeta({
+        title: 'Weight Converter | Lesi',
+        description: 'Convert between weight measurements',
+    })
     const {
         pounds,
         updateWeightSourcePounds,
