@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/lesi97/lesi.dev/api/internal/utils"
+	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type TimeapiHandler struct {

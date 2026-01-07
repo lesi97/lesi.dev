@@ -4,11 +4,11 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/lesi97/lesi.dev/api/internal/api"
-	"github.com/lesi97/lesi.dev/api/internal/database"
-	"github.com/lesi97/lesi.dev/api/internal/store"
-	"github.com/lesi97/lesi.dev/api/internal/store/bungie_store"
-	"github.com/lesi97/lesi.dev/api/internal/utils"
+	"github.com/lesi97/lesi.dev/internal/api"
+	"github.com/lesi97/lesi.dev/internal/database"
+	"github.com/lesi97/lesi.dev/internal/store"
+	"github.com/lesi97/lesi.dev/internal/store/bungie_store"
+	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type Application struct {

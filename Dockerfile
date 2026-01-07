@@ -1,23 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
 ARG GO_VERSION=1.24.5
-ARG NODE_VERSION=22.13.1
 ARG ALPINE_VERSION=3.20
-
-FROM --platform=$BUILDPLATFORM node:${NODE_VERSION}-bookworm-slim AS web-build
-WORKDIR /src
-
-RUN npm i -g npm@11.7.0
-
-COPY package.json package-lock.json ./
-COPY apps/web/package.json ./apps/web/package.json
-COPY .npmrc ./
-
-RUN --mount=type=cache,target=/root/.npm npm ci
-
-COPY apps/web ./apps/web
-WORKDIR /src/apps/web
-RUN npm run build
 
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine AS go-build
 WORKDIR /src
@@ -43,8 +27,6 @@ USER appuser
 WORKDIR /app/apps/api
 
 COPY --from=go-build /out/server /app/apps/api/server
-COPY --from=web-build /src/apps/web/dist /app/apps/api/web/dist
-COPY --from=web-build /src/apps/web/public /app/apps/api/web/public
 
 ENV GO_ENV=production
 

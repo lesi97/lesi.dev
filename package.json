@@ -3,13 +3,16 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "api": "npm run --prefix ./apps api",
-        "ui": "npm run -w apps/web dev",
+        "dev": "npm run -w apps/web dev",
+        "dev:api": "npm run -w apps/api dev",
+        "dev:all": "npm run dev & npm run dev:api",
+        "build": "npm run -w apps/web build",
         "typecheck": "npm run -w apps/web typecheck",
         "docker:build": "docker build -t lesi.dev .",
         "docker:run": "docker run --rm -p 8080:8080 lesi.dev"
     },
     "workspaces": [
+        "apps/api",
         "apps/web"
     ],
     "repository": {

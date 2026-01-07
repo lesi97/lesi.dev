@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "api": "go run ./api/cmd/main.go"
+        "api": "go run ./cmd/main.go"
     },
     "name": "apps",
     "private": true,

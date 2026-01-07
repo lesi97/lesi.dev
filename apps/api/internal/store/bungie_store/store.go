@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
-	"github.com/lesi97/lesi.dev/api/internal/database"
-	"github.com/lesi97/lesi.dev/api/internal/utils"
+	"github.com/lesi97/lesi.dev/internal/database"
+	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 // const bungie_url = "https://www.bungie.net"

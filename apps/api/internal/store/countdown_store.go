@@ -7,8 +7,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/lesi97/lesi.dev/api/internal/database"
-	"github.com/lesi97/lesi.dev/api/internal/utils"
+	"github.com/lesi97/lesi.dev/internal/database"
+	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type CountdownStore interface {

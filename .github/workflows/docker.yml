@@ -4,6 +4,12 @@ on:
     push:
         branches: ['main']
         tags: ['v*']
+        paths:
+            - 'apps/api/**'
+            - 'supabase/**'
+            - 'Dockerfile'
+            - 'docker/**'
+            - '.github/workflows/docker.yml'
 
 permissions:
     contents: read

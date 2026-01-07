@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/lesi97/lesi.dev/api/internal/store"
-	"github.com/lesi97/lesi.dev/api/internal/utils"
+	"github.com/lesi97/lesi.dev/internal/store"
+	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type CountdownHandler struct {

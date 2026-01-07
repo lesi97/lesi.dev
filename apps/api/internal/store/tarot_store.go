@@ -5,7 +5,7 @@ import (
 	"log"
 	"math/rand"
 
-	"github.com/lesi97/lesi.dev/api/internal/utils"
+	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type TarotStore interface {
