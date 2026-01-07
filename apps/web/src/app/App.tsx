@@ -3,10 +3,12 @@ import { StrictMode, useEffect } from 'react';
 import './index.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import * as Page from './pages';
+import * as Docs from './pages/docs'
 import { PopoverImageProvider } from '@/context/PopoverImageContext';
 import { SeasonProvider } from '@/context/SeasonContext';
 import { ErrorBoundary } from './ErrorBoundary';
-import { DefaultLayout, FfmpegLayout, Ltoe, Nav } from '@/components/layout';
+import { DefaultLayout, FfmpegLayout, WideLayout, Ltoe, Nav } from '@/components/layout';
+import { PopoverLayout } from '@/components/layout/popoverLayout';
 
 function Router() {
     return (
@@ -16,8 +18,13 @@ function Router() {
                 <Route path='/aspect-ratio-calculator' element={<Page.AspectRatio />} />
                 <Route path='/pdf-to-png' element={<Page.PdfToPng />} />
                 <Route path='/ico-converter' element={<Page.ImageToIcon />} />
-                <Route path='/aim-trainer' element={<Page.AimTrainer />} />
+                <Route path='/password-generator' element={<Page.PasswordGenerator />} />
+                <Route path='/weight-converter' element={<Page.WeightConverter />} />
+                <Route path='/minifier' element={<Page.Minifier />} />
+                <Route path='/countdown' element={<Page.Countdown />} />
                 <Route path='/settings' element={<Page.Settings />} />
+                <Route path='/aim-trainer/release-notes' element={<Docs.AimTrainerReleaseNotes />} />
+                <Route path='/auth/callback' element={<Page.AuthCallback />} />
             </Route>
 
             <Route element={<FfmpegLayout hasAudio={true} />}>
@@ -25,6 +32,14 @@ function Router() {
             </Route>
             <Route element={<FfmpegLayout hasAudio={false} />}>
                 <Route path='/video-cropper' element={<Page.VideoCropper />} />
+            </Route>
+
+            <Route element={<WideLayout />}>
+                <Route path='/aim-trainer' element={<Page.AimTrainer />} />
+            </Route>
+
+            <Route element={<PopoverLayout />}>
+                <Route path='/docs/browser-gpu-acceleration' element={<Docs.BrowserGpuAcceleration />} />
             </Route>
 
             <Route element={<DefaultLayout />}>
@@ -36,8 +51,8 @@ function Router() {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <ErrorBoundary>
-            <SeasonProvider>
+        <SeasonProvider>
+            <ErrorBoundary>
                 <PopoverImageProvider>
                     <BrowserRouter>
                         <Nav />
@@ -45,7 +60,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         <Ltoe />
                     </BrowserRouter>
                 </PopoverImageProvider>
-            </SeasonProvider>
-        </ErrorBoundary>
+            </ErrorBoundary>
+        </SeasonProvider>
     </StrictMode>
 );

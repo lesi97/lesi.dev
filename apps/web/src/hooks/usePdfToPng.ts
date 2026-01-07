@@ -1,5 +1,5 @@
-import * as pdfjsLib from '../..//public/pdfjs/pdf.mjs';
-import * as pdfjsWorker from '../../public/pdfjs/pdf.worker.mjs';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { useEffect, useRef, useCallback } from 'react';
 
 export function usePdfToPng() {
@@ -10,7 +10,7 @@ export function usePdfToPng() {
             return;
         }
 
-        pdfjsLib.GlobalWorkerOptions.worker = pdfjsWorker;
+        GlobalWorkerOptions.workerSrc = workerUrl;
         readyRef.current = true;
     }, []);
 
@@ -21,7 +21,7 @@ export function usePdfToPng() {
 
         try {
             const pdfData = new Uint8Array(await pdfFile.arrayBuffer());
-            const pdf = await pdfjsLib.getDocument(pdfData).promise;
+            const pdf = await getDocument(pdfData).promise;
             const numPages = pdf.numPages;
 
             for (let pageNumber = 1; pageNumber <= numPages; pageNumber++) {
@@ -31,6 +31,9 @@ export function usePdfToPng() {
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
                 const context = canvas.getContext('2d');
+                if (!context) {
+                    return;
+                }
                 await page.render({
                     canvasContext: context,
                     viewport: viewport,

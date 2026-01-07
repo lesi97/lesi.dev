@@ -8,7 +8,7 @@ export function VideoToMp3() {
     const videoToMp3 = useVideoToMp3(ffmpeg);
 
     return (
-        <div>
+        <>
             <Description
                 title='Video To Mp3'
                 subtitle={
@@ -52,6 +52,6 @@ export function VideoToMp3() {
                     onError={(e) => console.error('Error loading video:', e)}
                 />
             )}
-        </div>
+        </>
     );
 }

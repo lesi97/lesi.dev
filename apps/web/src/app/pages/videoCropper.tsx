@@ -33,7 +33,7 @@ export function VideoCropper() {
     }, [videoCropper.progress]);
 
     return (
-        <div>
+        <>
             <Description
                 title='Video Cropper'
                 subtitle={
@@ -68,6 +68,6 @@ export function VideoCropper() {
                     onError={(e) => console.error('Error loading video:', e)}
                 />
             )}
-        </div>
+        </>
     );
 }

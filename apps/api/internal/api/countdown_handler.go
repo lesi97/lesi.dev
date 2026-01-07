@@ -1,19 +1,21 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/lesi97/lesi.dev/internal/store"
+	"github.com/lesi97/lesi.dev/internal/store/countdown_store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type CountdownHandler struct {
 	logger     *utils.Logger
-	countdownStore store.CountdownStore
+	countdownStore countdown_store.CountdownStore
 }
 
-func NewCountdownHandler(logger *utils.Logger, countdownStore store.CountdownStore)  *CountdownHandler {
+func NewCountdownHandler(logger *utils.Logger, countdownStore countdown_store.CountdownStore)  *CountdownHandler {
 	return &CountdownHandler{
 		logger: logger,
 		countdownStore: countdownStore,
@@ -36,4 +38,48 @@ func (h *CountdownHandler) HandleGetCountdown(w http.ResponseWriter, r *http.Req
 	}
 
 	utils.TextResponse(w, http.StatusOK, *countdownMessage)
+}
+
+func (h *CountdownHandler) HandleCountdownPost(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
+
+	dec := json.NewDecoder(r.Body)
+	dec.DisallowUnknownFields()
+
+	utils.PrintPrettyJSON(dec)
+
+	var req countdown_store.CountdownPostRequest
+	if err := dec.Decode(&req); err != nil {
+		utils.TextResponse(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+
+	if req.TargetDate.IsZero() {
+		utils.TextResponse(w, http.StatusBadRequest, "target_date is required")
+		return
+	}
+
+	if req.Message == "" {
+		utils.TextResponse(w, http.StatusBadRequest, "message is required")
+		return
+	}
+
+	if req.FallbackMessage == "" {
+		utils.TextResponse(w, http.StatusBadRequest, "fallback_message is required")
+		return
+	}
+
+	if req.TargetDate.Before(time.Now().UTC()) {
+		utils.TextResponse(w, http.StatusBadRequest, "target_date must be in the future")
+		return
+	}
+
+	uuid, err := h.countdownStore.InsertCountdown(r.Context(), req)
+	if err != nil {
+		h.logger.Printf("ERROR: Countdown POST: %v", err)
+		utils.TextResponse(w, http.StatusInternalServerError, "internal server error")
+		return
+	}
+
+	utils.TextResponse(w, http.StatusOK, *uuid)
 }

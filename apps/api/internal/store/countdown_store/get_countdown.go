@@ -1,35 +1,13 @@
-package store
+package countdown_store
 
 import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"time"
 
-	"github.com/lesi97/lesi.dev/internal/database"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
-
-type CountdownStore interface {
-	GetCountdownByID(ctx context.Context, id string) (*string, error)
-}
-
-type SupabaseCountdownStore struct {
-	db *database.Supabase
-	logger *log.Logger
-}
-
-type CountdownData struct {
-	UUID 			string 		`json:"uuid"`
-	TargetDate 		time.Time 	`json:"target_date"`
-	Message 		string 		`json:"message"`
-	FallbackMessage string 		`json:"fallback_message"`
-}
-
-func NewSupabaseCountdownStore(db *database.Supabase) *SupabaseCountdownStore {
-	return &SupabaseCountdownStore{db: db}
-}
 
 func (supabase *SupabaseCountdownStore) GetCountdownByID(ctx context.Context, uuid string) (*string, error) {
 	countdown := &CountdownData{

@@ -8,6 +8,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/database"
 	"github.com/lesi97/lesi.dev/internal/store"
 	"github.com/lesi97/lesi.dev/internal/store/bungie_store"
+	"github.com/lesi97/lesi.dev/internal/store/countdown_store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -39,7 +40,7 @@ func NewApplication() (*Application, error) {
 	}
 	
 	tarotStore := store.NewTarotStore()
-	countdownStore := store.NewSupabaseCountdownStore(supabase)
+	countdownStore := countdown_store.NewSupabaseCountdownStore(supabase)
 	bungieStore := bungie_store.NewSupabaseBungieStore(supabase, logger)
 	trialsStore := store.NewSupabaseTrialsStore(supabase, logger)
 

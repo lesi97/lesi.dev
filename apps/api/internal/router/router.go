@@ -17,6 +17,7 @@ func SetupRoutes(app *app.Application) *chi.Mux {
 	routes.Get("/tarot", 		http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetRandomTarot)))
 	routes.Get("/tarot/all", 	http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetAllCards)))
 
+	routes.Post("/countdown", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleCountdownPost)))
 	routes.Get("/countdown/{id}", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleGetCountdown)))
 
 	routes.Get("/d2/{id}/time", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPlayTime)))

@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 export function useTime() {
     const [time, setTime] = useState<string>('');
     const [serverTime, setServerTime] = useState<Date | null>(null);
-    const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+    const [intervalId, setIntervalId] = useState<number | null>(null);
     const [date, setDate] = useState<string | null>(null);
 
     function formatDate(d: Date): string {
@@ -15,18 +15,17 @@ export function useTime() {
     }
 
     async function fetchInitialTime() {
-        try {
-            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const res = await fetch(`/api/time?zone=${timeZone}`);
-            const data = await res.json();
-            const [day, month, year] = data.message.date.split('/');
-            const [hours, minutes, seconds] = data.message.time.split(':');
-            const initialServerTime = new Date(year, month - 1, day, hours, minutes, seconds);
-            setServerTime(initialServerTime);
-            setTime(data.message.time);
-        } catch (error) {
-            console.error(error);
+        try {const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const res = await fetch(`/api/time?zone=${timeZone}`);
+        const data = await res.json();
+        const [day, month, year] = data.message.date.split('/');
+        const [hours, minutes, seconds] = data.message.time.split(':');
+        const initialServerTime = new Date(year, month - 1, day, hours, minutes, seconds);
+        setServerTime(initialServerTime);
+        setTime(data.message.time);} catch (error) {
+            console.error(error)
         }
+        
     }
 
     useEffect(() => {

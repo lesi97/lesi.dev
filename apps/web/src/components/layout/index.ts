@@ -6,3 +6,4 @@ export { Dropbox } from './dropbox';
 export { TwitchMessageContainer } from './twitchMessageContainer';
 export { DefaultLayout } from './defaultLayout';
 export { FfmpegLayout } from './ffmpegLayout';
+export { WideLayout } from './wideLayout';

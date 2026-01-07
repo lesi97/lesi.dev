@@ -52,11 +52,21 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 <>
                     <main className='relative top-8 mb-8 flex h-fit w-11/12 justify-center rounded-lg bg-base-100 px-8 py-8 shadow xl:w-50% xl:min-w-50%'>
                         <div className='flex w-11/12 flex-col gap-4'>
-                            <h1 className='text-2xl'>Error: {this.state.error && this.state.error.message}</h1>
-                            <p className='flex flex-row items-center justify-between'>
-                                There was an error with this page. Please return to the home page.
+                            <h1 className='text-2xl'>
+                                There was an error with this page.
+                                <br />
+                                Please return to the home page.
+                            </h1>
+                            <div className='flex flex-row items-start justify-between gap-4'>
+                                <details className='cursor-pointer'>
+                                    <summary className='select-none'>Error</summary>
+                                    <pre className='w-full h-fit text-pretty text-sm'>
+                                        {this.state.error && this.state.error.message}
+                                    </pre>
+                                </details>
                                 <Button
-                                    variant='default'
+                                    className='min-w-24'
+                                    variant='secondary'
                                     tabIndex={-1}
                                     onClick={() => {
                                         this.resetError();
@@ -64,7 +74,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                                     }}>
                                     Home
                                 </Button>
-                            </p>
+                            </div>
                         </div>
                     </main>
                 </>

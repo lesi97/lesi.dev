@@ -19,14 +19,14 @@ export function TwitchMessageContainer({
         badges.push(
             {
                 alt: 'Twitch Bot',
-                src: '/static/images/Icons/Twitch-Bot.png',
+                src: '/images/icons/Twitch-Bot.png',
                 width: 16,
                 height: 16,
                 className: 'inline-flex h-[16px] w-[16px]',
             },
             {
                 alt: 'Twitch Verified',
-                src: '/static/images/Icons/Twitch-Verified.png',
+                src: '/images/icons/Twitch-Verified.png',
                 width: 16,
                 height: 16,
                 className: 'inline-flex h-[16px] w-[16px]',
@@ -39,14 +39,14 @@ export function TwitchMessageContainer({
         badges.push(
             {
                 alt: 'Twitch Mod',
-                src: '/static/images/Icons/Twitch-Mod.png',
+                src: '/images/icons/Twitch-Mod.png',
                 width: 16,
                 height: 16,
                 className: 'inline-flex h-[16px] w-[16px]',
             },
             {
                 alt: 'Twitch Prime',
-                src: '/static/images/Icons/Twitch-Prime.png',
+                src: '/images/icons/Twitch-Prime.png',
                 width: 16,
                 height: 16,
                 className: 'inline-flex h-[16px] w-[16px]',

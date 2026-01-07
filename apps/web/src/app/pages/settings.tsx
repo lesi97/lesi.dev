@@ -46,7 +46,7 @@ export function Settings() {
     }
 
     return (
-        <div>
+        <>
             <Description title='Settings' subtitle='Manage your settings' />
             {season && (
                 <label className='mb-4 flex w-fit cursor-pointer flex-row items-center gap-4'>
@@ -62,6 +62,6 @@ export function Settings() {
                     </Button>
                 ))}
             </div>
-        </div>
+        </>
     );
 }

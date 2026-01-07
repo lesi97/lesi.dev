@@ -15,16 +15,21 @@
     "type": "commonjs",
     "description": "",
     "devDependencies": {
+        "@types/cssbeautify": "^0.3.5",
+        "@types/js-beautify": "^1.14.3",
         "daisyui": "^4.12.14",
+        "dotenv": "^17.2.3",
         "dotenv-cli": "^10.0.0",
         "husky": "^9.1.7",
-        "prettier": "^3.6.2"
+        "prettier": "^3.3.3"
     },
     "dependencies": {
         "@c_lesi/performance-logger": "^1.1.0",
         "@ffmpeg/ffmpeg": "^0.12.15",
         "@ffmpeg/util": "^0.12.2",
         "@radix-ui/react-slot": "^1.2.3",
+        "@supabase/ssr": "^0.8.0",
+        "@supabase/supabase-js": "^2.90.0",
         "@types/node": "^24.1.0",
         "@types/react": "^19.1.9",
         "@types/react-dom": "^19.1.7",
@@ -33,11 +38,12 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "colorjs.io": "^0.5.2",
-        "dotenv": "^17.2.1",
+        "cssbeautify": "^0.3.1",
         "eslint": "^9.32.0",
         "framer-motion": "^12.23.12",
         "gsap": "^3.13.0",
-        "pdfjs-dist": "^5.4.54",
+        "js-beautify": "^1.15.2",
+        "pdfjs-dist": "^4.9.155",
         "postcss": "^8.5.6",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
@@ -50,6 +56,6 @@
         "vite": "^7.0.6",
         "wavesurfer.js": "^7.10.1",
         "xml-formatter": "^3.6.6",
-        "zod": "^4.0.14"
+        "zod": "^3.24.1"
     }
 }

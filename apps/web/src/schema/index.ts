@@ -7,4 +7,4 @@ export {
     type AutoCompleteType,
     uniqueStateError,
 } from './globals';
-export { CountdownSchema } from './countdownSchema';
+export { countdownSchema } from './countdownSchema';

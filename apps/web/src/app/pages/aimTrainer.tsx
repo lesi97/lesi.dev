@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Button, Icons, Loaders } from '@/components/ui';
-// import signInOauth from '@/lib/auth/signIn-OAuth';
-// import createClient from '@/lib/supabase/client';
-// import { Session } from '@supabase/supabase-js';
+import { Session } from '@supabase/supabase-js';
+import { signInOauth } from '@/lib/supabase/signIn-OAuth';
+import { supabase } from '@/lib/supabase/createClient';
 import { cn } from '@/utils';
 import { Link } from 'react-router-dom';
 
@@ -23,14 +23,14 @@ declare global {
     }
 }
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = import.meta.env.MODE === 'development';
 
 export function AimTrainer() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [loadingProgress, setLoadingProgress] = useState<number>(0);
     const [unityInstance, setUnityInstance] = useState<any>(null);
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-    // const [session, setSession] = useState<Session | null>(null);
+    const [session, setSession] = useState<Session | null>(null);
     const [windowWidth, setWindowWidth] = useState(window?.innerWidth);
 
     // const supabase = createClient();
@@ -50,18 +50,18 @@ export function AimTrainer() {
         if (window && window.innerWidth < screenWidthMin) {
             return;
         }
-        // supabase.auth.getSession().then(({ data }) => {
-        //     setSession(data.session);
-        //     if (data.session) {
-        //         window.getUsername = () => {
-        //             return data.session?.user.user_metadata.name || '';
-        //         };
-        //     } else {
-        //         window.getUsername = () => {
-        //             return '';
-        //         };
-        //     }
-        // });
+        supabase.auth.getSession().then(({ data }) => {
+            setSession(data.session);
+            if (data.session) {
+                window.getUsername = () => {
+                    return data.session?.user.user_metadata.name || '';
+                };
+            } else {
+                window.getUsername = () => {
+                    return '';
+                };
+            }
+        });
 
         window.loadGameSettings = (key) => {
             const settings = JSON.parse(localStorage.getItem('gameSettings') || '{}');
@@ -148,10 +148,10 @@ export function AimTrainer() {
         }
     }
 
-    // async function signOut() {
-    //     const { error } = await supabase.auth.signOut();
-    //     location.reload();
-    // }
+    async function signOut() {
+        const { error } = await supabase.auth.signOut();
+        location.reload();
+    }
 
     if (windowWidth < screenWidthMin) {
         return (
@@ -168,60 +168,49 @@ export function AimTrainer() {
 
     return (
         <>
-            <div className='flex-1 overflow-hidden w-fit place-self-center'>
-                {/* The canvas ref must exist for unityInstance to become populated so rather than an early return, hide elements depending on the instance state */}
-                <div
-                    className={cn(
-                        'group relative flex h-full w-full min-w-[1180px] items-center justify-center rounded bg-base-300 motion-safe:animate-pulse xl:h-full xl:w-full',
-                        unityInstance ? 'hidden' : 'visible'
-                    )}>
-                    <div tabIndex={0} className='peer flex h-full w-full items-center justify-center'>
-                        <Loaders.Trio />
-                    </div>
-                    {/* <ToolTip session={session} /> */}
-                    <ToolTip session={null} />
-                    <GameButtons
-                        // session={session}
-                        session={null}
-                        unityInstance={unityInstance}
-                        // signOut={() => signOut()}
-                        signOut={() => {}}
-                        handleEnterFullscreen={() => handleEnterFullscreen()}
-                    />
-                </div>
+            <h2 className='flex items-center justify-end gap-4 text-pretty text-lg'></h2>
 
-                <div
-                    className={cn(
-                        'group relative h-full w-full items-center place-content-center place-items-center',
-                        unityInstance ? 'visible' : 'hidden'
-                    )}>
-                    <canvas
-                        ref={canvasRef}
-                        id='unity-canvas'
-                        className={cn(
-                            'max-h-[calc(100vh-4rem)] w-[min(100%,calc((100vh-4rem)*1.4))] min-w-[1180px] aspect-[9/16] peer max-w-full rounded h-full bg-base-100',
-                            unityInstance ? 'visible' : 'hidden'
-                        )}
-                        tabIndex={-1}
-                    />
-                    <ToolTip session={null} />
-                    {/* <ToolTip session={session} /> */}
-                    <GameButtons
-                        session={null}
-                        // session={session}
-                        unityInstance={unityInstance}
-                        // signOut={() => signOut()}
-                        signOut={() => {}}
-                        handleEnterFullscreen={() => handleEnterFullscreen()}
-                    />
+            {/* The canvas ref must exist for unityInstance to become populated so rather than an early return, hide elements depending on the instance state */}
+            <div
+                className={cn(
+                    'group relative flex h-full w-full items-center justify-center rounded bg-base-300 motion-safe:animate-pulse xl:h-[540px] xl:w-[960px]',
+                    unityInstance ? 'hidden' : 'visible'
+                )}>
+                <div tabIndex={0} className='peer flex h-full w-full items-center justify-center'>
+                    <Loaders.Trio />
                 </div>
+                <ToolTip session={session} />
+                <GameButtons
+                    session={session}
+                    unityInstance={unityInstance}
+                    signOut={() => signOut()}
+                    handleEnterFullscreen={() => handleEnterFullscreen()}
+                />
+            </div>
+
+            <div className={cn('group relative h-[540px] w-[960px]', unityInstance ? 'visible' : 'hidden')}>
+                <canvas
+                    ref={canvasRef}
+                    id='unity-canvas'
+                    className={cn(
+                        'peer max-h-full w-full min-w-full max-w-full rounded xl:h-[540px]',
+                        unityInstance ? 'visible' : 'hidden'
+                    )}
+                    tabIndex={-1}
+                />
+                <ToolTip session={session} />
+                <GameButtons
+                    session={session}
+                    unityInstance={unityInstance}
+                    signOut={() => signOut()}
+                    handleEnterFullscreen={() => handleEnterFullscreen()}
+                />
             </div>
         </>
     );
 }
 
-// function ToolTip({ session }: { session: Session | null }) {
-function ToolTip({ session }: { session: null }) {
+function ToolTip({ session }: { session: Session | null }) {
     return (
         <div className='absolute top-0 hidden h-1/3 w-full items-start justify-end rounded-t bg-gradient-to-b from-black/70 to-transparent p-4 group-hover:inline-flex peer-focus-within:hidden'>
             <div className='relative flex w-[34%] items-start justify-end'>
@@ -259,14 +248,14 @@ function ToolTip({ session }: { session: null }) {
                         ) : null}
                         <span>
                             If you are getting low frame rates, you may need to enable{' '}
-                            <Link target='_blank' to='/h/browser-gpu-acceleration'>
+                            <Link target='_blank' to='/docs/browser-gpu-acceleration'>
                                 <Button variant='link' size='link' className='hover:text-accent'>
                                     Hardware Acceleration
                                 </Button>
                             </Link>
                         </span>
                         <span className='w-full'>
-                            <Link target='_blank' to='/g/aim-trainer/release-notes' className='text-left'>
+                            <Link target='_blank' to='/aim-trainer/release-notes' className='text-left'>
                                 <Button variant='link' size='link' className='hover:text-accent'>
                                     New Release Notes
                                 </Button>
@@ -285,8 +274,7 @@ function GameButtons({
     signOut,
     handleEnterFullscreen,
 }: {
-    // session: Session | null;
-    session: null;
+    session: Session | null;
     unityInstance: string;
     signOut: () => void;
     handleEnterFullscreen: () => void;
@@ -300,15 +288,12 @@ function GameButtons({
             ) : (
                 <Button
                     className={cn('w-fit gap-4 bg-twitchPurple text-white hover:bg-twitchPurple/80')}
-                    // onClick={() => {
-                    //     signInOauth(
-                    //         'twitch',
-                    //         isDev
-                    //             ? `http://localhost:3050/api/v1/twitch/callback?next=${encodeURIComponent('/g/aim-trainer')}`
-                    //             : `https://lesi.dev/api/v1/twitch/callback?next=${encodeURIComponent('/g/aim-trainer')}`
-                    //     );
-                    // }}
-                >
+                    onClick={() => {
+                        const next = '/aim-trainer';
+                        // const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+                        const redirectTo = `${window.location.origin}/auth/callback`;
+                        signInOauth('twitch', redirectTo);
+                    }}>
                     <Icons.Socials.Twitch width={20} height={20} /> Login With Twitch
                 </Button>
             )}

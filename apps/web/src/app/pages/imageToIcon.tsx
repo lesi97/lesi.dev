@@ -6,7 +6,7 @@ export function ImageToIcon() {
     const { convertFile } = useImageToIcon();
 
     return (
-        <div>
+        <>
             <Description
                 title='Icon Converter'
                 subtitle={
@@ -23,6 +23,6 @@ export function ImageToIcon() {
                 url={null}
                 callback={(file) => convertFile(file)}
             />
-        </div>
+        </>
     );
 }

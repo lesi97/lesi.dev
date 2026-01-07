@@ -11,14 +11,8 @@ import (
 type Supabase = pgxpool.Pool
 
 func Connect(logger *utils.Logger) (*Supabase, error) {
-	var url string
-	if os.Getenv("GO_ENV") == "production" {
-		url = os.Getenv("DATABASE_URL")
-	} else {
-		url = os.Getenv("DEV_DATABASE_URL")
-	}
+	url := os.Getenv("DATABASE_URL")
 	
-
 	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
 		logger.Fatalf("Failed to parse pool config: %v", err)

@@ -1,4 +1,4 @@
-import { ZodError } from 'zod/v4';
+import { ZodError } from 'zod';
 
 export function parseError(error: ZodError): Record<string, string>;
 export function parseError(error: unknown): string;

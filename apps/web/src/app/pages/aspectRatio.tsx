@@ -23,7 +23,7 @@ export function AspectRatio() {
         }
     }
     return (
-        <div>
+        <>
             <Description
                 title='Aspect Ratio Calculator'
                 subtitle='Input your old width and height then input your new width or height to automatically calculate the former or the latter'
@@ -113,6 +113,6 @@ export function AspectRatio() {
                     />
                 </label>
             </form>
-        </div>
+        </>
     );
 }

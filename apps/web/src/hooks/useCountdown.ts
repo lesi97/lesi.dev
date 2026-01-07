@@ -1,23 +1,52 @@
 import { countdownPlaceholders } from '@/lib';
-import { useState, useEffect, useRef } from 'react';
-import {
-    type CountdownDataKeysType,
-    type CountdownSchemaType,
-    CountdownSchema,
-    CountdownForm,
-    CountdownInitialState,
-} from '@/schema/countdownSchema';
+import { useState, useEffect, useRef, type FormEvent } from 'react';
+import { countdownSchema } from '@/schema/countdownSchema';
 import { ZodError } from 'zod';
 import { parseError } from '@/utils';
 
+const formIntialState = {
+    data: {
+        command: '',
+        target_date: '',
+        message: '',
+        fallback_message: '',
+    }, errors: {
+        command: {type: 'unique', value: undefined},
+        target_date: {type: 'unique', value: undefined},
+        message: {type: 'unique', value: undefined},
+        fallback_message: {type: 'unique', value: undefined},
+    }
+}
+
+type InitialStateType = typeof formIntialState.data;
+type CountdownDataKeysType = keyof InitialStateType;
+
+
+type ErrorsType = {
+    target_date: string | null;
+    message: string | null;
+    fallback_message:string | null;
+};
+
+
 export function useCountdown() {
-    const [today, setToday] = useState(new Date());
-    const [form, setForm] = useState(CountdownInitialState);
+const [today, setToday] = useState(new Date());
+    const [data, setData] = useState({
+        target_date: '',
+        message: '',
+        fallback_message: '',
+    });
+    const [errors, setErrors] = useState<ErrorsType>({
+        target_date: null,
+        message: null,
+        fallback_message: null,
+    });
     const [editCommand, setEditCommand] = useState(false);
     const [commandName, setCommandName] = useState('countdown');
     const [command, setCommand] = useState<string | undefined>();
     const [placeholders, setPlaceholders] = useState({ message: '', fallback_message: '' });
     const commandRef = useRef(null);
+    const commandRef2 = useRef(null);
 
     useEffect(() => {
         const sevenDaysLater = new Date(today);
@@ -30,7 +59,7 @@ export function useCountdown() {
         const minutes = String(sevenDaysLater.getMinutes()).padStart(2, '0');
 
         const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-        setForm({ ...form, data: { ...form.data, target_date: formattedDateTime } });
+        setData({ ...data, target_date: formattedDateTime });
 
         const random = Math.floor(Math.random() * countdownPlaceholders.length);
         const newPlaceholder = countdownPlaceholders[random];
@@ -54,35 +83,25 @@ export function useCountdown() {
         }
     }, [command]);
 
-    function updateState(key: CountdownDataKeysType, value: string | number, section: 'data' | 'errors' = 'data') {
-        const newValue = section === 'data' ? value : { type: 'unique', value: value };
-        setForm((prev) => {
-            const updatedForm = {
-                ...prev,
-                [section]: {
-                    ...prev[section],
-                    [key]: newValue,
-                },
-            };
-
-            if (section === 'data') {
-                updatedForm.errors[key] = { type: 'unique', value: undefined };
-            }
-
-            return updatedForm;
+    function handleZodErrors(zodErrors: ZodError) {
+        const newErrors: Record<string, string> = {};
+        zodErrors.errors.forEach((error) => {
+            const path = error.path[error.path.length - 1];
+            newErrors[path] = error.message;
         });
+        setErrors(newErrors as ErrorsType);
     }
 
-    async function handleSubmit(e: React.FormEvent, form: typeof CountdownInitialState.data) {
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         if (command) {
             return;
         }
-        const localDate = new Date(form.target_date);
-        const body = { ...form, target_date: localDate.toISOString() };
+        const localDate = new Date(data.target_date);
+        const body = { ...data, target_date: localDate.toISOString() };
         try {
-            CountdownSchema.parse(form);
-            const response = await fetch('/api/v1/countdown', {
+            countdownSchema.parse(data);
+            const response = await fetch('/api/countdown', {
                 method: 'POST',
                 headers: { Accept: 'Application/Json' },
                 body: JSON.stringify(body),
@@ -91,18 +110,16 @@ export function useCountdown() {
                 return;
             }
             const uuid = await response.text();
-            const url = `https://lesi.dev/api/countdown/${uuid}`;
-            setCommandName(url);
+            const url = `https://lesi.dev/api/v1/countdown/${uuid}`;
+            setCommand(url);
         } catch (error) {
             if (error instanceof ZodError) {
-                const parsed = parseError(error);
-                Object.entries(parsed).forEach(([key, value]) => {
-                    updateState(key as CountdownDataKeysType, value, 'errors');
-                });
+                handleZodErrors(error);
             }
             console.error(error);
         }
     }
+
 
     function transformCountdown(targetDate: string) {
         const futureDate = new Date(targetDate);
@@ -134,11 +151,16 @@ export function useCountdown() {
     }
 
     return {
+        command,
+        commandRef,
+        commandRef2,
+        setData,
+        setErrors,
         transformCountdown,
         countdownPlaceholders,
-        CountdownSchema,
-        form,
-        updateState,
+        countdownSchema,
+        data,
+        errors,
         commandName,
         placeholders,
         handleSubmit,

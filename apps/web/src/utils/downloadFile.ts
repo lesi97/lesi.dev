@@ -6,7 +6,6 @@
  * @param {string} url - Url of the file in memory
  * @throws {Error} - Throws an error if the input format is invalid.
  */
-
 export function downloadFile(name: string, url: string) {
     if (!name || !url) {
         throw new Error('File name or URL expected.');

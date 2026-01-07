@@ -27,7 +27,7 @@ const links: NavLink[] = [
     { to: '/weight-converter', label: 'Weight Converter' },
     { to: '/minifier', label: 'Minifier' },
     { to: '/countdown', label: 'Countdown' },
-    { to: '/g/aim-trainer', label: 'Aim Trainer' },
+    { to: '/aim-trainer', label: 'Aim Trainer' },
     { to: '/settings', label: 'Settings' },
 ];
 

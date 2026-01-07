@@ -13,7 +13,7 @@ export function PdfToPng() {
     }, []);
 
     return (
-        <div>
+        <>
             <Description
                 title='PDF To PNG'
                 subtitle={
@@ -30,6 +30,6 @@ export function PdfToPng() {
                 url={null}
                 callback={handleFileDrop}
             />
-        </div>
+        </>
     );
 }
