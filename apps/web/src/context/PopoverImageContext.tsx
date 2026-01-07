@@ -9,7 +9,7 @@ type PopoverImageType = {
 export const PopoverImageContext = createContext<PopoverImageType | undefined>(undefined);
 
 export function PopoverImageProvider({ children }: { children: ReactNode }) {
-    const [popOverSrc, setPopOverSrc] = useState<string>('/_static/images/lesi.webp');
+    const [popOverSrc, setPopOverSrc] = useState<string>('/images/lesi.webp');
     const [popOverAlt, setPopOverAlt] = useState<string>('');
     return (
         <PopoverImageContext.Provider value={{ setPopOverSrc, setPopOverAlt }}>

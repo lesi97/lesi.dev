@@ -115,7 +115,7 @@ module.exports = {
                 inter: ['Inter', 'sans-serif'],
             },
             backgroundImage: {
-                checkMark: 'url(/_static/images/icons/checkmark.svg)',
+                checkMark: 'url(/images/icons/checkmark.svg)',
             },
             spacing: {
                 '50%': '50%',

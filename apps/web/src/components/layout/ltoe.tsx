@@ -57,7 +57,7 @@ export function Ltoe() {
             <img
                 ref={memeRef}
                 className='absolute left-0 top-0 z-40 h-[1px] w-[1px]'
-                src='/_static/images/ltoe.webp'
+                src='/images/ltoe.webp'
                 alt='The sacred image is missing, plz forgiv'
                 height={800}
                 width={800}

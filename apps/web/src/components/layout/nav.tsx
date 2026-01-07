@@ -38,23 +38,23 @@ type SeasonImage = {
 
 const seasonImages: Record<string, { src: string; alt: string }> = {
     Valentines: {
-        src: '/_static/images/lesi-valentines.webp',
+        src: '/images/lesi-valentines.webp',
         alt: 'Lesi-Valentines',
     },
     Halloween: {
-        src: '/_static/images/lesi-halloween.webp',
+        src: '/images/lesi-halloween.webp',
         alt: 'Lesi-Halloween',
     },
     'Lesi-Birthday': {
-        src: '/_static/images/lesi-birthday.webp',
+        src: '/images/lesi-birthday.webp',
         alt: 'Lesi-Birthday',
     },
     Christmas: {
-        src: '/_static/images/lesi-christmas.webp',
+        src: '/images/lesi-christmas.webp',
         alt: 'Lesi-Christmas',
     },
     'New-Years': {
-        src: '/_static/images/lesi-newyear.webp',
+        src: '/images/lesi-newyear.webp',
         alt: 'Lesi-New-Years',
     },
 };
@@ -68,7 +68,7 @@ function SeasonLogo({ season }: SeasonLogoProps) {
 
     const image = season ? seasonImages[season] : undefined;
 
-    const src = image?.src ?? '/_static/images/lesi.webp';
+    const src = image?.src ?? '/images/lesi.webp';
     const alt = image?.alt ?? 'Lesi';
 
     return <img src={src} alt={alt} height={size} width={size} className='h-full w-auto' />;

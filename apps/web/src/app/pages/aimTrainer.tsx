@@ -92,7 +92,7 @@ export function AimTrainer() {
 
         async function loadUnity() {
             if (!canvasRef.current) return;
-            const buildPath = '/_static/aim-trainer/Build';
+            const buildPath = '/aim-trainer/Build';
             const loaderUrl = `${buildPath}/aim-trainer.loader.js?v=2`;
 
             const config = {

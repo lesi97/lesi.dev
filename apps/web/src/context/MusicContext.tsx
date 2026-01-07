@@ -13,7 +13,6 @@ export const MusicContext = createContext<MusicContextType | undefined>(undefine
 export function MusicProvider({ children }: { children: ReactNode }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const ffmpeg = useFfmpeg();
-    console.log('gooning2', ffmpeg);
 
     return <MusicContext.Provider value={{ isPlaying, setIsPlaying, ffmpeg }}>{children}</MusicContext.Provider>;
 }

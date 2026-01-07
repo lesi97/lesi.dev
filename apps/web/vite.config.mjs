@@ -4,6 +4,7 @@ import path from 'path';
 
 export default defineConfig({
     root: './src/app',
+    publicDir: path.resolve(__dirname, 'public'),
     plugins: [react()],
     base: './',
     optimizeDeps: {
@@ -29,7 +30,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': 'http://localhost:8080',
-            '/_static': 'http://localhost:8080',
+            '': 'http://localhost:8080',
         },
     },
 });
