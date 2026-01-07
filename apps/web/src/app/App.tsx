@@ -26,6 +26,10 @@ function Router() {
             <Route element={<FfmpegLayout hasAudio={false} />}>
                 <Route path='/video-cropper' element={<Page.VideoCropper />} />
             </Route>
+
+            <Route element={<DefaultLayout />}>
+                <Route path='*' element={<Page.NotFound />} />
+            </Route>
         </Routes>
     );
 }

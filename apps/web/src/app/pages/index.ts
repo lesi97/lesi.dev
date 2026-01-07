@@ -8,3 +8,5 @@ export { VideoCropper } from './videoCropper';
 export { AimTrainer } from './aimTrainer';
 export { Tools } from './tools';
 export { Settings } from './settings';
+
+export { NotFound } from './notFound';

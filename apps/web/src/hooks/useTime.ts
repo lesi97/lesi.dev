@@ -15,14 +15,18 @@ export function useTime() {
     }
 
     async function fetchInitialTime() {
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const res = await fetch(`/api/time?zone=${timeZone}`);
-        const data = await res.json();
-        const [day, month, year] = data.message.date.split('/');
-        const [hours, minutes, seconds] = data.message.time.split(':');
-        const initialServerTime = new Date(year, month - 1, day, hours, minutes, seconds);
-        setServerTime(initialServerTime);
-        setTime(data.message.time);
+        try {
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const res = await fetch(`/api/time?zone=${timeZone}`);
+            const data = await res.json();
+            const [day, month, year] = data.message.date.split('/');
+            const [hours, minutes, seconds] = data.message.time.split(':');
+            const initialServerTime = new Date(year, month - 1, day, hours, minutes, seconds);
+            setServerTime(initialServerTime);
+            setTime(data.message.time);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     useEffect(() => {

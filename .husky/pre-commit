@@ -1,0 +1,9 @@
+npm run typecheck
+
+if [ -f package-lock.json ]; then
+  if ! grep -q "@rollup/rollup-linux-x64" package-lock.json; then
+    echo "package-lock.json is missing linux rollup binaries"
+    echo "Run npm install on Linux or via Docker before committing"
+    exit 1
+  fi
+fi
