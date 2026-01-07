@@ -8,11 +8,11 @@ WORKDIR /src
 RUN apk add --no-cache git
 
 WORKDIR /src/apps
-COPY apps/go.mod apps/go.sum ./
+COPY apps/api/go.mod apps/api/go.sum ./
 
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
-COPY apps/ ./
+COPY apps/api ./
 
 ARG TARGETARCH
 RUN --mount=type=cache,target=/go/pkg/mod CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /out/server ./api/cmd
