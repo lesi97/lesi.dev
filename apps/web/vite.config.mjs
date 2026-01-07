@@ -7,7 +7,7 @@ export default defineConfig({
     envDir: path.resolve(__dirname),
     publicDir: path.resolve(__dirname, 'public'),
     plugins: [react()],
-    base: './',
+    base: '/',
     optimizeDeps: {
         exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util'],
     },
