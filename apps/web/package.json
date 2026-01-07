@@ -19,7 +19,7 @@
         "@types/js-beautify": "^1.14.3",
         "daisyui": "^4.12.14",
         "dotenv": "^17.2.3",
-        "dotenv-cli": "^10.0.0",
+        "dotenv-cli": "^11.0.0",
         "husky": "^9.1.7",
         "prettier": "^3.3.3"
     },
