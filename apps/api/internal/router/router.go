@@ -14,29 +14,22 @@ func SetupRoutes(app *app.Application) *chi.Mux {
 
 	routes.Get("/time", http.HandlerFunc(middleware.Measure(app.Logger, app.TimeapiHandler.HandleGetDateTime)))
 
-	routes.Get("/tarot", 		http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetRandomTarot)))
+	routes.Get("/v1/tarot", 		http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetRandomTarot)))
 	routes.Get("/tarot/all", 	http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetAllCards)))
 
-	routes.Post("/countdown", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleCountdownPost)))
-	routes.Get("/countdown/{id}", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleGetCountdown)))
+	routes.Post("/v1/countdown", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleCountdownPost)))
+	routes.Get("/v1/countdown/{id}", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleGetCountdown)))
 
-	routes.Get("/d2/{id}/time", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPlayTime)))
-	routes.Get("/d2/{id}/primary", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
-	routes.Get("/d2/{id}/kinetic", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
-	routes.Get("/d2/{id}/secondary", 	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
-	routes.Get("/d2/{id}/energy", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
-	routes.Get("/d2/{id}/heavy", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetHeavy)))
-	routes.Get("/d2/terror/weapons", 	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetTerrorKillCount)))
+	routes.Get("/v1/d2/{id}/time", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPlayTime)))
+	routes.Get("/v1/d2/{id}/primary", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
+	routes.Get("/v1/d2/{id}/kinetic", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
+	routes.Get("/v1/d2/{id}/secondary", 	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
+	routes.Get("/v1/d2/{id}/energy", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
+	routes.Get("/v1/d2/{id}/heavy", 		http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetHeavy)))
+	routes.Get("/v1/d2/terror/weapons", 	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetTerrorKillCount)))
 
-	routes.Get("/d2/trials/loot", 		http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetLoot)))
-	routes.Get("/d2/playercount", 		http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetPlayercount)))
-
-	
-	// publicDir := http.Dir("./web/public")
-	// routes.Handle("/_static/*", app.FrontendHandler.HandlePublic(publicDir))
-	
-	// distDir := http.Dir("./web/dist")
-	// routes.Handle("/*", app.FrontendHandler.HandleFrontend(distDir))
+	routes.Get("/v1/d2/trials/loot", 		http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetLoot)))
+	routes.Get("/v1/d2/playercount", 		http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetPlayercount)))
 
 	return routes
 }

@@ -101,7 +101,7 @@ const [today, setToday] = useState(new Date());
         const body = { ...data, target_date: localDate.toISOString() };
         try {
             countdownSchema.parse(data);
-            const response = await fetch('/api/countdown', {
+            const response = await fetch('/api/v1/countdown', {
                 method: 'POST',
                 headers: { Accept: 'Application/Json' },
                 body: JSON.stringify(body),
