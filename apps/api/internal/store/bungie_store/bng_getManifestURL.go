@@ -17,7 +17,7 @@ type manifestDefinitions struct {
 }
 
 func (s *BungieStore) getManifestURL() (*string, error) {
-	url := fmt.Sprintf("%s/Platform/Destiny2/Manifest", store.url)
+	url := fmt.Sprintf("%s/Platform/Destiny2/Manifest", s.url)
 
 	body, err := s.bungieGET(url)
 	if err != nil {

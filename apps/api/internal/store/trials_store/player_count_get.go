@@ -18,7 +18,7 @@ func (s *TrialsStore) GetPlayerCount() *string {
 	})
 
 	go func() {
-		data, err := fetchFromTrialsReport()
+		data, err := s.fetchFromTrialsReport()
 		trialsCh <- struct {
 			data *TrialsData
 			err  error
@@ -26,7 +26,7 @@ func (s *TrialsStore) GetPlayerCount() *string {
 	}()
 
 	go func() {
-		data, err := fetchFromSteam()
+		data, err := s.fetchFromSteam()
 		steamCh <- struct {
 			data *SteamData
 			err  error

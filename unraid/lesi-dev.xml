@@ -2,101 +2,22 @@
 <Container version="2">
   <Name>lesi-dev</Name>
   <Repository>ghcr.io/lesi97/lesi.dev:latest</Repository>
-  
   <Network>bridge</Network>
-  <MyID>lesi-dev</MyID>
+  <MyIP/>
+  <Shell>sh</Shell>
   <Privileged>false</Privileged>
   <Overview>lesi.dev Webpage</Overview>
   <Category>Web</Category>
-  <WebUI>http://[IP]:[PORT:1357]</WebUI>
-  <Shell>sh</Shell>
-  <Icon>https://raw.githubusercontent.com/lesi97/lesi.dev/main/apps/web/public/images/lesi.webp</Icon>
-
-  <Config 
-    Name="WebUI Port" 
-    Target="8080" 
-    Default="8080" 
-    Mode="tcp" 
-    Description="HTTP port" 
-    Type="Port" 
-    Display="always"
-    Required="true" 
-    Mask="false">1357</Config>
-
-  <Config 
-    Name="DATABASE_URL_IPV6" 
-    Target="DATABASE_URL_IPV6" 
-    Default="" 
-    Mode="rw" 
-    Description="" 
-    Type="Variable" 
-    Display="always" 
-    Required="false" 
-    Mask="false"></Config>
-
-  <Config 
-    Name="DATABASE_URL" 
-    Target="DATABASE_URL" 
-    Default="" 
-    Mode="rw" 
-    Description="" 
-    Type="Variable" 
-    Display="never" 
-    Required="false" 
-    Mask="false"></Config>
-
-  <Config 
-    Name="BUNGIE_CLIENT_ID" 
-    Target="BUNGIE_CLIENT_ID" 
-    Default="" 
-    Mode="rw" 
-    Description="" 
-    Type="Variable" 
-    Display="never" 
-    Required="false" 
-    Mask="false"></Config>
-
-  <Config 
-    Name="STEAM_CLIENT_ID" 
-    Target="STEAM_CLIENT_ID" 
-    Default="" 
-    Mode="rw" 
-    Description="" 
-    Type="Variable" 
-    Display="always" 
-    Required="false" 
-    Mask="false"></Config>
-
-<Config 
-    Name="DISCORD_WEBHOOK_URL" 
-    Target="DISCORD_WEBHOOK_URL" 
-    Default="" 
-    Mode="rw" 
-    Description="" 
-    Type="Variable" 
-    Display="always" 
-    Required="false" 
-    Mask="false"></Config>
-
-  <Config 
-    Name="DISCORD_USER_ID" 
-    Target="DISCORD_USER_ID" 
-    Default="" 
-    Mode="rw" 
-    Description="" 
-    Type="Variable" 
-    Display="always" 
-    Required="false" 
-    Mask="false"></Config>
-
-  <Config 
-    Name="ENCRYPTION_KEY" 
-    Target="ENCRYPTION_KEY" 
-    Default="" 
-    Mode="rw" 
-    Description="" 
-    Type="Variable" 
-    Display="always" 
-    Required="false" 
-    Mask="false"></Config>
+  <WebUI>http://[IP]:[PORT:8080]</WebUI>
+  <Icon>https://raw.githubusercontent.com/lesi97/go-av-scanner/main/ui/public/lesi.webp</Icon>
+  <Config Name="GO_ENV" Target="GO_ENV" Default="production" Mode="rw" Description="" Type="Variable" Display="no" Required="false" Mask="false">production</Config>
+  <Config Name="WebUI Port" Target="8080" Default="1357" Mode="tcp" Description="HTTP port" Type="Port" Display="always" Required="true" Mask="false">1537</Config>
+  <Config Name="DATABASE_URL_IPV6" Target="DATABASE_URL_IPV6" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="DATABASE_URL" Target="DATABASE_URL" Default="" Mode="rw" Description="" Type="Variable" Display="never" Required="false" Mask="false"></Config>
+  <Config Name="BUNGIE_CLIENT_ID" Target="BUNGIE_CLIENT_ID" Default="" Mode="rw" Description="" Type="Variable" Display="never" Required="false" Mask="false"></Config>
+  <Config Name="STEAM_CLIENT_ID" Target="STEAM_CLIENT_ID" Default="" Mode="rw" Description="" Type="Variable" Display="never" Required="false" Mask="false"></Config>
+  <Config Name="DISCORD_WEBHOOK_URL" Target="DISCORD_WEBHOOK_URL" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="DISCORD_USER_ID" Target="DISCORD_USER_ID" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="ENCRYPTION_KEY" Target="ENCRYPTION_KEY" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <TailscaleStateDir/>
 </Container>

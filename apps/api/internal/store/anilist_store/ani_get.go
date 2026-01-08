@@ -9,7 +9,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func (s *AnilistStore) anilistGET(url string) ([]byte, error) {
+func (s *AnilistStore) AnilistGET(url string) ([]byte, error) {
 	defer utils.LogExecutionTime(url, time.Now())
 
 	req, err := http.NewRequest("GET", url, nil)
