@@ -8,9 +8,9 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-type Supabase = pgxpool.Pool
+type DB = pgxpool.Pool
 
-func Connect(logger *utils.Logger) (*Supabase, error) {
+func Connect(logger *utils.Logger) (*DB, error) {
 	url := os.Getenv("DATABASE_URL")
 	
 	config, err := pgxpool.ParseConfig(url)
@@ -28,6 +28,6 @@ func Connect(logger *utils.Logger) (*Supabase, error) {
 	return pool, nil
 }
 
-func Disconnect(supabase *Supabase) {
-	supabase.Close()
+func Disconnect(db *DB) {
+	db.Close()
 }

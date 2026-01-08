@@ -1,14 +1,13 @@
-package router
+package app
 
 import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/lesi97/lesi.dev/internal/app"
 	"github.com/lesi97/lesi.dev/internal/middleware"
 )
 
-func SetupRoutes(app *app.Application) *chi.Mux {
+func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
 

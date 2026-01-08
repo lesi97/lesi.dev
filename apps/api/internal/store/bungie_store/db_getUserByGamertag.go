@@ -15,7 +15,7 @@ type bungieDBData struct {
 	FriendlyName		string 	`json:"friendly_name"`
 }
 
-func (store *SupabaseBungieStore) getUserFromDatabaseByGamertag(ctx context.Context, bungieID string) (*bungieDBData, error) {
+func (s *BungieStore) getUserFromDatabaseByGamertag(ctx context.Context, bungieID string) (*bungieDBData, error) {
 	defer utils.LogExecutionTime("getUserFromDatabaseByGamertag", time.Now())
 	query := `
 		SELECT 
@@ -28,7 +28,7 @@ func (store *SupabaseBungieStore) getUserFromDatabaseByGamertag(ctx context.Cont
 	data := &bungieDBData{
 		BungieID: bungieID,
 	}
-	err := store.db.QueryRow(ctx, query, bungieID).Scan(
+	err := s.DB.QueryRow(ctx, query, bungieID).Scan(
 		&data.MembershipID,
 		&data.PreferredPlatform,
 		&data.FriendlyName,

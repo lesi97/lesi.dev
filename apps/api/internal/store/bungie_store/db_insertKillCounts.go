@@ -11,7 +11,7 @@ type dbKillCounts struct {
 	WeaponHash 		string
 }
 
-func (store *SupabaseBungieStore) insertKillCounts(dbData *dbKillCounts) {
+func (s *BungieStore) insertKillCounts(dbData *dbKillCounts) {
 	query := `
 		INSERT INTO destiny_weapon_kill_counts 
 			(membership_id, weapon_id, pvp_kills, pve_kills, trials_kills, weapon_hash)
@@ -24,7 +24,7 @@ func (store *SupabaseBungieStore) insertKillCounts(dbData *dbKillCounts) {
 			trials_kills = COALESCE(EXCLUDED.trials_kills, destiny_weapon_kill_counts.trials_kills),
 			weapon_hash = EXCLUDED.weapon_hash
 	`
-	_, err := store.db.Exec(context.Background(), query, 
+	_, err := s.DB.Exec(context.Background(), query, 
 		dbData.MembershipID, 
 		dbData.WeaponID, 
 		dbData.PVPKills, 
@@ -33,6 +33,6 @@ func (store *SupabaseBungieStore) insertKillCounts(dbData *dbKillCounts) {
 		dbData.WeaponHash,
 	)
 	if err != nil {
-		store.logger.Printf("insertKillCounts failed: %v", err)
+		s.Logger.Printf("insertKillCounts failed: %v", err)
 	}
 }

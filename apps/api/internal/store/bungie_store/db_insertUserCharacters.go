@@ -11,7 +11,7 @@ type userCharacters struct {
 	MinutesPlayed  string
 }
 
-func (store *SupabaseBungieStore) insertUserCharacters(user *userCharacters) {
+func (s *BungieStore) insertUserCharacters(user *userCharacters) {
 	query := `
 		INSERT INTO destiny_user_characters
 			(membership_id, character_id, character_type, minutes_played)
@@ -23,10 +23,10 @@ func (store *SupabaseBungieStore) insertUserCharacters(user *userCharacters) {
 			character_type = EXCLUDED.character_type,
 			minutes_played = EXCLUDED.minutes_played
 	`
-	_, err := store.db.Exec(context.Background(), query,
+	_, err := s.DB.Exec(context.Background(), query,
 		user.MembershipID, user.CharacterID, user.CharacterType, user.MinutesPlayed)
 
 	if err != nil {
-		store.logger.Printf("insertUserCharacters failed: %v", err)
+		s.Logger.Printf("insertUserCharacters failed: %v", err)
 	}
 }

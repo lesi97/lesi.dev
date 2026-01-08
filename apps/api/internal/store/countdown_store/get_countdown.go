@@ -9,7 +9,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func (supabase *SupabaseCountdownStore) GetCountdownByID(ctx context.Context, uuid string) (*string, error) {
+func (s *CountdownStore) GetCountdownByID(ctx context.Context, uuid string) (*string, error) {
 	countdown := &CountdownData{
 		UUID: uuid,
 	}
@@ -22,7 +22,7 @@ func (supabase *SupabaseCountdownStore) GetCountdownByID(ctx context.Context, uu
 		FROM countdown
 		WHERE uuid = $1
 	`
-	err := supabase.db.QueryRow(ctx, query, uuid).Scan(
+	err := s.DB.QueryRow(ctx, query, uuid).Scan(
 		&countdown.TargetDate,
 		&countdown.Message,
 		&countdown.FallbackMessage,

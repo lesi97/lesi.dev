@@ -12,7 +12,7 @@ type killCountsDBData struct {
 	PVPKills			int		`json:"pvp_kills"`
 }
 
-func (store *SupabaseBungieStore) getKillCountsFromDB(ctx context.Context, bungieID string, weaponID string) (*killCountsDBData, error) {
+func (s *BungieStore) getKillCountsFromDB(ctx context.Context, bungieID string, weaponID string) (*killCountsDBData, error) {
 	defer utils.LogExecutionTime("getKillCountsFromDB", time.Now())
 	query := `
 		SELECT pvp_kills 
@@ -21,7 +21,7 @@ func (store *SupabaseBungieStore) getKillCountsFromDB(ctx context.Context, bungi
 		AND weapon_id = $2
 	`
 	var data killCountsDBData
-	err := store.db.QueryRow(ctx, query, bungieID, weaponID).Scan(&data.PVPKills)
+	err := s.DB.QueryRow(ctx, query, bungieID, weaponID).Scan(&data.PVPKills)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}

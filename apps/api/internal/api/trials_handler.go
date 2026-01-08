@@ -3,16 +3,16 @@ package api
 import (
 	"net/http"
 
-	"github.com/lesi97/lesi.dev/internal/store"
+	"github.com/lesi97/lesi.dev/internal/store/trials_store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type TrialsHandler struct {
 	logger     *utils.Logger
-	TrialsStore store.TrialsStore
+	TrialsStore trials_store.TrialsStoreInterface
 }
 
-func NewTrialsHandler(logger *utils.Logger, TrialsStore store.TrialsStore)  *TrialsHandler {
+func NewTrialsHandler(logger *utils.Logger, TrialsStore trials_store.TrialsStoreInterface)  *TrialsHandler {
 	return &TrialsHandler{
 		logger: logger,
 		TrialsStore: TrialsStore,

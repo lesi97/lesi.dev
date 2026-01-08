@@ -12,10 +12,10 @@ import (
 
 type CountdownHandler struct {
 	logger     *utils.Logger
-	countdownStore countdown_store.CountdownStore
+	countdownStore countdown_store.CountdownStoreInterface
 }
 
-func NewCountdownHandler(logger *utils.Logger, countdownStore countdown_store.CountdownStore)  *CountdownHandler {
+func NewCountdownHandler(logger *utils.Logger, countdownStore countdown_store.CountdownStoreInterface)  *CountdownHandler {
 	return &CountdownHandler{
 		logger: logger,
 		countdownStore: countdownStore,

@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func (store *SupabaseBungieStore) getBungieProfileByMembershipID(membershipID string, preferredPlatform string, components string) (*BungieProfile, error) {
+func (store *BungieStore) getBungieProfileByMembershipID(membershipID string, preferredPlatform string, components string) (*BungieProfile, error) {
 	url := fmt.Sprintf("%s/Platform/Destiny2/%s/Profile/%s/?components=%s", store.url, preferredPlatform, membershipID, components)
 
 	body, err := bungieGET(url)

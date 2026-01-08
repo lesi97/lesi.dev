@@ -11,12 +11,12 @@ import (
 
 type BungieHandler struct {
 	logger         *utils.Logger
-	bungieStore 	bungie_store.BungieStore
+	bungieStore 	bungie_store.BungieStoreInterface
 }
 
 const bungieContextKey = "bungie"
 
-func NewBungieHandler(logger *utils.Logger, bungieStore bungie_store.BungieStore)  *BungieHandler {
+func NewBungieHandler(logger *utils.Logger, bungieStore bungie_store.BungieStoreInterface)  *BungieHandler {
 	return &BungieHandler{
 		logger: logger,
 		bungieStore: bungieStore,

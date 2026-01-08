@@ -13,7 +13,7 @@ type CountdownPostRequest struct {
 	FallbackMessage string    `json:"fallback_message"`
 }
 
-func (supabase *SupabaseCountdownStore) InsertCountdown(ctx context.Context, data CountdownPostRequest) (*string, error) {
+func (s *CountdownStore) InsertCountdown(ctx context.Context, data CountdownPostRequest) (*string, error) {
 	if data.TargetDate.IsZero() {
 		return nil, errors.New("target_date is required")
 	}
@@ -31,7 +31,7 @@ func (supabase *SupabaseCountdownStore) InsertCountdown(ctx context.Context, dat
 	`
 
 	var uuid string
-	err := supabase.db.QueryRow(ctx, query,
+	err := s.DB.QueryRow(ctx, query,
 		data.TargetDate,
 		data.Message,
 		data.FallbackMessage,

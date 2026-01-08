@@ -29,7 +29,7 @@ type bungieSearch struct {
 
 }
 
-func (store *SupabaseBungieStore) getUserFromBungieByGamertag(id string) (*bungieSearch, error) {
+func (store *BungieStore) getUserFromBungieByGamertag(id string) (*bungieSearch, error) {
 	escapedID := url.PathEscape(id)
 	url := fmt.Sprintf("%s/Platform/Destiny2/SearchDestinyPlayer/-1/%s/", store.url, escapedID)
 

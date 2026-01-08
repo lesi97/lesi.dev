@@ -3,24 +3,27 @@ package app
 import (
 	"os"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/lesi97/lesi.dev/internal/api"
 	"github.com/lesi97/lesi.dev/internal/database"
-	"github.com/lesi97/lesi.dev/internal/store"
+	"github.com/lesi97/lesi.dev/internal/store/anilist_store"
 	"github.com/lesi97/lesi.dev/internal/store/bungie_store"
 	"github.com/lesi97/lesi.dev/internal/store/countdown_store"
+	"github.com/lesi97/lesi.dev/internal/store/tarot_store"
+	"github.com/lesi97/lesi.dev/internal/store/trials_store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type Application struct {
 	Logger				*utils.Logger
-	DB 					*database.Supabase
-	FrontendHandler		*api.FrontendHandler
+	DB					*database.DB
 	TarotHandler		*api.TarotHandler
 	CountdownHandler	*api.CountdownHandler
 	TimeapiHandler		*api.TimeapiHandler
 	BungieHandler		*api.BungieHandler
 	TrialsHandler		*api.TrialsHandler
+	AnilistHandler 		*api.AnilistHandler
 }
 
 func init() {
@@ -32,34 +35,38 @@ func init() {
 	}
 }
 
-func NewApplication() (*Application, error) {
+func NewApplication() (*Application, *chi.Mux, error) {
 	logger := utils.NewColourLogger("brightBlack")
-	supabase, err := database.Connect(logger)
+	db, err := database.Connect(logger)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	
-	tarotStore := store.NewTarotStore()
-	countdownStore := countdown_store.NewSupabaseCountdownStore(supabase)
-	bungieStore := bungie_store.NewSupabaseBungieStore(supabase, logger)
-	trialsStore := store.NewSupabaseTrialsStore(supabase, logger)
+	tarotStore := tarot_store.NewStore(logger)
+	trialsStore := trials_store.NewStore(db, logger)
+	bungieStore := bungie_store.NewStore(db, logger)
+	anilistStore := anilist_store.NewStore(db, logger)
+	countdownStore := countdown_store.NewStore(db, logger)
 
-	frontendHandler := api.NewFrontendHandler(logger)
 	tarotHandler := api.NewTarotHandler(logger, tarotStore)
+	trialsHandler := api.NewTrialsHandler(logger, trialsStore)
+	bungieHandler := api.NewBungieHandler(logger, bungieStore)
+	anilistHandler := api.NewAnilistHandler(logger, anilistStore)
 	countdownHandler := api.NewCountdownHandler(logger, countdownStore)
 	timeapiHandler := api.NewTimeapiHandler(logger)
-	bungieHandler := api.NewBungieHandler(logger, bungieStore)
-	trialsHandler := api.NewTrialsHandler(logger, trialsStore)
 
 	app := &Application{
 		Logger: logger,
-		FrontendHandler: frontendHandler,
+		DB: db,
 		TarotHandler: tarotHandler,
+		TrialsHandler: trialsHandler,
+		BungieHandler: bungieHandler,
+		AnilistHandler: anilistHandler,
 		CountdownHandler: countdownHandler,
 		TimeapiHandler: timeapiHandler,
-		BungieHandler: bungieHandler,
-		TrialsHandler: trialsHandler,
 	}
 
-	return app, nil
+	routes := setupRoutes(app)
+
+	return app, routes, nil
 }

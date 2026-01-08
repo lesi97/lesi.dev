@@ -8,12 +8,13 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/lesi97/lesi.dev/internal/database"
+	"github.com/lesi97/lesi.dev/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 // const bungie_url = "https://www.bungie.net"
 
-type BungieStore interface {
+type BungieStoreInterface interface {
 	GetCharacterPlayTime(ctx context.Context) (*string, error)
 	GetEquippedWeapon(ctx context.Context) (*string, error)
 	GetTerrorWeapon(ctx context.Context) (*string, error)
@@ -27,34 +28,32 @@ type BungieContextInfo struct {
 	WeaponName  string
 }
 
-type SupabaseBungieStore struct {
-	db *database.Supabase
-	logger *utils.Logger
+type BungieStore struct {
+	store.StoreBase
 	url string
 }
 
-func NewSupabaseBungieStore(db *database.Supabase, logger *utils.Logger) *SupabaseBungieStore {
-	return &SupabaseBungieStore{
-		db: db,
-		logger: logger,
+func NewStore(db *database.DB, logger *utils.Logger) *BungieStore {
+	return &BungieStore{
+		StoreBase: store.NewStoreBase(db, logger),
 		url: "https://www.bungie.net",
 	}
 }
 
-func (s *SupabaseBungieStore) GetCharacterPlayTime(ctx context.Context) (*string, error) {
+func (s *BungieStore) GetCharacterPlayTime(ctx context.Context) (*string, error) {
 	context, ok := ctx.Value("bungie").(BungieContextInfo)
 	if !ok {
 		return nil, fmt.Errorf("invalid context")
 	}
 	user, err := s.getUser(ctx, context.Gamertag)
 	if err != nil {
-		s.logger.Printf("ERROR: getCharacterPlayTime %v\n", err)
+		s.Logger.Printf("ERROR: getCharacterPlayTime %v\n", err)
 		return nil, err
 	}
 	preferredPlatform := getPlatformEnum(context.Platform, user)
 	characters, err := s.getBungieProfileByMembershipID(user.MembershipID, preferredPlatform, "200")
 	if err != nil {
-		s.logger.Printf("ERROR: getBungieProfileByMembershipID %v\n", err)
+		s.Logger.Printf("ERROR: getBungieProfileByMembershipID %v\n", err)
 		return nil, err
 	}
 
@@ -87,14 +86,14 @@ func (s *SupabaseBungieStore) GetCharacterPlayTime(ctx context.Context) (*string
 
 }
 
-func (s *SupabaseBungieStore) GetEquippedWeapon(ctx context.Context) (*string, error) {
+func (s *BungieStore) GetEquippedWeapon(ctx context.Context) (*string, error) {
 	context, ok := ctx.Value("bungie").(BungieContextInfo)
 	if !ok {
 		return nil, fmt.Errorf("invalid context")
 	}
 	user, err := s.getUser(ctx, context.Gamertag)
 	if err != nil {
-		s.logger.Printf("ERROR in %v:\n - GetEquippedPrimary\n   - getUser: %v\n", context.Handler, err)
+		s.Logger.Printf("ERROR in %v:\n - GetEquippedPrimary\n   - getUser: %v\n", context.Handler, err)
 		return nil, err
 	}
 
@@ -147,7 +146,7 @@ func (s *SupabaseBungieStore) GetEquippedWeapon(ctx context.Context) (*string, e
 	return &responseMessage, nil
 }
 
-func (s *SupabaseBungieStore) GetTerrorWeapon(ctx context.Context) (*string, error) {
+func (s *BungieStore) GetTerrorWeapon(ctx context.Context) (*string, error) {
 	context, ok := ctx.Value("bungie").(BungieContextInfo)
 	if !ok {
 		return nil, fmt.Errorf("invalid context")
@@ -172,7 +171,7 @@ func (s *SupabaseBungieStore) GetTerrorWeapon(ctx context.Context) (*string, err
 	go func() {
 		count, err := s.getKillCountsFromDB(ctx, membershipID, weaponData.Weapon)
 		if err != nil {
-			s.logger.Fatalf("ERROR: %v\n - getKillCountsFromDB: %v", context.Handler, err)
+			s.Logger.Fatalf("ERROR: %v\n - getKillCountsFromDB: %v", context.Handler, err)
 			dbChan <- struct{Count int; Err error}{Count: 0, Err: err}
 			return
 		}

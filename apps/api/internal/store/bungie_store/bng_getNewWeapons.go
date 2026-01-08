@@ -47,14 +47,14 @@ type bungieWeaponRaw struct {
 	} `json:"talentGrid"`
 }
 
-func (store *SupabaseBungieStore) getNewWeapons() {
-	urlPath, err := store.getManifestURL()
+func (s *BungieStore) getNewWeapons() {
+	urlPath, err := s.getManifestURL()
 	if err != nil {
 		fmt.Printf("failed to generate manifest URL")
 		return
 	}
 
-	url := fmt.Sprintf("%s%s", store.url, *urlPath)
+	url := fmt.Sprintf("%s%s", s.url, *urlPath)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -71,8 +71,8 @@ func (store *SupabaseBungieStore) getNewWeapons() {
 
 	weapons := processWeapons(rawData)
 	perks := processPerks(rawData)
-	store.insertWeapons(weapons)
-	store.insertPerks(perks)
+	s.insertWeapons(weapons)
+	s.insertPerks(perks)
 }
 
 func processWeapons(rawData map[string]bungieWeaponRaw) []dbWeapons {
@@ -121,7 +121,7 @@ func processPerks(rawData map[string]bungieWeaponRaw) []dbPerk {
 }
 
 
-func (s *SupabaseBungieStore) insertWeapons(weapons []dbWeapons) {
+func (s *BungieStore) insertWeapons(weapons []dbWeapons) {
 	for _, weapon := range weapons {
 		query := `
 			INSERT INTO destiny_weapons 
@@ -131,7 +131,8 @@ func (s *SupabaseBungieStore) insertWeapons(weapons []dbWeapons) {
 			ON CONFLICT (id)
 			DO NOTHING
 		`
-		_, err := s.db.Exec(context.Background(), query,
+
+		_, err := s.DB.Exec(context.Background(), query,
 			weapon.ID, 
 			weapon.DisplayName, 
 			weapon.ItemTypeDisplayName, 
@@ -143,12 +144,12 @@ func (s *SupabaseBungieStore) insertWeapons(weapons []dbWeapons) {
 			weapon.TalentGridHash,
 		)
 		if err != nil {
-			s.logger.Printf("insertWeapons failed for ID %s: %v\n", weapon.ID, err)
+			s.Logger.Printf("insertWeapons failed for ID %s: %v\n", weapon.ID, err)
 		}
 	}
 }
 
-func (s *SupabaseBungieStore) insertPerks(perks []dbPerk) {
+func (s *BungieStore) insertPerks(perks []dbPerk) {
 	for _, perk := range perks {
 		query := `
 			INSERT INTO destiny_weapon_perks
@@ -158,9 +159,9 @@ func (s *SupabaseBungieStore) insertPerks(perks []dbPerk) {
 			ON CONFLICT (hash_id)
 			DO NOTHING
 		`
-		_, err := s.db.Exec(context.Background(), query, perk.Name, perk.Description, perk.ItemType, perk.HashID)
+		_, err := s.DB.Exec(context.Background(), query, perk.Name, perk.Description, perk.ItemType, perk.HashID)
 		if err != nil {
-			s.logger.Printf("insertPerks failed for %s: %v\n", perk.Name, err)
+			s.Logger.Printf("insertPerks failed for %s: %v\n", perk.Name, err)
 		}
 	}
 }

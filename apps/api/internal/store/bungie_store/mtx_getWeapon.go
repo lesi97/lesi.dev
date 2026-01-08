@@ -11,7 +11,7 @@ type weaponResult struct {
 	err error
 }
 
-func (s *SupabaseBungieStore) getWeapon(ctx context.Context, weaponHashID string, perkHashIDs []string) (*weaponResult, error) {
+func (s *BungieStore) getWeapon(ctx context.Context, weaponHashID string, perkHashIDs []string) (*weaponResult, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 

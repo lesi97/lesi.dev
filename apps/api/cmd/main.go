@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/app"
-	"github.com/lesi97/lesi.dev/internal/router"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -16,13 +15,11 @@ func main() {
 	flag.IntVar(&port, "port", 8080, "go backend server port")
 	flag.Parse()
 
-	application, err := app.NewApplication()
+	application, routes, err := app.NewApplication()
 	if err != nil {
 		panic(err)
 	}
 	defer application.DB.Close()
-
-	routes := router.SetupRoutes(application)
 
 	server := &http.Server{
 		Addr: fmt.Sprintf(":%d", port),

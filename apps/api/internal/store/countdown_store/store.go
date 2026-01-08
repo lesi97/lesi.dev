@@ -2,20 +2,20 @@ package countdown_store
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/database"
+	"github.com/lesi97/lesi.dev/internal/store"
+	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-type CountdownStore interface {
+type CountdownStoreInterface interface {
 	GetCountdownByID(ctx context.Context, id string) (*string, error)
 	InsertCountdown(ctx context.Context, data CountdownPostRequest) (*string, error)
 }
 
-type SupabaseCountdownStore struct {
-	db *database.Supabase
-	logger *log.Logger
+type CountdownStore struct {
+	store.StoreBase
 }
 
 type CountdownData struct {
@@ -25,7 +25,9 @@ type CountdownData struct {
 	FallbackMessage string 		`json:"fallback_message"`
 }
 
-func NewSupabaseCountdownStore(db *database.Supabase) *SupabaseCountdownStore {
-	return &SupabaseCountdownStore{db: db}
+func NewStore(db *database.DB, logger *utils.Logger) *CountdownStore {
+	return &CountdownStore{
+		StoreBase: store.NewStoreBase(db, logger),
+	}
 }
 

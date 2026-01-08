@@ -28,7 +28,7 @@ type filteredPerksResult struct {
 
 
 
-func (store *SupabaseBungieStore) getWeaponPerks(ctx context.Context, perkHashIDs []string) (*filteredPerksResult, error) {
+func (s *BungieStore) getWeaponPerks(ctx context.Context, perkHashIDs []string) (*filteredPerksResult, error) {
 	defer utils.LogExecutionTime("getWeaponPerks", time.Now())
 	if len(perkHashIDs) == 0 {
 		return nil, fmt.Errorf("perk list not provided")
@@ -48,7 +48,7 @@ func (store *SupabaseBungieStore) getWeaponPerks(ctx context.Context, perkHashID
 		where hash_id in (%s)
 	`, strings.Join(placeholders, ", "))
 
-	rows, err := store.db.Query(ctx, query, args...)
+	rows, err := s.DB.Query(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
