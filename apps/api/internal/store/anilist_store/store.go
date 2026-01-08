@@ -9,7 +9,9 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-type AnilistStoreInterface interface {}
+type AnilistStoreInterface interface {
+	Test()
+}
 
 type AnilistStore struct {
 	store.StoreBase
@@ -18,31 +20,29 @@ type AnilistStore struct {
 	api_details 	*database.ApiDetails
 }
 
-func NewStore(db *database.DB, logger *utils.Logger) *AnilistStore {
+func NewStore(db *database.DB, logger *utils.Logger) (*AnilistStore, error) {
 	apiDetails, err := db.FetchApiDetails(context.Background(),"Anilist", logger)
-	if err != nil {
+	if err != nil || apiDetails == nil {
 		message := fmt.Sprintf("FATAL: ERROR GETTING ANILIST API DETAILS %v\n", err)
 		utils.SendDiscordNotification(utils.SendDiscordNotificationArgs{
 			Content: message,
 			Username: "Anilist FATAL",
 			Logger: logger,
 		})
-		logger.Fatal(message)
-		return nil
+		return nil, fmt.Errorf("FATAL: ERROR GETTING ANILIST API DETAILS %v\n", err)
 	}
 
 	noRefreshToken := apiDetails.RefreshToken == nil
 	if noRefreshToken {
 		logger.Error("No Anilist Refresh Token Found")
-		return nil
+		return nil, fmt.Errorf("No Anilist Refresh Token Found")
 	}
 
 	expired := utils.IsRefreshTokenExpired(*apiDetails.RefreshTokenExpiry)
 	if expired {
 		newAuthData, err := refreshToken(*apiDetails.ClientID, *apiDetails.ClientSecret, *apiDetails.RefreshToken)
 		if err != nil {
-			logger.Errorf("Failed to refresh Anilist Auth Token: %v\n", err)
-			return nil
+			return nil, err
 		}
 		apiDetails.AccessToken = &newAuthData.AccessToken
 		apiDetails.RefreshToken = &newAuthData.RefreshToken
@@ -66,7 +66,10 @@ func NewStore(db *database.DB, logger *utils.Logger) *AnilistStore {
 		graphql_url: "https://graphql.anilist.co",
 		auth_url: "https://anilist.co/api/v2/oauth/token",
 		api_details: apiDetails,
-	}
+	}, nil
 }
 
 
+func (s *AnilistStore) Test() {
+	fmt.Printf("test works")
+}
