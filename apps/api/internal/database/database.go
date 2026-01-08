@@ -8,7 +8,10 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-type DB = pgxpool.Pool
+type DB struct {
+	*pgxpool.Pool
+}
+
 
 func Connect(logger *utils.Logger) (*DB, error) {
 	url := os.Getenv("DATABASE_URL")
@@ -25,7 +28,7 @@ func Connect(logger *utils.Logger) (*DB, error) {
 		return nil, err
 	}
 
-	return pool, nil
+	return &DB{Pool: pool}, nil
 }
 
 func Disconnect(db *DB) {

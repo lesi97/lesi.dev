@@ -1,6 +1,8 @@
 package trials_store
 
 import (
+	"os"
+
 	"github.com/lesi97/lesi.dev/internal/database"
 	"github.com/lesi97/lesi.dev/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
@@ -13,11 +15,28 @@ type TrialsStoreInterface interface {
 
 type TrialsStore struct {
 	store.StoreBase
+	url				string
+	steamClientId 	string
+	steamUrl		string
 }
 
 func NewStore(db *database.DB, logger *utils.Logger) *TrialsStore {
+	steamApiKey := os.Getenv("STEAM_CLIENT_ID")
+	if steamApiKey == "" {
+		message := "FATAL: ERROR GETTING STEAM_CLIENT_ID ENV VAR"
+		utils.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: message,
+			Username: "STEAM STORE FATAL",
+			Logger: logger,
+		})
+		logger.Fatal(message)
+		return nil
+	}
 	return &TrialsStore{
 		StoreBase: store.NewStoreBase(db, logger),
+		url: "https://api.trialsofthenine.com/weeks/0",
+		steamClientId: steamApiKey,
+		steamUrl: "https://api.steampowered.com",
 	}
 }
 

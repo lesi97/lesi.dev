@@ -16,10 +16,10 @@ type manifestDefinitions struct {
 	} `json:"Response"`
 }
 
-func (store *BungieStore) getManifestURL() (*string, error) {
+func (s *BungieStore) getManifestURL() (*string, error) {
 	url := fmt.Sprintf("%s/Platform/Destiny2/Manifest", store.url)
 
-	body, err := bungieGET(url)
+	body, err := s.bungieGET(url)
 	if err != nil {
 		return nil, err
 	}

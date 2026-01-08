@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 type SteamData struct {
@@ -16,19 +15,9 @@ type SteamData struct {
 	} `json:"response"`
 }
 
-func fetchFromSteam() (*SteamData, error) {
-	const steamURL = "https://api.steampowered.com"
+func (s *TrialsStore) fetchFromSteam() (*SteamData, error) {
 	const destiny2 = "1085660"
-
-	apiKey := os.Getenv("STEAM_CLIENT_ID")
-	
-	if apiKey == "" {
-		return nil, fmt.Errorf("missing STEAM_CLIENT_ID in environment")
-	}
-
-	url := fmt.Sprintf("%s/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=%s&key=%s", steamURL, destiny2, apiKey)
-
-	fmt.Println(url)
+	url := fmt.Sprintf("%s/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=%s&key=%s", s.steamUrl, destiny2, s.steamClientId)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

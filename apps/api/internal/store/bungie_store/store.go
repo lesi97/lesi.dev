@@ -3,6 +3,7 @@ package bungie_store
 import (
 	"context"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -30,13 +31,27 @@ type BungieContextInfo struct {
 
 type BungieStore struct {
 	store.StoreBase
-	url string
+	url 			string
+	clientId 	string
 }
 
 func NewStore(db *database.DB, logger *utils.Logger) *BungieStore {
+	bungieApiKey := os.Getenv("BUNGIE_CLIENT_ID")
+	if bungieApiKey == "" {
+		message := "FATAL: ERROR GETTING BUNGIE_CLIENT_ID ENV VAR"
+		utils.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: message,
+			Username: "BUNGIE STORE FATAL",
+			Logger: logger,
+		})
+		logger.Fatal(message)
+		return nil
+	}
+
 	return &BungieStore{
 		StoreBase: store.NewStoreBase(db, logger),
 		url: "https://www.bungie.net",
+		clientId: bungieApiKey,
 	}
 }
 

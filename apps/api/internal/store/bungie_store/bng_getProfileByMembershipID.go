@@ -6,10 +6,10 @@ import (
 	"fmt"
 )
 
-func (store *BungieStore) getBungieProfileByMembershipID(membershipID string, preferredPlatform string, components string) (*BungieProfile, error) {
-	url := fmt.Sprintf("%s/Platform/Destiny2/%s/Profile/%s/?components=%s", store.url, preferredPlatform, membershipID, components)
+func (s *BungieStore) getBungieProfileByMembershipID(membershipID string, preferredPlatform string, components string) (*BungieProfile, error) {
+	url := fmt.Sprintf("%s/Platform/Destiny2/%s/Profile/%s/?components=%s", s.url, preferredPlatform, membershipID, components)
 
-	body, err := bungieGET(url)
+	body, err := s.bungieGET(url)
 	if err != nil {
 		return nil, err
 	}

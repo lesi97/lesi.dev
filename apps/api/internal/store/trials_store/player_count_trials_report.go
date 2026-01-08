@@ -38,10 +38,9 @@ type TrialsData struct {
 	Platforms      platforms `json:"platforms"`
 }
 
-func fetchFromTrialsReport() (*TrialsData, error) {
-	const url = "https://api.trialsofthenine.com/weeks/0"
+func (s *TrialsStore) fetchFromTrialsReport() (*TrialsData, error) {
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", s.url, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -63,7 +63,40 @@
     Mode="rw" 
     Description="" 
     Type="Variable" 
-    Display="never" 
+    Display="always" 
+    Required="false" 
+    Mask="false"></Config>
+
+<Config 
+    Name="DISCORD_WEBHOOK_URL" 
+    Target="DISCORD_WEBHOOK_URL" 
+    Default="" 
+    Mode="rw" 
+    Description="" 
+    Type="Variable" 
+    Display="always" 
+    Required="false" 
+    Mask="false"></Config>
+
+  <Config 
+    Name="DISCORD_USER_ID" 
+    Target="DISCORD_USER_ID" 
+    Default="" 
+    Mode="rw" 
+    Description="" 
+    Type="Variable" 
+    Display="always" 
+    Required="false" 
+    Mask="false"></Config>
+
+  <Config 
+    Name="ENCRYPTION_KEY" 
+    Target="ENCRYPTION_KEY" 
+    Default="" 
+    Mode="rw" 
+    Description="" 
+    Type="Variable" 
+    Display="always" 
     Required="false" 
     Mask="false"></Config>
 </Container>

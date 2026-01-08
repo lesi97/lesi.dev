@@ -29,11 +29,11 @@ type bungieSearch struct {
 
 }
 
-func (store *BungieStore) getUserFromBungieByGamertag(id string) (*bungieSearch, error) {
+func (s *BungieStore) getUserFromBungieByGamertag(id string) (*bungieSearch, error) {
 	escapedID := url.PathEscape(id)
-	url := fmt.Sprintf("%s/Platform/Destiny2/SearchDestinyPlayer/-1/%s/", store.url, escapedID)
+	url := fmt.Sprintf("%s/Platform/Destiny2/SearchDestinyPlayer/-1/%s/", s.url, escapedID)
 
-	body, err := bungieGET(url)
+	body, err := s.bungieGET(url)
 	if err != nil {
 		fmt.Println("ERROR in getUserFromBungieByGamertag")
 		return nil, err
@@ -54,7 +54,7 @@ func (store *BungieStore) getUserFromBungieByGamertag(id string) (*bungieSearch,
 				PreferredPlatform: int64(result.Response[0].MembershipType),
 				FriendlyName: result.Response[0].BungieGlobalDisplayName,
 			}
-		store.insertDestinyUser(&user)
+		s.insertDestinyUser(&user)
 		}
 	}()
 
