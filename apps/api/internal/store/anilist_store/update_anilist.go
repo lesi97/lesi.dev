@@ -124,7 +124,6 @@ func (s *AnilistStore) UpdateAnilist(ctx context.Context, data PlexWebhookPayloa
 	}
 
 
-	fmt.Printf("TARGET: %v\nPROG: %v\n", targetMediaID, progress)
-	// _ = s.updateAniListProgress(targetMediaID, progress)
+	_ = s.updateAniListProgress(targetMediaID, progress)
 	return nil
 }

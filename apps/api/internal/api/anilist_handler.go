@@ -45,9 +45,6 @@ func (h *AnilistHandler) HandleUpdateAnilist(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	h.logger.PrintColour(true, "brightGreen", "TEMP | SUCCESS PLEX WEBHOOK LOG")
-
-
 	plexUsername := os.Getenv("PLEX_USERNAME")
 	if plexUsername == "" {
 		utils.Error(w, http.StatusInternalServerError, "No Plex username found in env")
@@ -105,8 +102,6 @@ func (h *AnilistHandler) HandleUpdateAnilist(w http.ResponseWriter, r *http.Requ
 
 	// Only scrobble for intended user for Anime libraries as this is for Anilist, an anime platform
 	mediaTypeRegex := regexp.MustCompile(`(?i)anime`)
-	fmt.Printf("\nTYPE: %v\n", plexData.Metadata.Type)
-	utils.PrintPrettyJSON(plexData)
 	if strings.ToLower(plexData.Event) != "media.scrobble" ||
 		!mediaTypeRegex.MatchString(strings.ToLower(plexData.Metadata.LibrarySectionTitle)) ||
 		!strings.EqualFold(plexData.Account.Title, plexUsername) {
