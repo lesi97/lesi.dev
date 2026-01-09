@@ -20,14 +20,28 @@ func (h *DisabledServiceHandler) HandleDisabled(w http.ResponseWriter, r *http.R
 	_, _ = w.Write([]byte(h.ServiceName + " service is disabled"))
 }
 
+func handleIndex(r chi.Router) http.HandlerFunc {
+	return func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+
+		_, _ = w.Write([]byte("Available routes\n\n"))
+		_ = chi.Walk(r, func(method string, pattern string, _ http.Handler, _ ...func(http.Handler) http.Handler) error {
+			_, _ = w.Write([]byte(method + " - " + pattern + "\n"))
+			return nil
+		})
+	}
+}
+
+
+
 func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
 
-	routes.Get("/time",	http.HandlerFunc(middleware.Measure(app.Logger, app.TimeapiHandler.HandleGetDateTime)))
+	routes.Get("/v1/time",	http.HandlerFunc(middleware.Measure(app.Logger, app.TimeapiHandler.HandleGetDateTime)))
 
 	routes.Get("/v1/tarot", http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetRandomTarot)))
-	routes.Get("/tarot/all", http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetAllCards)))
+	routes.Get("/v1/tarot/all", http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetAllCards)))
 
 	routes.Post("/v1/countdown", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleCountdownPost)))
 	routes.Get("/v1/countdown/{id}", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleGetCountdown)))
@@ -61,6 +75,8 @@ func setupRoutes(app *Application) *chi.Mux {
 		}
 		routes.Route("/v1/anilist", disabled.RegisterRoutes)
 	}
+
+	routes.Get("/", handleIndex(routes))
 	
 	return routes
 }
