@@ -11,7 +11,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func (s *AnilistStore) AnilistPOST(url string, query string, variables map[string]interface{}) ([]byte, error) {
+func (s *AnilistStore) anilistPOST(url string, query string, variables map[string]interface{}) ([]byte, error) {
 	defer utils.LogExecutionTime(url, time.Now())
 
 	body, err := json.Marshal(map[string]interface{}{

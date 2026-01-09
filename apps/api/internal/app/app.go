@@ -24,6 +24,7 @@ type Application struct {
 	BungieHandler		*api.BungieHandler
 	TrialsHandler		*api.TrialsHandler
 	AnilistHandler 		*api.AnilistHandler
+	LocalHandler		*api.LocalHandler
 }
 
 func init() {
@@ -50,6 +51,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	trialsHandler := api.NewTrialsHandler(logger, trialsStore)
 	countdownHandler := api.NewCountdownHandler(logger, countdownStore)
 	timeapiHandler := api.NewTimeapiHandler(logger)
+	localHandler := api.NewLocalHandler(logger, db)
 
 	var bungieHandler *api.BungieHandler
 	bungieStore, bungieErr := bungie_store.NewStore(db, logger)	
@@ -58,7 +60,6 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	} else {
 		bungieHandler = api.NewBungieHandler(logger, bungieStore)
 	}
-
 
 	var anilistHandler *api.AnilistHandler
 	anilistStore, anilistErr := anilist_store.NewStore(db, logger)
@@ -77,6 +78,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		AnilistHandler: anilistHandler,
 		CountdownHandler: countdownHandler,
 		TimeapiHandler: timeapiHandler,
+		LocalHandler: localHandler,
 	}
 
 	routes := setupRoutes(app)

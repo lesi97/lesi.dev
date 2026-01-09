@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/lesi97/lesi.dev/internal/middleware"
@@ -67,13 +68,22 @@ func setupRoutes(app *Application) *chi.Mux {
 	}
 
 	if app.AnilistHandler != nil {
-		routes.Get("/v1/anilist/test", http.HandlerFunc(middleware.Measure(app.Logger, app.AnilistHandler.HandleAnilistTest)))
+		routes.Post("/v1/anilist", http.HandlerFunc(middleware.Measure(app.Logger, app.AnilistHandler.HandleUpdateAnilist)))
 	} else {
 		app.Logger.PrintColour(true, "brightRed", "AniList routes not registered")
 		disabled := &DisabledServiceHandler{
 			ServiceName: "AniList",
 		}
 		routes.Route("/v1/anilist", disabled.RegisterRoutes)
+	}
+
+	if os.Getenv("GO_ENV") == "development" {
+		routes.Post("/local/db-dump", http.HandlerFunc(middleware.Measure(app.Logger, app.LocalHandler.HandleDbDump)))
+	} else {
+		disabled := &DisabledServiceHandler{
+			ServiceName: "Local",
+		}
+		routes.Route("/local", disabled.RegisterRoutes)
 	}
 
 	routes.Get("/", handleIndex(routes))

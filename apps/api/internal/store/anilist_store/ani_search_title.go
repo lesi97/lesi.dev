@@ -48,6 +48,7 @@ type mediaData struct {
 	SeasonYear *int          `json:"seasonYear"`
 	Episodes   *int          `json:"episodes"`
 	Status     string        `json:"status"`
+	IsAdult	   bool			 `json:"isAdult"`
 	Relations  relationsType `json:"relations"`
 }
 
@@ -60,10 +61,10 @@ type pageData struct {
 }
 
 type searchTitleResponse struct { 
-	Data pageData `json:"data`
+	Data pageData `json:"data"`
 }
 
-func (s *AnilistStore) SearchAnilist(title string) ([]mediaData, error) {
+func (s *AnilistStore) searchTitle(title string) ([]mediaData, error) {
 	query := `
 query ($title: String) {
   Page(perPage: 10) {
@@ -74,6 +75,7 @@ query ($title: String) {
       seasonYear
       episodes
       status
+	  isAdult
       relations {
         edges { relationType }
         nodes {
@@ -89,7 +91,7 @@ query ($title: String) {
 }
 `
 
-	raw, err := s.AnilistPOST(
+	raw, err := s.anilistPOST(
 		s.graphql_url,
 		query,
 		map[string]interface{}{
@@ -101,7 +103,6 @@ query ($title: String) {
 	}
 
 	var res searchTitleResponse
-
 	err = json.Unmarshal(raw, &res)
 	if err != nil {
 		return nil, err

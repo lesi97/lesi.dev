@@ -19,6 +19,10 @@
   <Config Name="STEAM_CLIENT_ID" Target="STEAM_CLIENT_ID" Default="" Mode="rw" Description="" Type="Variable" Display="never" Required="false" Mask="false"></Config>
   <Config Name="DISCORD_WEBHOOK_URL" Target="DISCORD_WEBHOOK_URL" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
   <Config Name="DISCORD_USER_ID" Target="DISCORD_USER_ID" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
-  <Config Name="ENCRYPTION_KEY" Target="ENCRYPTION_KEY" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="ENCRYPTION_KEY" Target="ENCRYPTION_KEY" Default="" Mode="rw" Description="Base64-encoded 32 byte AES-256 key&#10;Generate with command: openssl rand -base64 32" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="PLEX_USERNAME" Target="PLEX_USERNAME" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="PLEX_API_URL" Target="PLEX_API_URL" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="PLEX_X_TOKEN" Target="PLEX_X_TOKEN" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="PLEX_WEBHOOK_SECRET" Target="PLEX_WEBHOOK_SECRET" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
   <TailscaleStateDir/>
 </Container>
