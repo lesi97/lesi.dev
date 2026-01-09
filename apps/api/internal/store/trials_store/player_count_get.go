@@ -5,17 +5,19 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
+	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 func (s *TrialsStore) GetPlayerCount() *string {
 	trialsCh := make(chan struct {
 		data *TrialsData
 		err  error
-	})
+	}, 1)
+
 	steamCh := make(chan struct {
 		data *SteamData
 		err  error
-	})
+	}, 1)
 
 	go func() {
 		data, err := s.fetchFromTrialsReport()
@@ -25,41 +27,55 @@ func (s *TrialsStore) GetPlayerCount() *string {
 		}{data, err}
 	}()
 
-	go func() {
-		data, err := s.fetchFromSteam()
-		steamCh <- struct {
-			data *SteamData
-			err  error
-		}{data, err}
-	}()
+	if s.steamClientIdAvailable {
+		go func() {
+			data, err := s.fetchFromSteam()
+			steamCh <- struct {
+				data *SteamData
+				err  error
+			}{data, err}
+		}()
+	}
 
 	trialsResult := <-trialsCh
-	steamResult := <-steamCh
-
 	if trialsResult.err != nil {
 		s.Logger.Printf("ERROR: fetchFromTrialsReport: %v\n", trialsResult.err)
 		message := "failed to fetch data from trials report"
 		return &message
 	}
 
-	if steamResult.err != nil {
-		s.Logger.Printf("ERROR: fetchFromSteam: %v\n", steamResult.err)
-		message := "failed to fetch data from steam"
+	updatedAtTime, _ := parseTrialsUpdatedAt(trialsResult.data)
+	trialsFresh := isTrialsFresh(updatedAtTime)
+
+	var steamResult struct {
+		data *SteamData
+		err  error
+	}
+	steamAvailable := false
+
+	if s.steamClientIdAvailable {
+		steamResult = <-steamCh
+		if steamResult.err != nil {
+			err := fmt.Sprintf("ERROR: fetchFromSteam: %v\n", steamResult.err)
+			s.Logger.Print(err)
+			s.Logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+				Content: err,
+				Username: "Trials Store",
+				Title: "Trials Store Error",
+			})
+			message := "failed to fetch data from steam"
+			return &message
+		}
+		steamAvailable = true
+	}
+
+	if !steamAvailable && !trialsFresh {
+		message := "no data available"
 		return &message
 	}
 
-	steamPlayerCount := humanize.Comma(int64(steamResult.data.Response.PlayerCount))
-	trialsPlayerCount := humanize.Comma(int64(trialsResult.data.Platforms.Num0.RecentStats.PlayerCount))
-
-	layout := "2006-01-02 15:04:05"
-	updatedAtTime, err := time.Parse(layout, trialsResult.data.Platforms.Num0.RecentStats.UpdatedAt)
-	if err != nil {
-		s.Logger.Printf("ERROR: parsing updatedAt time: %v\n", err)
-		message := "failed to parse time, tell lesi"
-		return &message
-	}
-
-	if time.Since(updatedAtTime) >= 90*time.Minute {
+	if steamAvailable && !trialsFresh {
+		steamPlayerCount := humanize.Comma(int64(steamResult.data.Response.PlayerCount))
 		message := fmt.Sprintf(
 			"There are currently %v players playing Destiny 2 on Steam",
 			steamPlayerCount,
@@ -73,6 +89,19 @@ func (s *TrialsStore) GetPlayerCount() *string {
 		minuteLabel = "minute"
 	}
 
+	trialsPlayerCount := humanize.Comma(int64(trialsResult.data.Platforms.Num0.RecentStats.PlayerCount))
+
+	if !steamAvailable {
+		message := fmt.Sprintf(
+			"There are currently %s players in Trials of Osiris across all platforms | Trials data last updated: %s %s ago from https://trials.report",
+			trialsPlayerCount,
+			humanize.Comma(elapsedMinutes),
+			minuteLabel,
+		)
+		return &message
+	}
+
+	steamPlayerCount := humanize.Comma(int64(steamResult.data.Response.PlayerCount))
 	message := fmt.Sprintf(
 		"There are currently %s players playing on Steam & %s players in Trials of Osiris across all platforms | Trials data last updated: %s %s ago from https://trials.report",
 		steamPlayerCount,

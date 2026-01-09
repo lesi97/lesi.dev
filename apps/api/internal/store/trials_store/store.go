@@ -18,25 +18,25 @@ type TrialsStore struct {
 	url				string
 	steamClientId 	string
 	steamUrl		string
+	steamClientIdAvailable bool
 }
 
-func NewStore(db *database.DB, logger *utils.Logger) *TrialsStore {
+func NewStore(db *database.DB, logger *utils.Logger) *TrialsStore{
 	steamApiKey := os.Getenv("STEAM_CLIENT_ID")
 	if steamApiKey == "" {
-		message := "FATAL: ERROR GETTING STEAM_CLIENT_ID ENV VAR"
-		utils.SendDiscordNotification(utils.SendDiscordNotificationArgs{
-			Content: message,
+		err := "FATAL: ERROR GETTING STEAM_CLIENT_ID ENV VAR"
+		logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: err,
 			Username: "STEAM STORE FATAL",
-			Logger: logger,
+			Title: "STEAM STORE FATAL",
 		})
-		logger.Fatal(message)
-		return nil
 	}
 	return &TrialsStore{
 		StoreBase: store.NewStoreBase(db, logger),
 		url: "https://api.trialsofthenine.com/weeks/0",
 		steamClientId: steamApiKey,
 		steamUrl: "https://api.steampowered.com",
+		steamClientIdAvailable: steamApiKey != "",
 	}
 }
 

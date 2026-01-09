@@ -32,16 +32,25 @@ func setupRoutes(app *Application) *chi.Mux {
 	routes.Post("/v1/countdown", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleCountdownPost)))
 	routes.Get("/v1/countdown/{id}", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleGetCountdown)))
 
-	routes.Get("/v1/d2/{id}/time", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPlayTime)))
-	routes.Get("/v1/d2/{id}/primary", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
-	routes.Get("/v1/d2/{id}/kinetic", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
-	routes.Get("/v1/d2/{id}/secondary", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
-	routes.Get("/v1/d2/{id}/energy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
-	routes.Get("/v1/d2/{id}/heavy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetHeavy)))
-	routes.Get("/v1/d2/terror/weapons",	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetTerrorKillCount)))
-
 	routes.Get("/v1/d2/trials/loot", http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetLoot)))
 	routes.Get("/v1/d2/playercount", http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetPlayercount)))
+
+	if app.BungieHandler != nil {
+		routes.Get("/v1/d2/{id}/time", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPlayTime)))
+		routes.Get("/v1/d2/{id}/primary", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
+		routes.Get("/v1/d2/{id}/kinetic", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
+		routes.Get("/v1/d2/{id}/secondary", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
+		routes.Get("/v1/d2/{id}/energy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
+		routes.Get("/v1/d2/{id}/heavy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetHeavy)))
+		routes.Get("/v1/d2/terror/weapons",	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetTerrorKillCount)))
+	} else {
+		app.Logger.PrintColour(true, "brightRed", "Bungie routes not registered")
+		disabled := &DisabledServiceHandler{
+			ServiceName: "Bungie",
+		}
+		routes.Route("/v1/d2/terror", disabled.RegisterRoutes)
+		routes.Route("/v1/d2/{id}", disabled.RegisterRoutes)
+	}
 
 	if app.AnilistHandler != nil {
 		routes.Get("/v1/anilist/test", http.HandlerFunc(middleware.Measure(app.Logger, app.AnilistHandler.HandleAnilistTest)))

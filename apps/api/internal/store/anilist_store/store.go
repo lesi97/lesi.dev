@@ -24,10 +24,10 @@ func NewStore(db *database.DB, logger *utils.Logger) (*AnilistStore, error) {
 	apiDetails, err := db.FetchApiDetails(context.Background(),"Anilist", logger)
 	if err != nil || apiDetails == nil {
 		message := fmt.Sprintf("FATAL: ERROR GETTING ANILIST API DETAILS %v\n", err)
-		utils.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+		logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
 			Content: message,
 			Username: "Anilist FATAL",
-			Logger: logger,
+			Title: "ANILIST FATAL",
 		})
 		return nil, fmt.Errorf("FATAL: ERROR GETTING ANILIST API DETAILS %v\n", err)
 	}

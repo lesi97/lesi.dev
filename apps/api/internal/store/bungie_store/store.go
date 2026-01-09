@@ -35,24 +35,23 @@ type BungieStore struct {
 	clientId 	string
 }
 
-func NewStore(db *database.DB, logger *utils.Logger) *BungieStore {
+func NewStore(db *database.DB, logger *utils.Logger) (*BungieStore, error) {
 	bungieApiKey := os.Getenv("BUNGIE_CLIENT_ID")
 	if bungieApiKey == "" {
 		message := "FATAL: ERROR GETTING BUNGIE_CLIENT_ID ENV VAR"
-		utils.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+		logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
 			Content: message,
 			Username: "BUNGIE STORE FATAL",
-			Logger: logger,
+			Title: "BUNGIE STORE FATAL",
 		})
-		logger.Fatal(message)
-		return nil
+		return nil, fmt.Errorf("%s", message)
 	}
 
 	return &BungieStore{
 		StoreBase: store.NewStoreBase(db, logger),
 		url: "https://www.bungie.net",
 		clientId: bungieApiKey,
-	}
+	}, nil
 }
 
 func (s *BungieStore) GetCharacterPlayTime(ctx context.Context) (*string, error) {

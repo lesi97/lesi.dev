@@ -44,14 +44,21 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	
 	tarotStore := tarot_store.NewStore(logger)
 	trialsStore := trials_store.NewStore(db, logger)
-	bungieStore := bungie_store.NewStore(db, logger)
 	countdownStore := countdown_store.NewStore(db, logger)
 
 	tarotHandler := api.NewTarotHandler(logger, tarotStore)
 	trialsHandler := api.NewTrialsHandler(logger, trialsStore)
-	bungieHandler := api.NewBungieHandler(logger, bungieStore)
 	countdownHandler := api.NewCountdownHandler(logger, countdownStore)
 	timeapiHandler := api.NewTimeapiHandler(logger)
+
+	var bungieHandler *api.BungieHandler
+	bungieStore, bungieErr := bungie_store.NewStore(db, logger)	
+	if bungieErr != nil {
+		logger.Error("AniList store disabled: " + bungieErr.Error())
+	} else {
+		bungieHandler = api.NewBungieHandler(logger, bungieStore)
+	}
+
 
 	var anilistHandler *api.AnilistHandler
 	anilistStore, anilistErr := anilist_store.NewStore(db, logger)
