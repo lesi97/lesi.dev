@@ -5,13 +5,18 @@ import (
 	"strings"
 )
 
+var (
+	ModuleName = "lesi.dev-api"
+	ModuleVersion    = "v0.0.0"
+)
+
 /*
 Function to read the version number and module name from the `go.mod` file
 */
 func readModuleInfo() (name, version string) {
 	content, err := os.ReadFile("go.mod")
 	if err != nil {
-		return "unknown-module", "v0.0.0"
+		return ModuleName, ModuleVersion
 	}
 
 	lines := strings.Split(string(content), "\n")
@@ -25,7 +30,7 @@ func readModuleInfo() (name, version string) {
 	}
 
 	if version == "" {
-		version = "v0.0.0"
+		version = ModuleVersion
 	}
 	return name, version
 }
