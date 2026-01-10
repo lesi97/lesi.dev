@@ -87,11 +87,6 @@ func (h *AnilistHandler) HandleUpdateAnilist(w http.ResponseWriter, r *http.Requ
 			err3 := json.Unmarshal([]byte(normalised), &plexData)
 			if err3 != nil {
 				message := fmt.Sprintf("payload parse failed \nerr=%v \nerr2=%v \nerr3=%v \nprefix=%q", err, err2, err3, payload[:min(20, len(payload))])
-				h.logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
-					Content:  message,
-					Username: discord_username,
-					Title:    "Failed to unmarshal Anilist form data to Plex Payload",
-				})
 				h.logger.Error(message)
 				utils.Error(w, http.StatusBadRequest, "invalid payload json")
 				return

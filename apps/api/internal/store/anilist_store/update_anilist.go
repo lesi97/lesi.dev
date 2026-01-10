@@ -124,6 +124,13 @@ func (s *AnilistStore) UpdateAnilist(ctx context.Context, data PlexWebhookPayloa
 	}
 
 
+	if absEpisode % 100 == 0 {
+		s.Logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: "",
+			Title: fmt.Sprintf("Episde %v of %v watched!", absEpisode, showName),
+			Username: "Anilist Milestone",
+		})
+	}
 	_ = s.updateAniListProgress(targetMediaID, progress)
 	return nil
 }

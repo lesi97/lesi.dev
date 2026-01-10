@@ -34,7 +34,6 @@ func handleIndex(r chi.Router) http.HandlerFunc {
 }
 
 
-
 func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
@@ -49,6 +48,7 @@ func setupRoutes(app *Application) *chi.Mux {
 
 	routes.Get("/v1/d2/trials/loot", http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetLoot)))
 	routes.Get("/v1/d2/playercount", http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetPlayercount)))
+
 
 	if app.BungieHandler != nil {
 		routes.Get("/v1/d2/{id}/time", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPlayTime)))
@@ -67,6 +67,7 @@ func setupRoutes(app *Application) *chi.Mux {
 		routes.Route("/v1/d2/{id}", disabled.RegisterRoutes)
 	}
 
+
 	if app.AnilistHandler != nil {
 		routes.Post("/v1/anilist", http.HandlerFunc(middleware.Measure(app.Logger, app.AnilistHandler.HandleUpdateAnilist)))
 	} else {
@@ -74,8 +75,22 @@ func setupRoutes(app *Application) *chi.Mux {
 		disabled := &DisabledServiceHandler{
 			ServiceName: "AniList",
 		}
+		routes.Get("/v1/auth/anilist/start", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleAniAuthInitialRedirect)))
+		routes.Get("/v1/auth/anilist/callback", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleAnilistAuthCallback)))
 		routes.Route("/v1/anilist", disabled.RegisterRoutes)
 	}
+	
+
+	if app.TwitchHandler != nil {
+		routes.Get("/v1/twitch/{streamer}/chatters", http.HandlerFunc(middleware.Measure(app.Logger, app.TwitchHandler.HandleGetRandomChatter)))
+	} else {
+		app.Logger.PrintColour(true, "brightRed", "Twitch routes not registered")
+		disabled := &DisabledServiceHandler{
+			ServiceName: "Twitch",
+		}
+		routes.Route("/v1/twitch", disabled.RegisterRoutes)
+	}
+
 
 	if os.Getenv("GO_ENV") == "development" {
 		routes.Post("/local/db-dump", http.HandlerFunc(middleware.Measure(app.Logger, app.LocalHandler.HandleDbDump)))

@@ -1,6 +1,7 @@
 package anilist_store
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,6 +12,29 @@ import (
 
 func (s *AnilistStore) AnilistGET(url string) ([]byte, error) {
 	defer utils.LogExecutionTime(url, time.Now())
+
+	expired := utils.IsRefreshTokenExpired(*s.api_details.RefreshTokenExpiry)
+	if expired {
+		api, err :=utils.RefreshToken("Anilist", *s.api_details.ClientID, *s.api_details.ClientSecret, *s.api_details.RefreshToken, s.auth_url)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to refresh Anilist API Details")
+		}
+		s.api_details.AccessToken = &api.AccessToken
+		s.api_details.RefreshToken = &api.RefreshToken
+		s.api_details.RefreshTokenExpiry = api.RefreshTokenExpiry
+		s.DB.UpdateApiDetails(
+			context.Background(),
+			"Anilist",
+			s.api_details.ClientID,
+			s.api_details.ClientSecret,
+			&api.AccessToken,
+			&api.RefreshToken,
+			api.RefreshTokenExpiry,
+			s.api_details.BaseURL,
+			s.api_details.RedirectURL,
+			s.Logger,
+		)
+	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

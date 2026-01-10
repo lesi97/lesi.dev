@@ -1,9 +1,10 @@
-package anilist_store
+package utils
 
 import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -21,17 +22,19 @@ type refreshTokenResponse struct {
 	RefreshTokenExpiry *int64  `json:"refresh_token_expiry"`
 }
 
-type refreshTokenResult struct {
+type RefreshTokenResult struct {
 	AccessToken        string
 	RefreshToken       string
 	RefreshTokenExpiry *int64
 }
 
-func refreshToken(
+func RefreshToken(
+	application string,
 	clientID string,
 	clientSecret string,
 	refreshTokenValue string,
-) (*refreshTokenResult, error) {
+	authUrl string,
+) (*RefreshTokenResult, error) {
 	payload := refreshTokenRequest{
 		GrantType:    "refresh_token",
 		ClientID:     clientID,
@@ -46,7 +49,7 @@ func refreshToken(
 
 	req, err := http.NewRequest(
 		http.MethodPost,
-		"https://anilist.co/api/v2/oauth/token",
+		authUrl,
 		bytes.NewReader(body),
 	)
 	if err != nil {
@@ -66,7 +69,8 @@ func refreshToken(
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, errors.New("failed to refresh AniList token")
+		errMessage := fmt.Sprintf("failed to refresh %v token | status code: %v | resp body: %v", application, resp.StatusCode, resp.Body)
+		return nil, errors.New(errMessage)
 	}
 
 	var data refreshTokenResponse
@@ -76,10 +80,11 @@ func refreshToken(
 	}
 
 	if data.AccessToken == nil || data.RefreshToken == nil {
-		return nil, errors.New("failed to refresh AniList token")
+		errMessage := fmt.Sprintf("failed to refresh %v token, no access token provided | resp body: %v", application, resp.Body)
+		return nil, errors.New(errMessage)
 	}
 
-	return &refreshTokenResult{
+	return &RefreshTokenResult{
 		AccessToken:        *data.AccessToken,
 		RefreshToken:       *data.RefreshToken,
 		RefreshTokenExpiry: data.RefreshTokenExpiry,

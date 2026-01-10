@@ -8,10 +8,12 @@ import (
 	"github.com/lesi97/lesi.dev/internal/api"
 	"github.com/lesi97/lesi.dev/internal/database"
 	"github.com/lesi97/lesi.dev/internal/store/anilist_store"
+	"github.com/lesi97/lesi.dev/internal/store/auth_store"
 	"github.com/lesi97/lesi.dev/internal/store/bungie_store"
 	"github.com/lesi97/lesi.dev/internal/store/countdown_store"
 	"github.com/lesi97/lesi.dev/internal/store/tarot_store"
 	"github.com/lesi97/lesi.dev/internal/store/trials_store"
+	"github.com/lesi97/lesi.dev/internal/store/twitch_store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -25,6 +27,8 @@ type Application struct {
 	TrialsHandler		*api.TrialsHandler
 	AnilistHandler 		*api.AnilistHandler
 	LocalHandler		*api.LocalHandler
+	TwitchHandler		*api.TwitchHandler
+	AuthHandler			*api.AuthHandler
 }
 
 func init() {
@@ -46,17 +50,19 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	tarotStore := tarot_store.NewStore(logger)
 	trialsStore := trials_store.NewStore(db, logger)
 	countdownStore := countdown_store.NewStore(db, logger)
+	authStore := auth_store.NewStore(db, logger)
 
 	tarotHandler := api.NewTarotHandler(logger, tarotStore)
 	trialsHandler := api.NewTrialsHandler(logger, trialsStore)
 	countdownHandler := api.NewCountdownHandler(logger, countdownStore)
 	timeapiHandler := api.NewTimeapiHandler(logger)
 	localHandler := api.NewLocalHandler(logger, db)
+	authHandler := api.NewAuthHandler(logger, authStore)
 
 	var bungieHandler *api.BungieHandler
 	bungieStore, bungieErr := bungie_store.NewStore(db, logger)	
 	if bungieErr != nil {
-		logger.Error("AniList store disabled: " + bungieErr.Error())
+		logger.Error("Bungie store disabled: " + bungieErr.Error())
 	} else {
 		bungieHandler = api.NewBungieHandler(logger, bungieStore)
 	}
@@ -69,6 +75,14 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		anilistHandler = api.NewAnilistHandler(logger, anilistStore)
 	}
 
+	var twitchHandler *api.TwitchHandler
+	twitchStore, twitchErr := twitch_store.NewStore(db, logger)
+	if twitchErr != nil {
+		logger.Error("Twitch store disabled: " + twitchErr.Error())
+	} else {
+		twitchHandler = api.NewTwitchHandler(logger, twitchStore)
+	}
+
 	app := &Application{
 		Logger: logger,
 		DB: db,
@@ -79,6 +93,8 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		CountdownHandler: countdownHandler,
 		TimeapiHandler: timeapiHandler,
 		LocalHandler: localHandler,
+		TwitchHandler: twitchHandler,
+		AuthHandler: authHandler,
 	}
 
 	routes := setupRoutes(app)

@@ -22,6 +22,11 @@ type DiscordNotificationData struct {
 }
 
 func (l *Logger) SendDiscordNotification(data SendDiscordNotificationArgs) {
+	
+	if os.Getenv("GO_ENV") == "development" {
+		return
+	}
+
 	discordURL := os.Getenv("DISCORD_WEBHOOK_URL")
 	if discordURL == "" {
 		l.Error("DISCORD_WEBHOOK_URL is not defined in environment variables")
