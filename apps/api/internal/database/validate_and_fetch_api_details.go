@@ -15,7 +15,6 @@ type ValidateApiDetailsArgs struct {
 }
 
 func (db *DB) ValidateAndFetchApiDetails(data ValidateApiDetailsArgs) (*ApiDetails, error) {
-
 	application := data.Application
 	logger := data.Logger
 	discordUsername := data.DiscordUsername

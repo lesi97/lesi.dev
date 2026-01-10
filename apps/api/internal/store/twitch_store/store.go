@@ -19,7 +19,6 @@ type TwitchStore struct {
 
 
 func NewStore(db *database.DB, logger *utils.Logger) (*TwitchStore, error) {
-	logger.Print("GOONER\n")
 	const userName = "Twitch Updater"
 	const twitchAuthUrl = "https://id.twitch.tv/oauth2/token"
 
