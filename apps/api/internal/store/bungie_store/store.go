@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/dustin/go-humanize"
 	"github.com/lesi97/lesi.dev/internal/database"
 	"github.com/lesi97/lesi.dev/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
@@ -19,6 +18,7 @@ type BungieStoreInterface interface {
 	GetCharacterPlayTime(ctx context.Context) (*string, error)
 	GetEquippedWeapon(ctx context.Context) (*string, error)
 	GetTerrorWeapon(ctx context.Context) (*string, error)
+	GetYungerWeapon(ctx context.Context) (*string, error)
 }
 
 type BungieContextInfo struct {
@@ -160,89 +160,3 @@ func (s *BungieStore) GetEquippedWeapon(ctx context.Context) (*string, error) {
 	return &responseMessage, nil
 }
 
-func (s *BungieStore) GetTerrorWeapon(ctx context.Context) (*string, error) {
-	context, ok := ctx.Value("bungie").(BungieContextInfo)
-	if !ok {
-		return nil, fmt.Errorf("invalid context")
-	}
-	weaponData, err := getTerrorWeaponData(context.WeaponName)
-	if err != nil {
-		return nil, err
-	}
-
-	const membershipID = "4611686018467358417"
-	const preferredPlatform = "3"
-
-	dbChan := make(chan struct {
-		Count int
-		Err error
-	})
-	bungieChan := make(chan struct {
-		Bungie *BungieProfile
-		Err error
-	})
-
-	go func() {
-		count, err := s.getKillCountsFromDB(ctx, membershipID, weaponData.Weapon)
-		if err != nil {
-			s.Logger.Fatalf("ERROR: %v\n - getKillCountsFromDB: %v", context.Handler, err)
-			dbChan <- struct{Count int; Err error}{Count: 0, Err: err}
-			return
-		}
-		dbChan <- struct{Count int; Err error}{Count: count.PVPKills, Err: nil}
-	}()
-
-	go func() {
-		profile, err := s.getBungieProfileByMembershipID(membershipID, preferredPlatform, "205,309")
-		if err != nil {
-			fmt.Printf("ERROR: %s: getBungieProfileByMembershipID: %v\n", context.Handler, err)
-			bungieChan <- struct{Bungie *BungieProfile; Err error}{Bungie: nil, Err: err}
-			return
-		}
-		bungieChan <- struct{Bungie *BungieProfile; Err error}{Bungie: profile, Err: nil}
-	}()
-
-	var killCount int
-	var valid bool
-
-	for range 2 {
-		select {
-		case dbResult := <-dbChan:
-			if dbResult.Err == nil && !valid {
-				killCount = dbResult.Count
-			}
-		case bungieResult := <-bungieChan:
-			if bungieResult.Err == nil {
-				profile := bungieResult.Bungie
-				objectives := profile.Response.ItemComponents.PlugObjectives.Data[weaponData.Weapon].ObjectivesPerPlug
-				if objectives == nil {
-					continue
-				}
-				count, category := getKillCounts(objectives)
-				killCount = count
-				valid = true
-
-				go func() {
-					data := dbKillCounts{
-						MembershipID: membershipID,
-						WeaponID:     weaponData.Weapon,
-						WeaponHash:   weaponData.HashID,
-					}
-					switch category {
-					case "PVP":
-						data.PVPKills = &count
-					case "PVE":
-						data.PVEKills = &count
-					case "Trials":
-						data.TrialsKills = &count
-					}
-					s.insertKillCounts(&data)
-				}()
-			}
-		}
-	}
-
-	localeKillCount := humanize.Comma(int64(killCount))
-	return &localeKillCount, nil
-
-}

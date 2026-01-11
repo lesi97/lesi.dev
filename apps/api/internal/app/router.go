@@ -58,6 +58,8 @@ func setupRoutes(app *Application) *chi.Mux {
 		routes.Get("/v1/d2/{id}/energy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
 		routes.Get("/v1/d2/{id}/heavy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetHeavy)))
 		routes.Get("/v1/d2/terror/weapons",	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetTerrorKillCount)))
+		routes.Get("/v1/d2/yunger/weapons",	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetYungerKillCount)))
+		routes.Get("/v1/d2/reset",	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleReset)))
 	} else {
 		app.Logger.PrintColour(true, "brightRed", "Bungie routes not registered")
 		disabled := &DisabledServiceHandler{

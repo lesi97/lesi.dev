@@ -10,12 +10,6 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-type terroWeaponData struct {
-	Weapon 			string
-	HashID 			string
-	CrucibleTracker string
-}
-
 func ValidateID(id string) bool {
 	idRegex := regexp.MustCompile(`^[\w !@#$%^&*()_+={}\[\]:;"'<>,.?/\\|-]+#[0-9]{4}$`)
 	invalidRegex := regexp.MustCompile(`\b(drop|alter|delete|insert|update|create|select|truncate|exec|union)\b`)
@@ -150,19 +144,4 @@ func generateString(gt string, weapon *weaponResult, category string, killCount 
 	return responseMessage
 }
 
-func getTerrorWeaponData(name string) (*terroWeaponData, error) {
-	switch name {
-        case "ace":
-            return  &terroWeaponData{Weapon: "6917529207684081719", HashID: "38912240", CrucibleTracker: "38912240"}, nil
-        case "felwinter":
-            return  &terroWeaponData{Weapon: "6917529190261952418", HashID: "1179141605", CrucibleTracker: "3244015567"}, nil
-        case "matador":
-            return  &terroWeaponData{Weapon: "6917529875871677239", HashID: "2563012876", CrucibleTracker: "3244015567"}, nil
-        case "immortal":
-            return  &terroWeaponData{Weapon: "6917529880229623656", HashID: "38912240", CrucibleTracker: "38912240"}, nil
-        case "thorn":
-            return &terroWeaponData{Weapon: "6917529935035554307", HashID: "3973202132", CrucibleTracker: "38912240"}, nil
-        default:
-            return nil, fmt.Errorf("weapon '%s' not found", name)
-    }
-}
+
