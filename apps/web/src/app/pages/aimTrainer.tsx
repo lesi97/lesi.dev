@@ -99,9 +99,9 @@ export function AimTrainer() {
 
             const config = {
                 arguments: [],
-                dataUrl: `${buildPath}/aim-trainer.data.br`,
-                frameworkUrl: `${buildPath}/aim-trainer.framework.js.br`,
-                codeUrl: `${buildPath}/aim-trainer.wasm.br`,
+                dataUrl: `${buildPath}/aim-trainer.data`,
+                frameworkUrl: `${buildPath}/aim-trainer.framework.js`,
+                codeUrl: `${buildPath}/aim-trainer.wasm`,
                 streamingAssetsUrl: '/StreamingAssets',
                 companyName: 'comp',
                 productName: 'aim-trainer',

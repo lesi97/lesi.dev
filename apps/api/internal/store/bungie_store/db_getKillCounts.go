@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"time"
-
-	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type killCountsDBData struct {
@@ -13,7 +11,7 @@ type killCountsDBData struct {
 }
 
 func (s *BungieStore) getKillCountsFromDB(ctx context.Context, bungieID string, weaponID string) (*killCountsDBData, error) {
-	defer utils.LogExecutionTime("getKillCountsFromDB", time.Now())
+	defer s.Logger.LogExecutionTime("getKillCountsFromDB", time.Now())
 	query := `
 		SELECT pvp_kills 
 		FROM destiny_weapon_kill_counts 

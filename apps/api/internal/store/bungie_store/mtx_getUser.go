@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"time"
-
-	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type user struct {
@@ -21,7 +19,7 @@ type result struct {
 }
 
 func (s *BungieStore) getUser(ctx context.Context, gt string) (*user, error) {
-	defer utils.LogExecutionTime("getUser", time.Now())
+	defer s.Logger.LogExecutionTime("getUser", time.Now())
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 

@@ -11,7 +11,7 @@ import (
 )
 
 func (s *AnilistStore) AnilistGET(url string) ([]byte, error) {
-	defer utils.LogExecutionTime(url, time.Now())
+	defer s.Logger.LogExecutionTime(url, time.Now())
 
 	expired := utils.IsRefreshTokenExpired(*s.api_details.RefreshTokenExpiry)
 	if expired {

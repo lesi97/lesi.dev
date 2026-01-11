@@ -5,8 +5,6 @@ import (
 	"io"
 	"net/http"
 	"time"
-
-	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type errorResponse struct {
@@ -19,7 +17,7 @@ type errorResponse struct {
 
 
 func (s *BungieStore) bungieGET(url string) ([]byte, error) {
-	defer utils.LogExecutionTime(url, time.Now())
+	defer s.Logger.LogExecutionTime(url, time.Now())
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

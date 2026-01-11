@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"time"
-
-	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type bungieDBData struct {
@@ -16,7 +14,7 @@ type bungieDBData struct {
 }
 
 func (s *BungieStore) getUserFromDatabaseByGamertag(ctx context.Context, bungieID string) (*bungieDBData, error) {
-	defer utils.LogExecutionTime("getUserFromDatabaseByGamertag", time.Now())
+	defer s.Logger.LogExecutionTime("getUserFromDatabaseByGamertag", time.Now())
 	query := `
 		SELECT 
 			membership_id, 

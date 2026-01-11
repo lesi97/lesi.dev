@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"time"
-
-	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type weaponData struct {
@@ -15,7 +13,7 @@ type weaponData struct {
 }
 
 func (s *BungieStore) getWeaponData(ctx context.Context, hashID string) (*weaponData, error) {
-	defer utils.LogExecutionTime("getWeaponData", time.Now())
+	defer s.Logger.LogExecutionTime("getWeaponData", time.Now())
 	query := `
 		SELECT 
 			display_name, 
