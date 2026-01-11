@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -32,7 +31,6 @@ func (h *TwitchHandler) HandleGetRandomChatter(w http.ResponseWriter, r *http.Re
 	}
 
 	username, err := h.store.RandomViewer(streamerName)
-	fmt.Printf("suername: %v\nerr: %v\n", username, err)
 	if err != nil {
 		h.logger.Errorf("ERROR: %v", err)
 		// have to return ok, used by nightbot in twitch and if not ok, nightbot wont output a response

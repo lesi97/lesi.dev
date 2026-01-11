@@ -28,7 +28,6 @@ func NewStore(db *database.DB, logger *utils.Logger) (*TwitchStore, error) {
 		DiscordUsername: userName,
 		AuthUrl: twitchAuthUrl,
 	})
-	utils.PrintPrettyJSON(apiDetails)
 	if err != nil {
 		return nil, err
 	}
