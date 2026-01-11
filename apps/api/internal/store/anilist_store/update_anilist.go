@@ -80,7 +80,6 @@ func (s *AnilistStore) UpdateAnilist(ctx context.Context, data PlexWebhookPayloa
 	progress := absEpisode
 
 	chain, chainErr := s.buildSeasonChain(best.ID)
-	utils.PrintPrettyJSON(chain)
 
 	if best.Episodes != nil && *best.Episodes > 0 {
 		// If the base entry has a known episode count

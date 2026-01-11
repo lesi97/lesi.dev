@@ -7,7 +7,7 @@ import (
 )
 
 type TwichStoreInterface interface {
-	
+	RandomViewer(streamer string) (*string, error)
 }
 
 type TwitchStore struct {
@@ -19,15 +19,16 @@ type TwitchStore struct {
 
 
 func NewStore(db *database.DB, logger *utils.Logger) (*TwitchStore, error) {
-	const userName = "Twitch Updater"
+	const userName = "Twitch_GO"
 	const twitchAuthUrl = "https://id.twitch.tv/oauth2/token"
 
 	apiDetails, err := db.ValidateAndFetchApiDetails(database.ValidateApiDetailsArgs{
-		Application: "Twitch",
+		Application: "Twitch_GO",
 		Logger: logger,
 		DiscordUsername: userName,
 		AuthUrl: twitchAuthUrl,
 	})
+	utils.PrintPrettyJSON(apiDetails)
 	if err != nil {
 		return nil, err
 	}

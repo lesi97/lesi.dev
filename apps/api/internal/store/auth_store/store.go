@@ -10,8 +10,10 @@ import (
 )
 
 type AuthStoreInterface interface {
-	GenerateAnilistAuthUrl() (*string, error)
+	AnilistAuthUrl() (*string, error)
 	AnilistCallback(code string) error
+	TwitchAuthUrl() (*string, error)
+	TwitchCallback(code string) error
 }
 
 type ApiApplication struct {
@@ -43,7 +45,7 @@ func NewStore(db *database.DB, logger *utils.Logger) *AuthStore {
 	const userName = "Auth Store"
 
 	anilistApiDetails, _ := db.FetchApiDetails(context.Background(), "Anilist", logger)
-	twitchApiDetails, _ := db.FetchApiDetails(context.Background(), "Twitch", logger)
+	twitchApiDetails, _ := db.FetchApiDetails(context.Background(), "Twitch_GO", logger)
 
 	anilist := ApiApplication{
 		api_details: anilistApiDetails,
@@ -52,7 +54,7 @@ func NewStore(db *database.DB, logger *utils.Logger) *AuthStore {
 
 	twitch := ApiApplication{
 		api_details: twitchApiDetails,
-		base_url: "TODO",
+		base_url: "https://id.twitch.tv/oauth2",
 	}
 
 	return &AuthStore{

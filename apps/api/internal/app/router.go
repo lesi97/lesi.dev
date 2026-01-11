@@ -75,7 +75,7 @@ func setupRoutes(app *Application) *chi.Mux {
 		disabled := &DisabledServiceHandler{
 			ServiceName: "AniList",
 		}
-		routes.Get("/v1/auth/anilist/start", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleAniAuthInitialRedirect)))
+		routes.Get("/v1/auth/anilist/login", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleAniAuthInitialRedirect)))
 		routes.Get("/v1/auth/anilist/callback", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleAnilistAuthCallback)))
 		routes.Route("/v1/anilist", disabled.RegisterRoutes)
 	}
@@ -86,8 +86,10 @@ func setupRoutes(app *Application) *chi.Mux {
 	} else {
 		app.Logger.PrintColour(true, "brightRed", "Twitch routes not registered")
 		disabled := &DisabledServiceHandler{
-			ServiceName: "Twitch",
+			ServiceName: "Twitch_GO",
 		}
+		routes.Get("/v1/auth/twitch/login", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleTwitchAuthInitialRedirect)))
+		routes.Get("/v1/auth/twitch/callback", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleTwitchlistAuthCallback)))
 		routes.Route("/v1/twitch", disabled.RegisterRoutes)
 	}
 

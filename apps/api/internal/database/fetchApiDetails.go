@@ -22,7 +22,7 @@ type ApiDetails struct {
 var allowedApplications = map[string]struct{}{
 	"Anilist":  {},
 	"Nightbot": {},
-	"Twitch":   {},
+	"Twitch_GO":   {},
 	"Spotify":  {},
 	"Nasa":     {},
 }

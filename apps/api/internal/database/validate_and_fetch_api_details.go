@@ -37,11 +37,18 @@ func (db *DB) ValidateAndFetchApiDetails(data ValidateApiDetailsArgs) (*ApiDetai
 		logger.Error(message)
 		return nil, fmt.Errorf("%s", message)
 	}
+	
+	if apiDetails.RefreshTokenExpiry == nil {
+		message := fmt.Sprintf("No %v Refresh Token Expiry Found", application)
+		logger.Error(message)
+		return nil, fmt.Errorf("%s", message)
+	}
 
 	expired := utils.IsRefreshTokenExpired(*apiDetails.RefreshTokenExpiry)
 	if expired {
 		newAuthData, err := utils.RefreshToken(application, *apiDetails.ClientID, *apiDetails.ClientSecret, *apiDetails.RefreshToken, authUrl)
 		if err != nil {
+			fmt.Printf("NEW AUTH DATA ERR: %v\n", err)
 			return nil, err
 		}
 		apiDetails.AccessToken = &newAuthData.AccessToken

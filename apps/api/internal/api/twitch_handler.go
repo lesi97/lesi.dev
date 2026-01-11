@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -13,7 +14,7 @@ type TwitchHandler struct {
 	store 			twitch_store.TwichStoreInterface
 }
 
-const TwitchContextKey = "Twitch"
+const TwitchContextKey = "Twitch_GO"
 
 func NewTwitchHandler(logger *utils.Logger, store twitch_store.TwichStoreInterface)  *TwitchHandler {
 	return &TwitchHandler{
@@ -25,5 +26,19 @@ func NewTwitchHandler(logger *utils.Logger, store twitch_store.TwichStoreInterfa
 
 func (h *TwitchHandler) HandleGetRandomChatter(w http.ResponseWriter, r *http.Request) {
 	streamerName := chi.URLParam(r, "streamer")
-	utils.Success(w, http.StatusOK, streamerName)
+	if streamerName == "" {
+		utils.TextResponse(w, http.StatusOK, "You must declare a streamer for this to work")
+		return
+	}
+
+	username, err := h.store.RandomViewer(streamerName)
+	fmt.Printf("suername: %v\nerr: %v\n", username, err)
+	if err != nil {
+		h.logger.Errorf("ERROR: %v", err)
+		// have to return ok, used by nightbot in twitch and if not ok, nightbot wont output a response
+		utils.TextResponse(w, http.StatusOK, "An error has occurred, take note of the current time and tell Lesi when this happened")
+		return
+	}
+
+	utils.TextResponse(w, http.StatusOK, *username)
 }

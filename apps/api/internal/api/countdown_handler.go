@@ -46,8 +46,6 @@ func (h *CountdownHandler) HandleCountdownPost(w http.ResponseWriter, r *http.Re
 	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()
 
-	utils.PrintPrettyJSON(dec)
-
 	var req countdown_store.CountdownPostRequest
 	if err := dec.Decode(&req); err != nil {
 		utils.TextResponse(w, http.StatusBadRequest, "invalid request body")

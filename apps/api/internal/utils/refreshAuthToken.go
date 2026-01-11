@@ -20,6 +20,7 @@ type refreshTokenResponse struct {
 	AccessToken        *string `json:"access_token"`
 	RefreshToken       *string `json:"refresh_token"`
 	RefreshTokenExpiry *int64  `json:"refresh_token_expiry"`
+	RefreshTokenExpiry2 *int64  `json:"expires_in"`
 }
 
 type RefreshTokenResult struct {
@@ -69,7 +70,7 @@ func RefreshToken(
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		errMessage := fmt.Sprintf("failed to refresh %v token | status code: %v | resp body: %v", application, resp.StatusCode, resp.Body)
+		errMessage := fmt.Sprintf("failed to refresh %v token | status code: %v", application, resp.StatusCode)
 		return nil, errors.New(errMessage)
 	}
 
@@ -80,8 +81,12 @@ func RefreshToken(
 	}
 
 	if data.AccessToken == nil || data.RefreshToken == nil {
-		errMessage := fmt.Sprintf("failed to refresh %v token, no access token provided | resp body: %v", application, resp.Body)
+		errMessage := fmt.Sprintf("failed to refresh %v token, no access token provided", application)
 		return nil, errors.New(errMessage)
+	}
+
+	if data.RefreshTokenExpiry == nil || *data.RefreshTokenExpiry == int64(0) {
+		data.RefreshTokenExpiry = data.RefreshTokenExpiry2
 	}
 
 	return &RefreshTokenResult{
