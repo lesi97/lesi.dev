@@ -2,7 +2,7 @@ services:
     server:
         image: ghcr.io/lesi97/lesi.dev:latest
         ports:
-            - 8080:1537
+            - 1537:8080
         build:
             context: .
             target: final
