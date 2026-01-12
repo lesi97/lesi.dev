@@ -44,10 +44,24 @@ func Measure(logger *utils.Logger) func(http.Handler) http.Handler {
 					statusColour = utils.Colours["brightRed"] + utils.Colours["bold"]
 				}
 
-				statusBlock := fmt.Sprintf("%vStatus: %v%v", statusColour, sw.status, utils.Colours["reset"])
-				pathBlock := fmt.Sprintf("%v%v%v", pathColour, path, utils.Colours["reset"])
-				timeBlock := fmt.Sprintf("%vtook %v%v", timeColour, duration, utils.Colours["reset"])
+				reset := utils.Colours["reset"]
+
+				statusBlock := fmt.Sprintf("%vStatus: %v%v", statusColour, sw.status, reset)
+				pathBlock := fmt.Sprintf("%v%v%v", pathColour, path, reset)
+				timeBlock := fmt.Sprintf("%vtook %v%v", timeColour, duration, reset)
 				logger.Printf("%v | %v %v", statusBlock, pathBlock, timeBlock)
+ 
+				if sw.status == http.StatusNotFound {
+					logger.Printf("%v404 Headers:%v", utils.Colours["brightBlue"], reset)
+					for key, values := range r.Header {
+						for _, value := range values {
+							keyBlock := fmt.Sprintf("%v%v%v: %v", utils.Colours["brightBlue"], utils.Colours["dim"], key, reset)
+							logger.Printf("%v%v\n", keyBlock, value)
+						}
+					}
+
+				}
+				fmt.Println()
 			}()
 
 			next.ServeHTTP(sw, r)
