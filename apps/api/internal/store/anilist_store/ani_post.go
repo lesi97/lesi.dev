@@ -42,7 +42,15 @@ func (s *AnilistStore) anilistPOST(url string, query string, variables map[strin
 	}
 	defer resp.Body.Close()
 
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		s.Logger.Errorf("anilist request failed\n")
+		s.Logger.Errorf("status_code: %v\n", resp.StatusCode)
+		s.Logger.Errorf("response_body: %v\n", string(respBody))
 		return nil, errors.New("anilist request failed")
 	}
 
