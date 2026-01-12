@@ -37,29 +37,30 @@ func handleIndex(r chi.Router) http.HandlerFunc {
 func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
+	routes.Use(middleware.Measure(app.Logger))
 
-	routes.Get("/v1/time",	http.HandlerFunc(middleware.Measure(app.Logger, app.TimeapiHandler.HandleGetDateTime)))
+	routes.Get("/v1/time",	http.HandlerFunc(app.TimeapiHandler.HandleGetDateTime))
 
-	routes.Get("/v1/tarot", http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetRandomTarot)))
-	routes.Get("/v1/tarot/all", http.HandlerFunc(middleware.Measure(app.Logger, app.TarotHandler.HandleGetAllCards)))
+	routes.Get("/v1/tarot", http.HandlerFunc(app.TarotHandler.HandleGetRandomTarot))
+	routes.Get("/v1/tarot/all", http.HandlerFunc(app.TarotHandler.HandleGetAllCards))
 
-	routes.Post("/v1/countdown", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleCountdownPost)))
-	routes.Get("/v1/countdown/{id}", http.HandlerFunc(middleware.Measure(app.Logger, app.CountdownHandler.HandleGetCountdown)))
+	routes.Post("/v1/countdown", http.HandlerFunc(app.CountdownHandler.HandleCountdownPost))
+	routes.Get("/v1/countdown/{id}", http.HandlerFunc(app.CountdownHandler.HandleGetCountdown))
 
-	routes.Get("/v1/d2/trials/loot", http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetLoot)))
-	routes.Get("/v1/d2/playercount", http.HandlerFunc(middleware.Measure(app.Logger, app.TrialsHandler.HandleGetPlayercount)))
+	routes.Get("/v1/d2/trials/loot", http.HandlerFunc(app.TrialsHandler.HandleGetLoot))
+	routes.Get("/v1/d2/playercount", http.HandlerFunc(app.TrialsHandler.HandleGetPlayercount))
 
 
 	if app.BungieHandler != nil {
-		routes.Get("/v1/d2/{id}/time", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPlayTime)))
-		routes.Get("/v1/d2/{id}/primary", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
-		routes.Get("/v1/d2/{id}/kinetic", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetPrimary)))
-		routes.Get("/v1/d2/{id}/secondary", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
-		routes.Get("/v1/d2/{id}/energy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetSecondary)))
-		routes.Get("/v1/d2/{id}/heavy", http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetHeavy)))
-		routes.Get("/v1/d2/terror/weapons",	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetTerrorKillCount)))
-		routes.Get("/v1/d2/yunger/weapons",	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleGetYungerKillCount)))
-		routes.Get("/v1/d2/reset",	http.HandlerFunc(middleware.Measure(app.Logger, app.BungieHandler.HandleReset)))
+		routes.Get("/v1/d2/{id}/time", http.HandlerFunc(app.BungieHandler.HandleGetPlayTime))
+		routes.Get("/v1/d2/{id}/primary", http.HandlerFunc(app.BungieHandler.HandleGetPrimary))
+		routes.Get("/v1/d2/{id}/kinetic", http.HandlerFunc(app.BungieHandler.HandleGetPrimary))
+		routes.Get("/v1/d2/{id}/secondary", http.HandlerFunc(app.BungieHandler.HandleGetSecondary))
+		routes.Get("/v1/d2/{id}/energy", http.HandlerFunc(app.BungieHandler.HandleGetSecondary))
+		routes.Get("/v1/d2/{id}/heavy", http.HandlerFunc(app.BungieHandler.HandleGetHeavy))
+		routes.Get("/v1/d2/terror/weapons",	http.HandlerFunc(app.BungieHandler.HandleGetTerrorKillCount))
+		routes.Get("/v1/d2/yunger/weapons",	http.HandlerFunc(app.BungieHandler.HandleGetYungerKillCount))
+		routes.Get("/v1/d2/reset",	http.HandlerFunc(app.BungieHandler.HandleReset))
 	} else {
 		app.Logger.PrintColour(true, "brightRed", "Bungie routes not registered")
 		disabled := &DisabledServiceHandler{
@@ -71,33 +72,33 @@ func setupRoutes(app *Application) *chi.Mux {
 
 
 	if app.AnilistHandler != nil {
-		routes.Post("/v1/anilist", http.HandlerFunc(middleware.Measure(app.Logger, app.AnilistHandler.HandleUpdateAnilist)))
+		routes.Post("/v1/anilist", http.HandlerFunc(app.AnilistHandler.HandleUpdateAnilist))
 	} else {
 		app.Logger.PrintColour(true, "brightRed", "AniList routes not registered")
 		disabled := &DisabledServiceHandler{
 			ServiceName: "AniList",
 		}
-		routes.Get("/v1/auth/anilist/login", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleAniAuthInitialRedirect)))
-		routes.Get("/v1/auth/anilist/callback", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleAnilistAuthCallback)))
+		routes.Get("/v1/auth/anilist/login", http.HandlerFunc(app.AuthHandler.HandleAniAuthInitialRedirect))
+		routes.Get("/v1/auth/anilist/callback", http.HandlerFunc(app.AuthHandler.HandleAnilistAuthCallback))
 		routes.Route("/v1/anilist", disabled.RegisterRoutes)
 	}
 	
 
 	if app.TwitchHandler != nil {
-		routes.Get("/v1/twitch/{streamer}/chatters", http.HandlerFunc(middleware.Measure(app.Logger, app.TwitchHandler.HandleGetRandomChatter)))
+		routes.Get("/v1/twitch/{streamer}/chatters", http.HandlerFunc(app.TwitchHandler.HandleGetRandomChatter))
 	} else {
 		app.Logger.PrintColour(true, "brightRed", "Twitch routes not registered")
 		disabled := &DisabledServiceHandler{
 			ServiceName: "Twitch_GO",
 		}
-		routes.Get("/v1/auth/twitch/login", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleTwitchAuthInitialRedirect)))
-		routes.Get("/v1/auth/twitch/callback", http.HandlerFunc(middleware.Measure(app.Logger, app.AuthHandler.HandleTwitchlistAuthCallback)))
+		routes.Get("/v1/auth/twitch/login", http.HandlerFunc(app.AuthHandler.HandleTwitchAuthInitialRedirect))
+		routes.Get("/v1/auth/twitch/callback", http.HandlerFunc(app.AuthHandler.HandleTwitchlistAuthCallback))
 		routes.Route("/v1/twitch", disabled.RegisterRoutes)
 	}
 
 
 	if os.Getenv("GO_ENV") == "development" {
-		routes.Post("/local/db-dump", http.HandlerFunc(middleware.Measure(app.Logger, app.LocalHandler.HandleDbDump)))
+		routes.Post("/local/db-dump", http.HandlerFunc(app.LocalHandler.HandleDbDump))
 	} else {
 		disabled := &DisabledServiceHandler{
 			ServiceName: "Local",
@@ -106,6 +107,7 @@ func setupRoutes(app *Application) *chi.Mux {
 	}
 
 	routes.Get("/", handleIndex(routes))
+
 	
 	return routes
 }

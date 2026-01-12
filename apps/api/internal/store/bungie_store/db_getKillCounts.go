@@ -11,7 +11,7 @@ type killCountsDBData struct {
 }
 
 func (s *BungieStore) getKillCountsFromDB(ctx context.Context, bungieID string, weaponID string) (*killCountsDBData, error) {
-	defer s.Logger.LogExecutionTime("getKillCountsFromDB", time.Now())
+	defer s.Logger.LogExecutionTime("DATABASE CALL: getKillCountsFromDB", time.Now(), ctx)
 	query := `
 		SELECT pvp_kills 
 		FROM destiny_weapon_kill_counts 

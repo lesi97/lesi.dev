@@ -13,7 +13,7 @@ type weaponData struct {
 }
 
 func (s *BungieStore) getWeaponData(ctx context.Context, hashID string) (*weaponData, error) {
-	defer s.Logger.LogExecutionTime("getWeaponData", time.Now())
+	defer s.Logger.LogExecutionTime("DATABASE CALL: getWeaponData", time.Now(), ctx)
 	query := `
 		SELECT 
 			display_name, 

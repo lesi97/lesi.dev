@@ -27,7 +27,7 @@ type filteredPerksResult struct {
 
 
 func (s *BungieStore) getWeaponPerks(ctx context.Context, perkHashIDs []string) (*filteredPerksResult, error) {
-	defer s.Logger.LogExecutionTime("getWeaponPerks", time.Now())
+	defer s.Logger.LogExecutionTime("DATABASE CALL: getWeaponPerks", time.Now(), ctx)
 	if len(perkHashIDs) == 0 {
 		return nil, fmt.Errorf("perk list not provided")
 	}

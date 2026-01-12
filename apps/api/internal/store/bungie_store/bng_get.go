@@ -17,7 +17,7 @@ type errorResponse struct {
 
 
 func (s *BungieStore) bungieGET(url string) ([]byte, error) {
-	defer s.Logger.LogExecutionTime(url, time.Now())
+	defer s.Logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), time.Now(), nil)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

@@ -19,7 +19,7 @@ type result struct {
 }
 
 func (s *BungieStore) getUser(ctx context.Context, gt string) (*user, error) {
-	defer s.Logger.LogExecutionTime("getUser", time.Now())
+	defer s.Logger.LogExecutionTime("MATRIX: getUser", time.Now(), ctx)
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -28,7 +28,7 @@ func (s *BungieStore) getUser(ctx context.Context, gt string) (*user, error) {
 	go func() {
 		dbUser, err := s.getUserFromDatabaseByGamertag(ctx, gt)
 		if err != nil || dbUser == nil {
-			fmt.Printf("ERROR in Matrix\n - getUserFromDatabase: %v\n", err)
+			s.Logger.Printf("ERROR in Matrix - getUserFromDatabase: %v\n", err)
 			ch <- result{nil, fmt.Errorf("no users found in db with gt: %v", gt)}
 			return
 		}
@@ -44,7 +44,7 @@ func (s *BungieStore) getUser(ctx context.Context, gt string) (*user, error) {
 	go func() {
 		apiUser, err := s.getUserFromBungieByGamertag(gt)
 		if err != nil || apiUser == nil || apiUser.Response == nil || len(apiUser.Response) == 0 {
-			fmt.Printf("ERROR in Matrix\n - getUserFromBungie: %v\n", err)
+			s.Logger.Printf("ERROR in Matrix - getUserFromBungie: %v\n", err)
 			ch <- result{nil, fmt.Errorf("bungie response was empty")}
 			return
 		} else {			

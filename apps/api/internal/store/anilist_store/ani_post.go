@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
 )
 
 func (s *AnilistStore) anilistPOST(url string, query string, variables map[string]interface{}) ([]byte, error) {
-	defer s.Logger.LogExecutionTime(url, time.Now())
+	defer s.Logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), time.Now(), nil)
 
 	body, err := json.Marshal(map[string]interface{}{
 		"query":     query,

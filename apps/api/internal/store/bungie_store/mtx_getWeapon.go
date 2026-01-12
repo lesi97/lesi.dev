@@ -3,6 +3,7 @@ package bungie_store
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
 type weaponResult struct {
@@ -12,6 +13,7 @@ type weaponResult struct {
 }
 
 func (s *BungieStore) getWeapon(ctx context.Context, weaponHashID string, perkHashIDs []string) (*weaponResult, error) {
+	defer s.Logger.LogExecutionTime("MATRIX: getWeapon", time.Now(), ctx)
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 

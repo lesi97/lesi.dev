@@ -14,7 +14,7 @@ type bungieDBData struct {
 }
 
 func (s *BungieStore) getUserFromDatabaseByGamertag(ctx context.Context, bungieID string) (*bungieDBData, error) {
-	defer s.Logger.LogExecutionTime("getUserFromDatabaseByGamertag", time.Now())
+	defer s.Logger.LogExecutionTime("DATABASE CALL: getUserFromDatabaseByGamertag", time.Now(), ctx)
 	query := `
 		SELECT 
 			membership_id, 
