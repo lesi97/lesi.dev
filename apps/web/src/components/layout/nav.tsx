@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useSeason } from '@/context/SeasonContext';
 import { cn } from '@/utils';
 import { Icons } from '../ui';
+import { useIsMobile } from '@/hooks';
 
 type NavLink = {
     to: string;
@@ -81,37 +82,74 @@ type NavItemProps = {
 
 function NavItem({ item, onNavigate }: NavItemProps) {
     const hasChildren = Boolean(item.children && item.children.length > 0);
+    const isMobile = useIsMobile();
+    const [open, setOpen] = useState(false);
+
+    function handleParentClick() {
+        if (isMobile && hasChildren) {
+            setOpen((v) => !v);
+        } else {
+            onNavigate?.();
+        }
+    }
 
     return (
-        <li className='group flex max-h-47px list-none items-center text-primary-content hover:bg-secondary/30'>
-            <div className='relative h-full w-full'>
+        <li
+            className={[
+                'group list-none text-primary-content hover:bg-secondary/30',
+                isMobile ? 'flex flex-col' : 'flex items-center max-h-47px',
+            ].join(' ')}>
+            <div className='relative w-full'>
                 {hasChildren ? (
-                    <div className='cursor-default relative flex h-full max-h-[47px] w-full flex-row items-center gap-2 px-4 py-4 text-center text-[17px] text-primary-content no-underline xl:py-0'>
+                    <button
+                        type='button'
+                        className={cn(
+                            'relative flex w-full flex-row items-center justify-between gap-2 px-4 py-4 text-left text-[17px] text-primary-content',
+                            'xl:h-full xl:max-h-[47px] xl:py-0'
+                        )}
+                        onClick={handleParentClick}
+                        aria-expanded={open}>
                         <span>{item.label}</span>
-                        {hasChildren ? (
-                            <Icons.Chevron className='hidden h-4 w-4 rotate-180 text-accent transition-transform duration-500 ease-in-out group-hover:rotate-0 xl:inline-flex' />
-                        ) : null}
-                    </div>
+                        <Icons.Chevron
+                            className={cn(
+                                'h-4 w-4 mr-1 text-accent transition-transform duration-300 ease-in-out',
+                                isMobile ? (open ? 'rotate-0' : 'rotate-180') : 'rotate-180 group-hover:rotate-0'
+                            )}
+                        />
+                    </button>
                 ) : (
                     <Link
                         to={item.to}
                         onClick={onNavigate}
-                        className='relative flex h-full max-h-[47px] w-full flex-row items-center gap-2 px-4 py-4 text-center text-[17px] text-primary-content no-underline xl:py-0'>
+                        className='relative flex w-full flex-row items-center gap-2 px-4 py-4 text-center text-[17px] text-primary-content no-underline xl:h-full xl:max-h-[47px] xl:py-0'>
                         <span>{item.label}</span>
-                        {hasChildren ? (
-                            <Icons.Chevron className='hidden h-4 w-4 rotate-180 text-accent transition-transform duration-500 ease-in-out group-hover:rotate-0 xl:inline-flex' />
-                        ) : null}
                     </Link>
                 )}
 
                 {hasChildren ? (
-                    <div className='min-w-parent absolute left-0 top-[47px] hidden w-max min-w-full transform divide-y divide-solid divide-neutral shadow-xl xl:flex-col xl:group-hover:flex'>
+                    <div
+                        className={cn(
+                            isMobile
+                                ? cn(
+                                      open ? 'block' : 'hidden',
+                                      'w-full bg-secondary/20',
+                                      'border-l-2 border-accent/40',
+                                      'pl-4'
+                                  )
+                                : 'min-w-parent absolute left-0 top-[47px] hidden w-max min-w-full divide-y divide-solid divide-neutral shadow-xl xl:flex-col xl:group-hover:flex'
+                        )}>
                         {item.children?.map((child) => {
                             return (
                                 <Link
                                     key={child.to}
                                     to={child.to}
-                                    className='outline-l-0 flex h-[47px] w-full items-center bg-secondary px-4 py-4 text-center text-[17px] text-secondary-content no-underline last:rounded-b-md hover:bg-secondary/90 xl:py-0'>
+                                    onClick={onNavigate}
+                                    className={cn(
+                                        'flex h-[47px] w-full items-center px-4 py-4 text-left text-[17px] no-underline',
+                                        isMobile
+                                            ? 'text-primary-content hover:bg-secondary/20'
+                                            : 'bg-secondary text-secondary-content last:rounded-b-md hover:bg-secondary/90 xl:py-0'
+                                    )}>
                                     {child.label}
                                 </Link>
                             );
