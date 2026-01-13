@@ -11,7 +11,7 @@
         "typecheck": "npm run -w apps/web typecheck",
         "docker:build": "docker build -t lesi.dev .",
         "docker:run": "docker run --rm -p 8080:8080 lesi.dev",
-        "package-lock:regen": "docker run --rm -v \"${PWD}:/repo\" -w /repo node:22-bookworm-slim bash -lc \"npm install\"",
+        "package-lock:regen": "docker run --rm -v \"%cd%:/repo\" -w /repo node:22-bookworm-slim bash -lc \"npm install\"",
         "prepare": "husky",
         "deploy": "pwsh -File ./scripts/publish-api.ps1"
     },
