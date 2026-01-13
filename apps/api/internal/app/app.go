@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/lesi97/lesi.dev/internal/api"
 	"github.com/lesi97/lesi.dev/internal/database"
+	"github.com/lesi97/lesi.dev/internal/store/aim_trainer_store"
 	"github.com/lesi97/lesi.dev/internal/store/anilist_store"
 	"github.com/lesi97/lesi.dev/internal/store/auth_store"
 	"github.com/lesi97/lesi.dev/internal/store/bungie_store"
@@ -29,6 +30,7 @@ type Application struct {
 	LocalHandler		*api.LocalHandler
 	TwitchHandler		*api.TwitchHandler
 	AuthHandler			*api.AuthHandler
+	AimTrainerHandler	*api.AimTrainerHandler
 }
 
 func init() {
@@ -51,6 +53,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	trialsStore := trials_store.NewStore(db, logger)
 	countdownStore := countdown_store.NewStore(db, logger)
 	authStore := auth_store.NewStore(db, logger)
+	aimTrainerStore := aim_trainer_store.NewStore(db, logger)
 
 	tarotHandler := api.NewTarotHandler(logger, tarotStore)
 	trialsHandler := api.NewTrialsHandler(logger, trialsStore)
@@ -58,6 +61,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	timeapiHandler := api.NewTimeapiHandler(logger)
 	localHandler := api.NewLocalHandler(logger, db)
 	authHandler := api.NewAuthHandler(logger, authStore)
+	aimTrainerHandler := api.NewAimTrainerHandler(logger, aimTrainerStore)
 
 	var bungieHandler *api.BungieHandler
 	bungieStore, bungieErr := bungie_store.NewStore(db, logger)	
@@ -95,6 +99,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		LocalHandler: localHandler,
 		TwitchHandler: twitchHandler,
 		AuthHandler: authHandler,
+		AimTrainerHandler: aimTrainerHandler,
 	}
 
 	routes := setupRoutes(app)

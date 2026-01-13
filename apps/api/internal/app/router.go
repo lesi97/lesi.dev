@@ -50,6 +50,9 @@ func setupRoutes(app *Application) *chi.Mux {
 	routes.Get("/v1/d2/trials/loot", http.HandlerFunc(app.TrialsHandler.HandleGetLoot))
 	routes.Get("/v1/d2/playercount", http.HandlerFunc(app.TrialsHandler.HandleGetPlayercount))
 
+	routes.Get("/v1/aim-trainer", http.HandlerFunc(app.AimTrainerHandler.HandleGetLeaderboard))
+	routes.Post("/v1/aim-trainer", http.HandlerFunc(app.AimTrainerHandler.HandleUpdateLeaderboard))
+
 
 	if app.BungieHandler != nil {
 		routes.Get("/v1/d2/{id}/time", http.HandlerFunc(app.BungieHandler.HandleGetPlayTime))
