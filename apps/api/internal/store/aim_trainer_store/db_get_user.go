@@ -8,7 +8,7 @@ import (
 
 type AimTrainerRow struct {
 	Username        string
-	Score           int64
+	Score           float64
 	Accuracy        float64
 	CompletedRounds int64
 	MiloAttacks     int64

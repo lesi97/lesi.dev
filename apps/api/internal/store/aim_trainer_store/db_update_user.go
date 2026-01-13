@@ -6,7 +6,7 @@ import (
 
 type UpdateInput struct {
 	Username        string
-	Score           *int64
+	Score           *float64
 	Accuracy        *float64
 	HasNiceTriggers bool
 	HasMiloAttacks  bool
@@ -17,14 +17,14 @@ type AimTrainerUpdate struct {
 	Username        string   `json:"username"`
 	UpdatedAt       string   `json:"updated_at"`
 	CompletedRounds int64    `json:"completed_rounds"`
-	Score           *int64   `json:"score,omitempty"`
+	Score           *float64   `json:"score,omitempty"`
 	Accuracy        *float64 `json:"accuracy,omitempty"`
 	NiceTriggers    *int64   `json:"nice_triggers,omitempty"`
 	MiloAttacks     *int64   `json:"milo_attacks,omitempty"`
 }
 
 type ExistingRow struct {
-	Score           int64
+	Score           float64
 	Accuracy        float64
 	CompletedRounds int64
 	MiloAttacks     int64

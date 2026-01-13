@@ -4,7 +4,7 @@ import "context"
 
 type LeaderboardRow struct {
 	Username string
-	Score    int64
+	Score    float64
 	Accuracy float64
 }
 

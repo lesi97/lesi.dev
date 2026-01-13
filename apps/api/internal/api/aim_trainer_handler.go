@@ -64,7 +64,7 @@ func (h *AimTrainerHandler) HandleGetLeaderboard(w http.ResponseWriter, r *http.
 
 type aimTrainerpostBody struct {
 	Username string   `json:"username"`
-	Score    *int64   `json:"score,omitempty"`
+	Score    *float64   `json:"score,omitempty"`
 	Accuracy *float64 `json:"accuracy,omitempty"`
 }
 

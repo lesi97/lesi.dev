@@ -43,7 +43,7 @@ func (s *AimTrainerStore) upsert(ctx context.Context, u *AimTrainerUpdate) error
 			END
 	`
 
-	var sVal *int64 = u.Score
+	var sVal *float64 = u.Score
 	var aVal *float64 = u.Accuracy
 	var mVal *int64 = u.MiloAttacks
 	var nVal *int64 = u.NiceTriggers
