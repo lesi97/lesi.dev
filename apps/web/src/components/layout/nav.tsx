@@ -95,10 +95,10 @@ function NavItem({ item, onNavigate }: NavItemProps) {
 
     return (
         <li
-            className={[
+            className={cn(
                 'group list-none text-primary-content hover:bg-secondary/30',
-                isMobile ? 'flex flex-col' : 'flex items-center max-h-47px',
-            ].join(' ')}>
+                isMobile ? 'flex flex-col' : 'flex items-center max-h-47px'
+            )}>
             <div className='relative w-full'>
                 {hasChildren ? (
                     <button
@@ -136,7 +136,7 @@ function NavItem({ item, onNavigate }: NavItemProps) {
                                       'border-l-2 border-accent/40',
                                       'pl-4'
                                   )
-                                : 'min-w-parent absolute left-0 top-[47px] hidden w-max min-w-full divide-y divide-solid divide-neutral shadow-xl xl:flex-col xl:group-hover:flex'
+                                : 'min-w-parent absolute left-0 top-[35px] hidden w-max min-w-full divide-y divide-solid divide-neutral shadow-xl xl:flex-col xl:group-hover:flex'
                         )}>
                         {item.children?.map((child) => {
                             return (
