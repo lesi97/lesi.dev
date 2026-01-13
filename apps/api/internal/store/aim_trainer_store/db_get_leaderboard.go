@@ -3,9 +3,9 @@ package aim_trainer_store
 import "context"
 
 type LeaderboardRow struct {
-	Username string
-	Score    float64
-	Accuracy float64
+	Username 	string 		`json:"username"`
+	Score    	float64 	`json:"score"`
+	Accuracy 	float64 	`json:"accuracy"`
 }
 
 func (s *AimTrainerStore) GetLeaderboard(ctx context.Context) ([]LeaderboardRow, error) {
