@@ -20,6 +20,7 @@ export function AuthCallback() {
 
             if (error) {
                 throw error;
+                console.error(error);
             }
 
             navigate(next, { replace: true });
