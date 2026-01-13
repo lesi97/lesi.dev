@@ -19,8 +19,8 @@ export function AuthCallback() {
             const { error } = await supabase.auth.exchangeCodeForSession(code);
 
             if (error) {
-                throw error;
                 console.error(error);
+                navigate(next, { replace: true });
             }
 
             navigate(next, { replace: true });
