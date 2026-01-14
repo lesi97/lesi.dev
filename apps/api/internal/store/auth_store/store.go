@@ -12,8 +12,15 @@ import (
 type AuthStoreInterface interface {
 	AnilistAuthUrl() (*string, error)
 	AnilistCallback(code string) error
-	TwitchAuthUrl() (*string, error)
-	TwitchCallback(code string) error
+	TwitchModAuthUrl() (*string, error)
+	TwitchModCallback(code string) error
+	
+	TwitchFrontendAuthStart() (*TwitchFrontendAuthStartResult, error)
+	TwitchFrontendCallback(code string, state string, expectedState string, pkceVerifier string) (*TwitchFrontendIdentity, error)
+	TwitchFrontendUpsertUser(ctx context.Context, identity TwitchFrontendIdentity) (string, error)
+	TwitchFrontendCreateSession(ctx context.Context, userID string, ttl time.Duration) (string, error)
+	TwitchFrontendGetUserBySession(ctx context.Context, sessionToken string) (*TwitchFrontendUser, error)
+	TwitchFrontendDeleteSessionByToken(ctx context.Context, sessionToken string) error
 }
 
 type ApiApplication struct {

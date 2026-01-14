@@ -12,7 +12,6 @@ services:
             target: final
         environment:
             - GO_ENV=production
-            - DATABASE_URL_IPV6=${DATABASE_URL_IPV6}
             - DATABASE_URL=${DATABASE_URL}
             - BUNGIE_CLIENT_ID=${BUNGIE_CLIENT_ID}
             - STEAM_CLIENT_ID=${STEAM_CLIENT_ID}
@@ -24,6 +23,48 @@ services:
             - PLEX_X_TOKEN=${PLEX_X_TOKEN}
             - PLEX_WEBHOOK_SECRET=${PLEX_WEBHOOK_SECRET}
         restart: unless-stopped
+        depends_on:
+            - postgres
+
+    postgres:
+        container_name: lesidev-postgres
+        image: postgres:16
+        environment:
+            - POSTGRES_DB=lesidev
+            - POSTGRES_USER=lesidev
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        volumes:
+            - /srv/lesidev/postgres:/var/lib/postgresql/data
+        networks:
+            - lesidev
+        restart: unless-stopped
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U lesidev -d lesidev']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        ports:
+            - '5432:5432'
+
+    pgadmin:
+        container_name: lesidev-pgadmin
+        image: dpage/pgadmin4:latest
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+            - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+        volumes:
+            - /srv/lesidev/pgadmin:/var/lib/pgadmin
+        networks:
+            - lesidev
+            - proxy
+        ports:
+            - '1538:80'
+        restart: unless-stopped
+        depends_on:
+            - postgres
+
+volumes:
+    lesidev_postgres_data:
 
 networks:
     lesidev:

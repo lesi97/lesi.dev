@@ -6,7 +6,7 @@ import (
 	"net/url"
 )
 
-func (s *AuthStore) TwitchCallback(code string) error {
+func (s *AuthStore) TwitchModCallback(code string) error {
 
 	cfg := oauthProviderConfig{
 		Application: "Twitch_GO",
@@ -20,7 +20,7 @@ func (s *AuthStore) TwitchCallback(code string) error {
 }
 
 
-func (s *AuthStore) TwitchAuthUrl() (*string, error) {
+func (s *AuthStore) TwitchModAuthUrl() (*string, error) {
 
 	baseURL, err := url.Parse(fmt.Sprintf("%v/authorize", s.twitch.base_url))
 	if err != nil {

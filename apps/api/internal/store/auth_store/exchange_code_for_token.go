@@ -22,6 +22,7 @@ type oauthTokenResponse struct {
 	RefreshToken string `json:"refresh_token"`
 	ExpiresIn    int64  `json:"expires_in"`
 	TokenType    string `json:"token_type"`
+	Scope		 []string `json:"scope"`
 }
 
 type oauthProviderConfig struct {

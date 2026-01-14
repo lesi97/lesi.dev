@@ -13,7 +13,7 @@
   <Icon>https://raw.githubusercontent.com/lesi97/go-av-scanner/main/ui/public/lesi.webp</Icon>
   <Config Name="GO_ENV" Target="GO_ENV" Default="production" Mode="rw" Description="HTTP port" Type="Variable" Display="no" Required="false" Mask="false">production</Config>
   <Config Name="WebUI Port" Target="8080" Default="1357" Mode="tcp" Description="HTTP port" Type="Port" Display="always" Required="true" Mask="false">1537</Config>
-  <Config Name="DATABASE_URL_IPV6" Target="DATABASE_URL_IPV6" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="WEB_URL" Target="WEB_URL" Default="" Mode="rw" Description="" Type="Variable" Display="always" Required="false" Mask="false"></Config>
   <Config Name="DATABASE_URL" Target="DATABASE_URL" Default="" Mode="rw" Description="" Type="Variable" Display="never" Required="false" Mask="false"></Config>
   <Config Name="BUNGIE_CLIENT_ID" Target="BUNGIE_CLIENT_ID" Default="" Mode="rw" Description="" Type="Variable" Display="never" Required="false" Mask="false"></Config>
   <Config Name="STEAM_CLIENT_ID" Target="STEAM_CLIENT_ID" Default="" Mode="rw" Description="" Type="Variable" Display="never" Required="false" Mask="false"></Config>

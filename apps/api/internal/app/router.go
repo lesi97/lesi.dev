@@ -94,10 +94,16 @@ func setupRoutes(app *Application) *chi.Mux {
 		disabled := &DisabledServiceHandler{
 			ServiceName: "Twitch_GO",
 		}
-		routes.Get("/v1/auth/twitch/login", http.HandlerFunc(app.AuthHandler.HandleTwitchAuthInitialRedirect))
-		routes.Get("/v1/auth/twitch/callback", http.HandlerFunc(app.AuthHandler.HandleTwitchlistAuthCallback))
+		// These routes are intended for the nightbot command using a mod user's twitch auth
+		routes.Get("/v1/auth/twitch/login", http.HandlerFunc(app.AuthHandler.HandleTwitchModAuthInitialRedirect))
+		routes.Get("/v1/auth/twitch/callback", http.HandlerFunc(app.AuthHandler.HandleTwitchModAuthCallback))
 		routes.Route("/v1/twitch", disabled.RegisterRoutes)
 	}
+	// Always allow the below routes to allow users to login to the aim trainer
+	routes.Get("/auth/twitch", app.AuthHandler.HandleTwitchFrontendAuthStart)
+	routes.Get("/auth/twitch/callback", app.AuthHandler.HandleTwitchFrontendAuthCallback)
+	routes.Get("/auth/twitch/me", app.AuthHandler.HandleTwitchAuthMe)
+	routes.Post("/auth/twitch/logout", app.AuthHandler.HandleTwitchAuthLogout)
 
 
 	if os.Getenv("GO_ENV") == "development" {
@@ -109,7 +115,10 @@ func setupRoutes(app *Application) *chi.Mux {
 		routes.Route("/local", disabled.RegisterRoutes)
 	}
 
-	// routes.Get("/", handleIndex(routes))
+	if os.Getenv("GO_ENV") == "development" {
+		routes.Get("/", handleIndex(routes))
+	}
+	
 
 	
 	return routes

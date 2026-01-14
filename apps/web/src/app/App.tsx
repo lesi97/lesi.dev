@@ -3,7 +3,7 @@ import { StrictMode, useEffect } from 'react';
 import './index.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import * as Page from './pages';
-import * as Docs from './pages/docs'
+import * as Docs from './pages/docs';
 import { PopoverImageProvider } from '@/context/PopoverImageContext';
 import { SeasonProvider } from '@/context/SeasonContext';
 import { ErrorBoundary } from './ErrorBoundary';
@@ -24,7 +24,6 @@ function Router() {
                 <Route path='/countdown' element={<Page.Countdown />} />
                 <Route path='/settings' element={<Page.Settings />} />
                 <Route path='/aim-trainer/release-notes' element={<Docs.AimTrainerReleaseNotes />} />
-                <Route path='/auth/callback' element={<Page.AuthCallback />} />
             </Route>
 
             <Route element={<FfmpegLayout hasAudio={true} />}>
