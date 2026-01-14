@@ -30,6 +30,9 @@ func Measure(logger *utils.Logger) func(http.Handler) http.Handler {
 			}
 
 			defer func() {
+				if path == "/favicon.ico" {
+					return		
+				}
 				pathColour := utils.Colours["brightBlue"]
 				timeColour := utils.Colours["green"]
 				statusColour := utils.Colours["green"]
@@ -49,19 +52,19 @@ func Measure(logger *utils.Logger) func(http.Handler) http.Handler {
 				statusBlock := fmt.Sprintf("%vStatus: %v%v", statusColour, sw.status, reset)
 				pathBlock := fmt.Sprintf("%v%v%v", pathColour, path, reset)
 				timeBlock := fmt.Sprintf("%vtook %v%v", timeColour, duration, reset)
-				logger.Printf("%v | %v %v", statusBlock, pathBlock, timeBlock)
- 
 				if sw.status == http.StatusNotFound {
-					logger.Printf("%v404 Headers:%v", utils.Colours["brightBlue"], reset)
+					fmt.Println()
+					logger.Printf("%v | %v %v", statusBlock, pathBlock, timeBlock)
 					for key, values := range r.Header {
 						for _, value := range values {
 							keyBlock := fmt.Sprintf("%v%v%v: %v", utils.Colours["brightBlue"], utils.Colours["dim"], key, reset)
 							logger.Printf("%v%v\n", keyBlock, value)
 						}
 					}
-
+					fmt.Println()
+				} else {
+					logger.Printf("%v | %v %v", statusBlock, pathBlock, timeBlock)
 				}
-				fmt.Println()
 			}()
 
 			next.ServeHTTP(sw, r)
