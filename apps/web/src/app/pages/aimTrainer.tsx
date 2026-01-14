@@ -181,7 +181,7 @@ export function AimTrainer() {
 
     function startTwitchLogin() {
         const returnTo = window.location.pathname;
-        window.location.href = `/auth/twitch?returnTo=${encodeURIComponent(returnTo)}`;
+        window.location.href = `/api/auth/twitch?returnTo=${encodeURIComponent(returnTo)}`;
     }
 
     if (windowWidth < screenWidthMin) {
