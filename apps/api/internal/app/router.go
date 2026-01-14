@@ -109,7 +109,7 @@ func setupRoutes(app *Application) *chi.Mux {
 		routes.Route("/local", disabled.RegisterRoutes)
 	}
 
-	routes.Get("/", handleIndex(routes))
+	// routes.Get("/", handleIndex(routes))
 
 	
 	return routes
