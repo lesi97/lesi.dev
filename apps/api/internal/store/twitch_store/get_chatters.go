@@ -21,6 +21,7 @@ type TwitchChatters struct {
 func (s *TwitchStore) getChatters(streamerId string) (*TwitchChatters, error) {
 	const modId = "101129910" // me :)
 	url := fmt.Sprintf("%v/chat/chatters?first=1000&broadcaster_id=%v&moderator_id=%v", s.base_url, streamerId, modId)
+
 	body, err := s.twitchGET(url)
 	if err != nil {
 		return nil, err

@@ -1,6 +1,9 @@
 package aim_trainer_store
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 type LeaderboardRow struct {
 	Username 	string 		`json:"username"`
@@ -9,6 +12,7 @@ type LeaderboardRow struct {
 }
 
 func (s *AimTrainerStore) GetLeaderboard(ctx context.Context) ([]LeaderboardRow, error) {
+	defer s.Logger.LogExecutionTime("DATABASE CALL: getLeaderboard", time.Now(), nil)
 	const q = `
 		SELECT username, score, accuracy
 		FROM aim_trainer

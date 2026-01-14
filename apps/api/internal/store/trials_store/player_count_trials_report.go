@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 type maps struct {
@@ -39,6 +40,7 @@ type TrialsData struct {
 }
 
 func (s *TrialsStore) fetchFromTrialsReport() (*TrialsData, error) {
+	defer s.Logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", s.url), time.Now(), nil)
 
 	req, err := http.NewRequest("GET", s.url, nil)
 	if err != nil {

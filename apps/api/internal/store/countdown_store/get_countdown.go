@@ -10,6 +10,8 @@ import (
 )
 
 func (s *CountdownStore) GetCountdownByID(ctx context.Context, uuid string) (*string, error) {
+	defer s.Logger.LogExecutionTime("DATABASE CALL: getCountdownById", time.Now(), nil)
+	
 	countdown := &CountdownData{
 		UUID: uuid,
 	}

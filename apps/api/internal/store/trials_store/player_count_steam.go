@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 type SteamData struct {
@@ -18,6 +19,7 @@ type SteamData struct {
 func (s *TrialsStore) fetchFromSteam() (*SteamData, error) {
 	const destiny2 = "1085660"
 	url := fmt.Sprintf("%s/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=%s&key=%s", s.steamUrl, destiny2, s.steamClientId)
+	defer s.Logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), time.Now(), nil)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

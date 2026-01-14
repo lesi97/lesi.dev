@@ -6,7 +6,6 @@ import (
 )
 
 func (s *TrialsStore) GetLoot() *string {
-
 	trialsData, err := s.fetchFromTrialsReport()
 	if err != nil {
 		s.Logger.Printf("ERROR: fetchFromTrialsReport: %v\n", err)
