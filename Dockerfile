@@ -10,12 +10,12 @@ WORKDIR /src
 
 COPY apps/api/go.mod apps/api/go.sum ./apps/api/
 
-RUN --mount=type=cache,id=s/cache-go-mod-/go/pkg/mod,target=/go/pkg/mod cd apps/api && go mod download
+RUN --mount=type=cache,id=s/9d22b15f-1adb-41d8-a39c-2cb68a10d328-/go/pkg/mod,target=/go/pkg/mod cd apps/api && go mod download
 
 COPY apps/api ./apps/api
 
 ARG TARGETARCH
-RUN --mount=type=cache,id=s/cache-go-mod-/go/pkg/mod,target=/go/pkg/mod cd apps/api && CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /out/server ./cmd
+RUN --mount=type=cache,id=s/9d22b15f-1adb-41d8-a39c-2cb68a10d328-/go/pkg/mod,target=/go/pkg/mod cd apps/api && CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /out/server ./cmd
 
 
 FROM alpine:${ALPINE_VERSION} AS final
