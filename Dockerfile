@@ -10,12 +10,13 @@ WORKDIR /src
 
 COPY apps/api/go.mod apps/api/go.sum ./apps/api/
 
-RUN --mount=type=cache,id=go-mod-cache,target=/go/pkg/mod cd apps/api && go mod download
+RUN --mount=type=cache,id=cache-go-mod,target=/go/pkg/mod cd apps/api && go mod download
 
 COPY apps/api ./apps/api
 
 ARG TARGETARCH
-RUN --mount=type=cache,id=go-mod-cache,target=/go/pkg/mod cd apps/api && CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /out/server ./cmd
+RUN --mount=type=cache,id=cache-go-mod,target=/go/pkg/mod cd apps/api && CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /out/server ./cmd
+
 
 FROM alpine:${ALPINE_VERSION} AS final
 RUN apk add --no-cache ca-certificates tzdata
