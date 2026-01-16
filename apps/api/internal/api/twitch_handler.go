@@ -37,6 +37,6 @@ func (h *TwitchHandler) HandleGetRandomChatter(w http.ResponseWriter, r *http.Re
 		utils.TextResponse(w, http.StatusOK, "An error has occurred, take note of the current time and tell Lesi when this happened")
 		return
 	}
-
+	h.logger.Printf("%v%v hit%v\n", utils.Colours["cyan"], *username, utils.Colours["reset"])
 	utils.TextResponse(w, http.StatusOK, *username)
 }

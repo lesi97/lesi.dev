@@ -2,9 +2,14 @@ package twitch_store
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
+
+	"github.com/lesi97/lesi.dev/internal/utils"
+	"github.com/redis/go-redis/v9"
 )
 
 type StreamerData struct {
@@ -23,6 +28,22 @@ type StreamerData struct {
 }
 
 func (s *TwitchStore) getStreamerData(streamer string) (*StreamerData, error) {
+	ctx := context.Background()
+	cacheKey := fmt.Sprintf("twitch:user:%s", strings.ToLower(streamer))
+	cached, err := s.redis.Get(ctx, cacheKey).Result()
+	if err == nil {
+		result := &StreamerData{}
+		if err := json.Unmarshal([]byte(cached), result); err == nil {
+			s.Logger.Printf("%vCACHE HIT getStreamerData %v%v", utils.Colours["brightBlack"], cacheKey, utils.Colours["reset"])
+			return result, nil
+		}
+		_ = s.redis.Del(ctx, cacheKey).Err()
+	} else {
+		if err != redis.Nil {
+			return nil, err
+		}
+	}
+
 	url := fmt.Sprintf("%v/users?login=%v", s.base_url, streamer)
 	body, err := s.twitchGET(url)
 	if err != nil {
@@ -34,6 +55,10 @@ func (s *TwitchStore) getStreamerData(streamer string) (*StreamerData, error) {
 	if err != nil {
 		fmt.Printf("Decode error: %v\n", err)
 		return nil, err
+	}
+	b, err := json.Marshal(result)
+	if err == nil {
+		_ = s.redis.Set(ctx, cacheKey, b, 24 * time.Hour).Err()
 	}
 
 	return result, nil

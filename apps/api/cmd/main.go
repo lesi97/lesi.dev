@@ -20,6 +20,7 @@ func main() {
 		panic(err)
 	}
 	defer application.DB.Close()
+	defer application.Redis.Close()
 
 	server := &http.Server{
 		Addr: fmt.Sprintf(":%d", port),

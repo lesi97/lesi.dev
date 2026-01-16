@@ -10,6 +10,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/database"
 	"github.com/lesi97/lesi.dev/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
+	"github.com/redis/go-redis/v9"
 )
 
 // const bungie_url = "https://www.bungie.net"
@@ -31,11 +32,12 @@ type BungieContextInfo struct {
 
 type BungieStore struct {
 	store.StoreBase
-	url 			string
+	redis 		*redis.Client
+	url 		string
 	clientId 	string
 }
 
-func NewStore(db *database.DB, logger *utils.Logger) (*BungieStore, error) {
+func NewStore(db *database.DB, logger *utils.Logger, redis *redis.Client) (*BungieStore, error) {
 	bungieApiKey := os.Getenv("BUNGIE_CLIENT_ID")
 	if bungieApiKey == "" {
 		message := "FATAL: ERROR GETTING BUNGIE_CLIENT_ID ENV VAR"
@@ -49,6 +51,7 @@ func NewStore(db *database.DB, logger *utils.Logger) (*BungieStore, error) {
 
 	return &BungieStore{
 		StoreBase: store.NewStoreBase(db, logger),
+		redis: redis,
 		url: "https://www.bungie.net",
 		clientId: bungieApiKey,
 	}, nil

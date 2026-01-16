@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/lesi97/lesi.dev/internal/api"
 	"github.com/lesi97/lesi.dev/internal/middleware"
 )
 
@@ -38,6 +39,8 @@ func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
 	routes.Use(middleware.Measure(app.Logger))
+	routes.Get("/healthcheck", api.Healthcheck)
+
 
 	routes.Get("/v1/time",	http.HandlerFunc(app.TimeapiHandler.HandleGetDateTime))
 

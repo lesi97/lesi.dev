@@ -16,11 +16,13 @@ import (
 	"github.com/lesi97/lesi.dev/internal/store/trials_store"
 	"github.com/lesi97/lesi.dev/internal/store/twitch_store"
 	"github.com/lesi97/lesi.dev/internal/utils"
+	"github.com/redis/go-redis/v9"
 )
 
 type Application struct {
 	Logger				*utils.Logger
 	DB					*database.DB
+	Redis				*redis.Client
 	TarotHandler		*api.TarotHandler
 	CountdownHandler	*api.CountdownHandler
 	TimeapiHandler		*api.TimeapiHandler
@@ -48,6 +50,8 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	cfg := RedisLoadConfig()
+	rdb := RedisNew(cfg)
 	
 	tarotStore := tarot_store.NewStore(logger)
 	trialsStore := trials_store.NewStore(db, logger)
@@ -64,7 +68,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	aimTrainerHandler := api.NewAimTrainerHandler(logger, aimTrainerStore)
 
 	var bungieHandler *api.BungieHandler
-	bungieStore, bungieErr := bungie_store.NewStore(db, logger)	
+	bungieStore, bungieErr := bungie_store.NewStore(db, logger, rdb)	
 	if bungieErr != nil {
 		logger.Error("Bungie store disabled: " + bungieErr.Error())
 	} else {
@@ -80,7 +84,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	}
 
 	var twitchHandler *api.TwitchHandler
-	twitchStore, twitchErr := twitch_store.NewStore(db, logger)
+	twitchStore, twitchErr := twitch_store.NewStore(db, logger, rdb)
 	if twitchErr != nil {
 		logger.Error("Twitch store disabled: " + twitchErr.Error())
 	} else {
@@ -90,6 +94,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	app := &Application{
 		Logger: logger,
 		DB: db,
+		Redis: rdb,
 		TarotHandler: tarotHandler,
 		TrialsHandler: trialsHandler,
 		BungieHandler: bungieHandler,

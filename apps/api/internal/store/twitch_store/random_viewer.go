@@ -18,6 +18,9 @@ func (s *TwitchStore) RandomViewer(streamer string) (*string, error) {
 }
 
 func (c *TwitchChatters) pickRandom() *string {
+	if c.Total == 0 {
+		return nil
+	}
 	max := c.Total
 	index := rand.Intn(max)
 	user := c.Data[index].UserName
