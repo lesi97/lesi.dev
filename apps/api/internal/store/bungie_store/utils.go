@@ -29,7 +29,15 @@ func getPlatformEnum(platform interface{}, user *user) string {
 		return strconv.Itoa(user.MembershipType)
 	}
 
-	switch strings.ToLower(platformString) {
+	str := switchPlatforms(platformString)
+	if str == "-1" {
+		return strconv.Itoa(user.MembershipType)
+	}
+	return str
+}
+
+func switchPlatforms(platform string) string {
+	switch strings.ToLower(platform) {
 	case "xb", "xbox":
 		return "1"
 	case "ps", "playstation":
@@ -43,7 +51,7 @@ func getPlatformEnum(platform interface{}, user *user) string {
 	case "demon":
 		return "10"
 	default:
-		return strconv.Itoa(user.MembershipType)
+		return "-1"
 	}
 }
 

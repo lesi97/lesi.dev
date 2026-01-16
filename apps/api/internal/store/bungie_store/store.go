@@ -62,7 +62,7 @@ func (s *BungieStore) GetCharacterPlayTime(ctx context.Context) (*string, error)
 	if !ok {
 		return nil, fmt.Errorf("invalid context")
 	}
-	user, err := s.getUser(ctx, context.Gamertag)
+	user, err := s.getUser(ctx, context.Gamertag, context.Platform)
 	if err != nil {
 		s.Logger.Printf("ERROR: getCharacterPlayTime %v\n", err)
 		return nil, err
@@ -108,7 +108,7 @@ func (s *BungieStore) GetEquippedWeapon(ctx context.Context) (*string, error) {
 	if !ok {
 		return nil, fmt.Errorf("invalid context")
 	}
-	user, err := s.getUser(ctx, context.Gamertag)
+	user, err := s.getUser(ctx, context.Gamertag, context.Platform)
 	if err != nil {
 		s.Logger.Printf("ERROR in %v:\n - GetEquippedPrimary\n   - getUser: %v\n", context.Handler, err)
 		return nil, err

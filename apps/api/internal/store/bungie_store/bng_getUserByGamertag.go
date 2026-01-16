@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"strings"
 	"time"
 
+	"github.com/lesi97/lesi.dev/internal/utils"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -34,16 +34,16 @@ type bungieSearch struct {
 
 }
 
-func (s *BungieStore) getUserFromBungieByGamertag(id string) (*bungieSearch, error) {
-	ctx := context.Background()
-	normalised := strings.ToLower(strings.TrimSpace(id))
-	cacheKey := fmt.Sprintf("bungie:searchdestinyplayer:%s", normalised)
+func (s *BungieStore) getUserFromBungieByGamertag(ctx context.Context, id string, platform string) (*bungieSearch, error) {
+	platformEnum := switchPlatforms(platform)
+	cacheKey := fmt.Sprintf("bungie:searchdestinyplayer:%s:%s", id, platformEnum)
 
 	cached, err := s.redis.Get(ctx, cacheKey).Result()
 	if err == nil {
 		result := &bungieSearch{}
 		if err := json.Unmarshal([]byte(cached), result); err == nil {
 			s.Logger.Printf("CACHE HIT getUserFromBungieByGamertag %s", cacheKey)
+			utils.PrintPrettyJSON(result)
 			return result, nil
 		}
 		_ = s.redis.Del(ctx, cacheKey).Err()
@@ -54,7 +54,7 @@ func (s *BungieStore) getUserFromBungieByGamertag(id string) (*bungieSearch, err
 	}
 
 	escapedID := url.PathEscape(id)
-	url := fmt.Sprintf("%s/Platform/Destiny2/SearchDestinyPlayer/-1/%s/", s.url, escapedID)
+	url := fmt.Sprintf("%s/Platform/Destiny2/SearchDestinyPlayer/%s/%s/", s.url, platformEnum, escapedID)
 
 	body, err := s.bungieGET(url)
 	if err != nil {

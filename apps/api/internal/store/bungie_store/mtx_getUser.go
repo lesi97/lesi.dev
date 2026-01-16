@@ -18,7 +18,7 @@ type result struct {
 	err  error
 }
 
-func (s *BungieStore) getUser(ctx context.Context, gt string) (*user, error) {
+func (s *BungieStore) getUser(ctx context.Context, gt string, platform string) (*user, error) {
 	defer s.Logger.LogExecutionTime("MATRIX: getUser", time.Now(), ctx)
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -42,7 +42,7 @@ func (s *BungieStore) getUser(ctx context.Context, gt string) (*user, error) {
 	}()
 
 	go func() {
-		apiUser, err := s.getUserFromBungieByGamertag(gt)
+		apiUser, err := s.getUserFromBungieByGamertag(ctx, gt, platform)
 		if err != nil || apiUser == nil || apiUser.Response == nil || len(apiUser.Response) == 0 {
 			s.Logger.Printf("ERROR in Matrix - getUserFromBungie: %v\n", err)
 			ch <- result{nil, fmt.Errorf("bungie response was empty")}
