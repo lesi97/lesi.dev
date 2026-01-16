@@ -16,7 +16,7 @@ func (s *TwitchStore) twitchGET(url string) ([]byte, error) {
 
 	expired := utils.IsRefreshTokenExpired(*s.api_details.RefreshTokenExpiry)
 	if expired {
-		api, err :=utils.RefreshToken("Twitch_GO", *s.api_details.ClientID, *s.api_details.ClientSecret, *s.api_details.RefreshToken, s.auth_url)
+		api, err :=utils.RefreshToken("Twitch_GO", *s.client_id, *s.client_secret, *s.api_details.RefreshToken, *s.auth_url)
 		if err != nil {
 			return nil, fmt.Errorf("Failed to refresh Twitch API Details")
 		}
@@ -26,8 +26,8 @@ func (s *TwitchStore) twitchGET(url string) ([]byte, error) {
 		s.DB.UpdateApiDetails(
 			context.Background(),
 			"Twitch_GO",
-			s.api_details.ClientID,
-			s.api_details.ClientSecret,
+			s.client_id,
+			s.client_secret,
 			&api.AccessToken,
 			&api.RefreshToken,
 			api.RefreshTokenExpiry,
@@ -42,7 +42,7 @@ func (s *TwitchStore) twitchGET(url string) ([]byte, error) {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	req.Header.Set("Client-ID", *s.api_details.ClientID)
+	req.Header.Set("Client-ID", *s.client_id)
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", *s.api_details.AccessToken))
 	client := &http.Client{}
 	resp, err := client.Do(req)

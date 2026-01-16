@@ -2,6 +2,8 @@ package auth_store
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/database"
@@ -24,7 +26,8 @@ type AuthStoreInterface interface {
 }
 
 type ApiApplication struct {
-	api_details *database.ApiDetails
+	client_id *string
+	client_secret *string
 	base_url string
 }
 
@@ -32,6 +35,8 @@ type AuthStore struct {
 	store.StoreBase
 	anilist ApiApplication
 	twitch ApiApplication
+	apiUrl *string
+	webUrl *string
 }
 
 type OAuthClientConfig struct {
@@ -48,19 +53,86 @@ type OAuthTokens struct {
 }
 
 
-func NewStore(db *database.DB, logger *utils.Logger) *AuthStore {
+func NewStore(db *database.DB, logger *utils.Logger) (*AuthStore, error) {
 	const userName = "Auth Store"
+	const discord = "AUTH STORE FATAL"
 
-	anilistApiDetails, _ := db.FetchApiDetails(context.Background(), "Anilist", logger)
-	twitchApiDetails, _ := db.FetchApiDetails(context.Background(), "Twitch_GO", logger)
+	apiUrl := os.Getenv("API_URL")
+	if apiUrl == "" {
+		message := "FATAL: ERROR GETTING API_URL ENV VAR"
+		logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: message,
+			Username: discord,
+			Title: discord,
+		})
+		return nil, fmt.Errorf("%s", message)
+	}
+
+	webUrl := os.Getenv("WEB_URL")
+	if webUrl == "" {
+		message := "FATAL: ERROR GETTING WEB_URL ENV VAR"
+		logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: message,
+			Username: discord,
+			Title: discord,
+		})
+		return nil, fmt.Errorf("%s", message)
+	}
+
+	anilistClientId := os.Getenv("ANILIST_CLIENT_ID")
+	if anilistClientId == "" {
+		message := "FATAL: ERROR GETTING ANILIST_CLIENT_ID ENV VAR"
+		logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: message,
+			Username: discord,
+			Title: discord,
+		})
+		return nil, fmt.Errorf("%s", message)
+	}
+
+	anilistClientSecret := os.Getenv("ANILIST_CLIENT_SECRET")
+	if anilistClientSecret == "" {
+		message := "FATAL: ERROR GETTING ANILIST_CLIENT_SECRET ENV VAR"
+		logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: message,
+			Username: discord,
+			Title: discord,
+		})
+		return nil, fmt.Errorf("%s", message)
+	}
+
+
+	twitchClientId := os.Getenv("TWITCH_CLIENT_ID")
+	if twitchClientId == "" {
+		message := "FATAL: ERROR GETTING TWITCH_CLIENT_ID ENV VAR"
+		logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: message,
+			Username: discord,
+			Title: discord,
+		})
+		return nil, fmt.Errorf("%s", message)
+	}
+
+	twitchClientSecret := os.Getenv("TWITCH_CLIENT_SECRET")
+	if twitchClientSecret == "" {
+		message := "FATAL: ERROR GETTING TWITCH_CLIENT_SECRET ENV VAR"
+		logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+			Content: message,
+			Username: discord,
+			Title: discord,
+		})
+		return nil, fmt.Errorf("%s", message)
+	}
 
 	anilist := ApiApplication{
-		api_details: anilistApiDetails,
+		client_id: &anilistClientId,
+		client_secret: &anilistClientSecret,
 		base_url: "https://anilist.co/api/v2/oauth",
 	}
 
 	twitch := ApiApplication{
-		api_details: twitchApiDetails,
+		client_id: &twitchClientId,
+		client_secret: &twitchClientSecret,
 		base_url: "https://id.twitch.tv/oauth2",
 	}
 
@@ -68,5 +140,7 @@ func NewStore(db *database.DB, logger *utils.Logger) *AuthStore {
 		StoreBase: store.NewStoreBase(db, logger),
 		anilist: anilist,
 		twitch: twitch,
-	}
+		apiUrl: &apiUrl,
+		webUrl: &webUrl,
+	}, nil
 }

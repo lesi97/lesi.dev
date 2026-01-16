@@ -11,9 +11,9 @@ func (s *AuthStore) TwitchModCallback(code string) error {
 	cfg := oauthProviderConfig{
 		Application: "Twitch_GO",
 		TokenURL: fmt.Sprintf("%v/token", s.twitch.base_url),
-		ClientID: s.twitch.api_details.ClientID,
-		ClientSecret: s.twitch.api_details.ClientSecret,
-		RedirectURL: s.twitch.api_details.RedirectURL,
+		ClientID: s.twitch.client_id,
+		ClientSecret: s.twitch.client_secret,
+		RedirectURL: fmt.Sprintf("%v/v1/auth/twitch/callback", *s.apiUrl),
 	}
 
 	return s.oauthCallback(context.Background(), code, cfg)
@@ -27,8 +27,8 @@ func (s *AuthStore) TwitchModAuthUrl() (*string, error) {
 		return nil, err
 	}
 	query := baseURL.Query()
-	query.Set("client_id", *s.twitch.api_details.ClientID)
-	query.Set("redirect_uri", *s.twitch.api_details.RedirectURL)
+	query.Set("client_id", *s.twitch.client_id)
+	query.Set("redirect_uri", fmt.Sprintf("%v/v1/auth/twitch/callback", *s.apiUrl))
 	query.Set("response_type", "code")
 	query.Set("scope", "moderator:read:chatters")
 

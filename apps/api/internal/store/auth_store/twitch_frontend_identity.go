@@ -32,7 +32,7 @@ func (s *AuthStore) fetchTwitchFrontendIdentity(
 	}
 
 	req.Header.Set("Authorization", "Bearer "+accessToken)
-	req.Header.Set("Client-Id", *s.twitch.api_details.ClientID)
+	req.Header.Set("Client-Id", *s.twitch.client_id)
 
 	resp, err := httpClient.Do(req)
 	if err != nil {

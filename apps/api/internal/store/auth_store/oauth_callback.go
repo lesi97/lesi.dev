@@ -24,7 +24,7 @@ func (s *AuthStore) oauthCallback(
 	if cfg.ClientSecret == nil || *cfg.ClientSecret == "" {
 		return fmt.Errorf("missing client secret")
 	}
-	if cfg.RedirectURL == nil || *cfg.RedirectURL == "" {
+	if cfg.RedirectURL == "" {
 		return fmt.Errorf("missing redirect url")
 	}
 
@@ -36,7 +36,7 @@ func (s *AuthStore) oauthCallback(
 		cfg.TokenURL,
 		*cfg.ClientID,
 		*cfg.ClientSecret,
-		*cfg.RedirectURL,
+		cfg.RedirectURL,
 		code,
 	)
 	if err != nil {
@@ -71,7 +71,7 @@ func (s *AuthStore) oauthCallback(
 		refreshTokenPtr,
 		refreshTokenExpiry,
 		nil,
-		redirectPtr,
+		&redirectPtr,
 		s.Logger,
 	)
 

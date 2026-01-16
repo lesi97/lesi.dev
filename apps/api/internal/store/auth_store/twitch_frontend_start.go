@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/url"
-	"os"
 )
 
 type TwitchFrontendAuthStartResult struct {
@@ -30,13 +29,6 @@ func pkceChallenge(verifier string) string {
 }
 
 func (s *AuthStore) TwitchFrontendAuthStart() (*TwitchFrontendAuthStartResult, error) {
-	if s.twitch.api_details.ClientID == nil || *s.twitch.api_details.ClientID == "" {
-		return nil, fmt.Errorf("missing twitch client id")
-	}
-	if s.twitch.api_details.RedirectURL == nil || *s.twitch.api_details.RedirectURL == "" {
-		return nil, fmt.Errorf("missing twitch redirect url")
-	}
-
 	baseURL, err := url.Parse(fmt.Sprintf("%v/authorize", s.twitch.base_url))
 	if err != nil {
 		return nil, err
@@ -53,8 +45,8 @@ func (s *AuthStore) TwitchFrontendAuthStart() (*TwitchFrontendAuthStartResult, e
 	}
 
 	q := baseURL.Query()
-	q.Set("client_id", *s.twitch.api_details.ClientID)
-	q.Set("redirect_uri", fmt.Sprintf("%v/api/auth/twitch/callback", os.Getenv("WEB_URL")))
+	q.Set("client_id", *s.twitch.client_id)
+	q.Set("redirect_uri", fmt.Sprintf("%v/api/auth/twitch/callback", *s.webUrl))
 	q.Set("response_type", "code")
 	q.Set("state", state)
 	q.Set("code_challenge", pkceChallenge(verifier))

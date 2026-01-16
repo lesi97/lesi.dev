@@ -30,7 +30,7 @@ type oauthProviderConfig struct {
 	TokenURL     string
 	ClientID     *string
 	ClientSecret *string
-	RedirectURL  *string
+	RedirectURL  string
 }
 
 func exchangeCodeForToken(

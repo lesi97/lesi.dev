@@ -11,9 +11,9 @@ func (s *AuthStore) AnilistCallback(code string) error {
 	cfg := oauthProviderConfig{
 		Application: "Anilist",
 		TokenURL: fmt.Sprintf("%v/token", s.anilist.base_url),
-		ClientID: s.anilist.api_details.ClientID,
-		ClientSecret: s.anilist.api_details.ClientSecret,
-		RedirectURL: s.anilist.api_details.RedirectURL,
+		ClientID: s.anilist.client_id,
+		ClientSecret: s.anilist.client_secret,
+		RedirectURL: fmt.Sprintf("%v/v1/auth/anilist/callback", *s.apiUrl),
 	}
 
 	return s.oauthCallback(context.Background(), code, cfg)
@@ -26,9 +26,10 @@ func (s *AuthStore) AnilistAuthUrl() (*string, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	query := baseURL.Query()
-	query.Set("client_id", *s.anilist.api_details.ClientID)
-	query.Set("redirect_uri", *s.anilist.api_details.RedirectURL)
+	query.Set("client_id", *s.anilist.client_id)
+	query.Set("redirect_uri", fmt.Sprintf("%v/v1/auth/anilist/callback", *s.apiUrl))
 	query.Set("response_type", "code")
 
 	baseURL.RawQuery = query.Encode()

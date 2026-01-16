@@ -84,8 +84,11 @@ func setupRoutes(app *Application) *chi.Mux {
 		disabled := &DisabledServiceHandler{
 			ServiceName: "AniList",
 		}
-		routes.Get("/v1/auth/anilist/login", http.HandlerFunc(app.AuthHandler.HandleAniAuthInitialRedirect))
-		routes.Get("/v1/auth/anilist/callback", http.HandlerFunc(app.AuthHandler.HandleAnilistAuthCallback))
+		if app.AuthHandler != nil {
+			routes.Get("/v1/auth/anilist/login", http.HandlerFunc(app.AuthHandler.HandleAniAuthInitialRedirect))
+			routes.Get("/v1/auth/anilist/callback", http.HandlerFunc(app.AuthHandler.HandleAnilistAuthCallback))
+		}
+		
 		routes.Route("/v1/anilist", disabled.RegisterRoutes)
 	}
 	
@@ -98,8 +101,11 @@ func setupRoutes(app *Application) *chi.Mux {
 			ServiceName: "Twitch_GO",
 		}
 		// These routes are intended for the nightbot command using a mod user's twitch auth
-		routes.Get("/v1/auth/twitch/login", http.HandlerFunc(app.AuthHandler.HandleTwitchModAuthInitialRedirect))
-		routes.Get("/v1/auth/twitch/callback", http.HandlerFunc(app.AuthHandler.HandleTwitchModAuthCallback))
+		if app.AuthHandler != nil {
+			routes.Get("/v1/auth/twitch/login", http.HandlerFunc(app.AuthHandler.HandleTwitchModAuthInitialRedirect))
+			routes.Get("/v1/auth/twitch/callback", http.HandlerFunc(app.AuthHandler.HandleTwitchModAuthCallback))
+		}
+		
 		routes.Route("/v1/twitch", disabled.RegisterRoutes)
 	}
 	// Always allow the below routes to allow users to login to the aim trainer

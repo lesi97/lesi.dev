@@ -24,11 +24,11 @@ func (s *AuthStore) twitchFrontendExchange(
 	httpClient := &http.Client{Timeout: 15 * time.Second}
 
 	form := url.Values{}
-	form.Set("client_id", *s.twitch.api_details.ClientID)
-	form.Set("client_secret", *s.twitch.api_details.ClientSecret)
+	form.Set("client_id", *s.twitch.client_id)
+	form.Set("client_secret", *s.twitch.client_secret)
 	form.Set("code", code)
 	form.Set("grant_type", "authorization_code")
-	form.Set("redirect_uri", *s.twitch.api_details.RedirectURL)
+	form.Set("redirect_uri", fmt.Sprintf("%v/api/auth/v1/callback", *s.webUrl))
 	form.Set("code_verifier", pkceVerifier)
 
 	req, err := http.NewRequestWithContext(

@@ -21,7 +21,7 @@ services:
             timeout: 5s
             retries: 5
         ports:
-            - 5432:5432
+            - 5435:5432
 
     redis:
         container_name: lesidev-redis
@@ -42,7 +42,7 @@ services:
         container_name: lesidev-api
         image: ghcr.io/lesi97/lesi.dev:latest
         ports:
-            - 1537:8080
+            - 1550:8080
         networks:
             - lesidev
             - proxy

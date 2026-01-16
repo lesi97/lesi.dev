@@ -56,7 +56,6 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	tarotStore := tarot_store.NewStore(logger)
 	trialsStore := trials_store.NewStore(db, logger)
 	countdownStore := countdown_store.NewStore(db, logger)
-	authStore := auth_store.NewStore(db, logger)
 	aimTrainerStore := aim_trainer_store.NewStore(db, logger)
 
 	tarotHandler := api.NewTarotHandler(logger, tarotStore)
@@ -64,7 +63,6 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	countdownHandler := api.NewCountdownHandler(logger, countdownStore)
 	timeapiHandler := api.NewTimeapiHandler(logger)
 	localHandler := api.NewLocalHandler(logger, db)
-	authHandler := api.NewAuthHandler(logger, authStore)
 	aimTrainerHandler := api.NewAimTrainerHandler(logger, aimTrainerStore)
 
 	var bungieHandler *api.BungieHandler
@@ -89,6 +87,14 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		logger.Error("Twitch store disabled: " + twitchErr.Error())
 	} else {
 		twitchHandler = api.NewTwitchHandler(logger, twitchStore)
+	}
+
+	var authHandler *api.AuthHandler
+	authStore, authErr := auth_store.NewStore(db, logger)
+	if authErr != nil {
+		logger.Error("Auth store disabled: " + authErr.Error())
+	} else {
+		authHandler = api.NewAuthHandler(logger, authStore)
 	}
 
 	app := &Application{
