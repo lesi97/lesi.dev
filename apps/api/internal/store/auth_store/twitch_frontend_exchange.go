@@ -57,7 +57,7 @@ func (s *AuthStore) twitchFrontendExchange(
 		if readErr != nil {
 			return nil, readErr
 		}
-		fmt.Printf("Response body:\n")
+		fmt.Printf("Status Code: %v\n\nResponse body:\n", resp.StatusCode)
 		utils.PrintPrettyJSON(bodyBytes)
 		return nil, fmt.Errorf("twitch token exchange failed")
 	}

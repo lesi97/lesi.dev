@@ -44,7 +44,7 @@ func (s *TwitchStore) getStreamerData(streamer string) (*StreamerData, error) {
 		}
 	}
 
-	url := fmt.Sprintf("%v/users?login=%v", s.base_url, streamer)
+	url := fmt.Sprintf("%v/users?login=%v", *s.base_url, streamer)
 	body, err := s.twitchGET(url)
 	if err != nil {
 		return nil, err
