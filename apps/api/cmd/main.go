@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/lesi97/lesi.dev/internal/app"
+	app "github.com/lesi97/lesi.dev/internal/bootsrap"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

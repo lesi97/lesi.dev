@@ -1,0 +1,17 @@
+package store
+
+import (
+	"fmt"
+	"math/rand"
+
+	"github.com/lesi97/lesi.dev/internal/utils"
+)
+
+func (s *TarotStore) GetRandomTarot() *string {
+	max := len(s.Cards)
+	index := rand.Intn(max)
+	card := s.Cards[index]
+	message := fmt.Sprintf("%s | %s", card.Name, card.Desc)
+	utils.TruncateString(&message, 400)
+	return &message
+}

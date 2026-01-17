@@ -1,0 +1,21 @@
+package handler
+
+import (
+	"github.com/lesi97/lesi.dev/internal/domains/tarot/store"
+	"github.com/lesi97/lesi.dev/internal/utils"
+)
+
+type Handler struct {
+	logger 		*utils.Logger
+	store 		store.TarotStoreInterface
+}
+
+func NewHandler(logger *utils.Logger)  *Handler {
+	store := store.NewStore(logger)
+	return &Handler{
+		logger: logger,
+		store: store,
+	}
+}
+
+
