@@ -73,6 +73,11 @@ services:
             - PLEX_X_TOKEN=${PLEX_X_TOKEN}
             - PLEX_WEBHOOK_SECRET=${PLEX_WEBHOOK_SECRET}
             - WEB_URL=${WEB_URL}
+            - API_URL=${API_URL}
+            - ANILIST_CLIENT_ID=${ANILIST_CLIENT_ID}
+            - ANILIST_CLIENT_SECRET=${ANILIST_CLIENT_SECRET}
+            - TWITCH_CLIENT_ID=${TWITCH_CLIENT_ID}
+            - TWITCH_CLIENT_SECRET=${TWITCH_CLIENT_SECRET}
         restart: unless-stopped
         depends_on:
             postgres:

@@ -4,10 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type TwitchFrontendToken struct {
@@ -50,6 +53,12 @@ func (s *AuthStore) twitchFrontendExchange(
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		bodyBytes, readErr := io.ReadAll(resp.Body)
+		if readErr != nil {
+			return nil, readErr
+		}
+		fmt.Printf("Response body:\n")
+		utils.PrintPrettyJSON(bodyBytes)
 		return nil, fmt.Errorf("twitch token exchange failed")
 	}
 
