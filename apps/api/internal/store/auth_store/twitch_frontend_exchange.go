@@ -4,13 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
-
-	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
 type TwitchFrontendToken struct {
@@ -31,7 +28,7 @@ func (s *AuthStore) twitchFrontendExchange(
 	form.Set("client_secret", *s.twitch.client_secret)
 	form.Set("code", code)
 	form.Set("grant_type", "authorization_code")
-	form.Set("redirect_uri", fmt.Sprintf("%v/api/auth/v1/callback", *s.webUrl))
+	form.Set("redirect_uri", fmt.Sprintf("%v/api/auth/twitch/callback", *s.webUrl))
 	form.Set("code_verifier", pkceVerifier)
 
 	req, err := http.NewRequestWithContext(
@@ -53,12 +50,6 @@ func (s *AuthStore) twitchFrontendExchange(
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		bodyBytes, readErr := io.ReadAll(resp.Body)
-		if readErr != nil {
-			return nil, readErr
-		}
-		fmt.Printf("Status Code: %v\n\nResponse body:\n", resp.StatusCode)
-		utils.PrintPrettyJSON(bodyBytes)
 		return nil, fmt.Errorf("twitch token exchange failed")
 	}
 
