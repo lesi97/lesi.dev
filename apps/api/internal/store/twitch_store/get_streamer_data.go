@@ -58,7 +58,8 @@ func (s *TwitchStore) getStreamerData(streamer string) (*StreamerData, error) {
 	}
 	b, err := json.Marshal(result)
 	if err == nil {
-		_ = s.redis.Set(ctx, cacheKey, b, 24 * time.Hour).Err()
+		day := 24 * time.Hour
+		_ = s.redis.Set(ctx, cacheKey, b, 30 * day).Err()
 	}
 
 	return result, nil

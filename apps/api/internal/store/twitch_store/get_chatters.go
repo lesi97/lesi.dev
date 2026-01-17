@@ -23,17 +23,42 @@ type TwitchChatters struct {
 	Total int `json:"total"`
 }
 
+type cachedChatters struct {
+	FetchedAt time.Time      `json:"fetched_at"`
+	Data      TwitchChatters `json:"data"`
+}
+
+
 func (s *TwitchStore) getChatters(streamerId string) (*TwitchChatters, error) {
 	ctx := context.Background()
 	cacheKey := fmt.Sprintf("twitch:chatters:%s", streamerId)
 
+	const freshFor = 2 * time.Minute
+	const staleFor = 5 * time.Minute
+
+
 	cached, err := s.redis.Get(ctx, cacheKey).Result()
 	if err == nil {
-		result := &TwitchChatters{}
-		if err := json.Unmarshal([]byte(cached), result); err == nil {
-			s.Logger.Printf("%vCACHE HIT getChatters %v%v", utils.Colours["brightBlack"], cacheKey, utils.Colours["reset"])
-			return result, nil
+		var wrapper cachedChatters
+		if err := json.Unmarshal([]byte(cached), &wrapper); err == nil {
+			age := time.Since(wrapper.FetchedAt)
+
+			if age <= freshFor {
+				s.Logger.Printf("%vCACHE HIT getChatters %v%v", utils.Colours["brightBlack"], cacheKey, utils.Colours["reset"])
+				return &wrapper.Data, nil
+			}
+
+			if age <= staleFor {
+				s.Logger.Printf("%vCACHE STALE getChatters %v%v", utils.Colours["brightBlack"], cacheKey, utils.Colours["reset"])
+
+				go func() {
+					s.refreshChatters(cacheKey, streamerId)
+				}()
+
+				return &wrapper.Data, nil
+			}
 		}
+
 		_ = s.redis.Del(ctx, cacheKey).Err()
 	} else {
 		if err != redis.Nil {
@@ -41,6 +66,25 @@ func (s *TwitchStore) getChatters(streamerId string) (*TwitchChatters, error) {
 		}
 	}
 
+	result, err := s.fetchChatters(streamerId)
+	if err != nil {
+		return nil, err
+	}
+
+	wrapper := cachedChatters{
+		FetchedAt: time.Now(),
+		Data:      *result,
+	}
+
+	b, err := json.Marshal(wrapper)
+	if err == nil {
+		_ = s.redis.Set(ctx, cacheKey, b, staleFor).Err()
+	}
+
+	return result, nil
+}
+
+func (s *TwitchStore) fetchChatters(streamerId string) (*TwitchChatters, error) {
 	const modId = "101129910"
 	url := fmt.Sprintf(
 		"%v/chat/chatters?first=1000&broadcaster_id=%v&moderator_id=%v",
@@ -59,10 +103,31 @@ func (s *TwitchStore) getChatters(streamerId string) (*TwitchChatters, error) {
 		return nil, err
 	}
 
-	b, err := json.Marshal(result)
-	if err == nil {
-		_ = s.redis.Set(ctx, cacheKey, b, time.Minute).Err()
+	return result, nil
+}
+
+func (s *TwitchStore) refreshChatters(cacheKey string, streamerId string) {
+	ctx := context.Background()
+
+	result, err := s.fetchChatters(streamerId)
+	if err != nil {
+		return
 	}
 
-	return result, nil
+	type cachedChatters struct {
+		FetchedAt time.Time      `json:"fetched_at"`
+		Data      TwitchChatters `json:"data"`
+	}
+
+	wrapper := cachedChatters{
+		FetchedAt: time.Now(),
+		Data:      *result,
+	}
+
+	b, err := json.Marshal(wrapper)
+	if err != nil {
+		return
+	}
+
+	_ = s.redis.Set(ctx, cacheKey, b, 5 * time.Minute).Err()
 }
