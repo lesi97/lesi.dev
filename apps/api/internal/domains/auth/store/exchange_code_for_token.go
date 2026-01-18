@@ -1,4 +1,4 @@
-package auth_store
+package store
 
 import (
 	"bytes"

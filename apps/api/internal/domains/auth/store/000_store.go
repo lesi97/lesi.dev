@@ -1,4 +1,4 @@
-package auth_store
+package store
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-type AuthStoreInterface interface {
+type Methods interface {
 	AnilistAuthUrl() (*string, error)
 	AnilistCallback(code string) error
 	TwitchModAuthUrl() (*string, error)
@@ -31,7 +31,7 @@ type ApiApplication struct {
 	base_url string
 }
 
-type AuthStore struct {
+type Store struct {
 	store.StoreBase
 	anilist ApiApplication
 	twitch ApiApplication
@@ -53,7 +53,7 @@ type OAuthTokens struct {
 }
 
 
-func NewStore(db *database.DB, logger *utils.Logger) (*AuthStore, error) {
+func NewStore(db *database.DB, logger *utils.Logger) (*Store, error) {
 	const userName = "Auth Store"
 	const discord = "AUTH STORE FATAL"
 
@@ -136,7 +136,7 @@ func NewStore(db *database.DB, logger *utils.Logger) (*AuthStore, error) {
 		base_url: "https://id.twitch.tv/oauth2",
 	}
 
-	return &AuthStore{
+	return &Store{
 		StoreBase: store.NewStoreBase(db, logger),
 		anilist: anilist,
 		twitch: twitch,
