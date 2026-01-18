@@ -1,0 +1,19 @@
+package store
+
+import (
+	"github.com/lesi97/lesi.dev/internal/db"
+	"github.com/lesi97/lesi.dev/internal/utils"
+)
+
+type Methods interface {
+	GetLoot() *string
+	GetPlayerCount() *string
+}
+
+type Store struct {
+	DB                     *db.DB
+	Logger                 *utils.Logger
+	URL                    string
+	SteamClientID          string
+	SteamURL               string
+}
