@@ -28,8 +28,9 @@ func GetBungieProfileByMembershipID(
 	staleFor := 2 * time.Minute
 
 	cacheKey := fmt.Sprintf(
-		"bungie:profile:%v",
+		"bungie:profile:%v:%v",
 		membershipID,
+		components,
 	)
 
 	now := time.Now()
