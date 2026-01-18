@@ -1,4 +1,4 @@
-package twitch
+package oauth
 
 import (
 	"context"
@@ -10,20 +10,12 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-type OAuthProviderConfig struct {
-	Application  string
-	TokenURL     string
-	ClientID     *string
-	ClientSecret *string
-	RedirectURL  string
-}
-
 func OAuthCallback(
 	ctx context.Context,
 	database *db.DB,
 	logger *utils.Logger,
 	code string,
-	cfg OAuthProviderConfig,
+	cfg ProviderConfig,
 ) error {
 	if cfg.Application == "" {
 		return fmt.Errorf("missing application")

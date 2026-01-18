@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	twitch_utils "github.com/lesi97/lesi.dev/internal/domains/auth/internal/utils/twitch"
+	oauth_utils "github.com/lesi97/lesi.dev/internal/domains/auth/internal/utils/oauth"
 )
 
 func (s *Store) TwitchModCallback(code string) error {
-	cfg := twitch_utils.OAuthProviderConfig{
+	cfg := oauth_utils.ProviderConfig{
 		Application:  "Twitch_GO",
 		TokenURL:     fmt.Sprintf("%v/token", s.twitch.base_url),
 		ClientID:     s.twitch.client_id,
@@ -16,5 +16,5 @@ func (s *Store) TwitchModCallback(code string) error {
 		RedirectURL:  fmt.Sprintf("%v/v1/auth/twitch/callback", *s.apiUrl),
 	}
 
-	return twitch_utils.OAuthCallback(context.Background(), s.DB, s.Logger, code, cfg)
+	return oauth_utils.OAuthCallback(context.Background(), s.DB, s.Logger, code, cfg)
 }
