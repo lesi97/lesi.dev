@@ -1,9 +1,5 @@
-'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Button, Icons, Loaders } from '@/components/ui';
-import { Session } from '@supabase/supabase-js';
-import { signInOauth } from '@/lib/supabase/signIn-OAuth';
-import { supabase } from '@/lib/supabase/createClient';
 import { cn } from '@/utils';
 import { Link } from 'react-router-dom';
 import { usePageMeta } from '@/hooks';
@@ -12,9 +8,21 @@ declare global {
     interface Window {
         createUnityInstance?: (
             canvas: HTMLCanvasElement,
-            config: any,
+            config: {
+                arguments: string[];
+                dataUrl: string;
+                frameworkUrl: string;
+                codeUrl: string;
+                streamingAssetsUrl: string;
+                companyName: string;
+                productName: string;
+                productVersion: string;
+                showBanner: (msg: string, type: 'error' | 'warning') => void;
+            },
             onProgress?: (progress: number) => void
-        ) => Promise<any>;
+        ) => Promise<{
+            SetFullscreen: (value: 0 | 1) => void;
+        }>;
         loadGameSettings: (key: string) => string;
         saveGameSettings: (key: string, value: string) => void;
         loadScores: (key: string) => string;
@@ -24,18 +32,27 @@ declare global {
     }
 }
 
-const isDev = import.meta.env.MODE === 'development';
+type SessionResponse = {
+    message: Session;
+    error: null;
+};
+
+type Session = {
+    id: string;
+    twitchUserId: string;
+    twitchLogin: string;
+    twitchDisplayName: string | null;
+    twitchAvatarUrl: string | null;
+};
 
 export function AimTrainer() {
     usePageMeta({ title: 'Aim Trainer | Lesi', description: 'Aim Trainer Game' });
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [loadingProgress, setLoadingProgress] = useState<number>(0);
-    const [unityInstance, setUnityInstance] = useState<any>(null);
+    const [unityInstance, setUnityInstance] = useState<{ SetFullscreen: (value: 0 | 1) => void } | null>(null);
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-    const [session, setSession] = useState<Session | null>(null);
-    const [windowWidth, setWindowWidth] = useState(window?.innerWidth);
-
-    // const supabase = createClient();
+    const [me, setMe] = useState<Session | null>(null);
+    const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
 
     const screenWidthMin = 1080;
 
@@ -44,64 +61,74 @@ export function AimTrainer() {
             setWindowWidth(window.innerWidth);
         }
         window.addEventListener('resize', handleResize);
-
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     useEffect(() => {
-        if (window && window.innerWidth < screenWidthMin) {
+        if (window.innerWidth < screenWidthMin) {
             return;
         }
-        supabase.auth.getSession().then(({ data }) => {
-            setSession(data.session);
-            if (data.session) {
-                window.getUsername = () => {
-                    return data.session?.user.user_metadata.name || '';
-                };
-            } else {
-                window.getUsername = () => {
-                    return '';
-                };
+
+        async function loadMe() {
+            try {
+                const res = await fetch('/api/auth/twitch/me', { credentials: 'include' });
+                if (!res.ok) {
+                    setMe(null);
+                    window.getUsername = () => '';
+                    return;
+                }
+                const session = (await res.json()) as SessionResponse;
+                const data = session.message;
+                setMe(data);
+                window.getUsername = () => data.twitchDisplayName ?? data.twitchLogin ?? '';
+            } catch (error) {
+                console.error('error', error);
+                setMe(null);
+                window.getUsername = () => '';
             }
-        });
+        }
+
+        loadMe();
 
         window.loadGameSettings = (key) => {
-            const settings = JSON.parse(localStorage.getItem('gameSettings') || '{}');
-            return settings[key] || '';
+            const settings = JSON.parse(localStorage.getItem('gameSettings') ?? '{}') as Record<string, string>;
+            return settings[key] ?? '';
         };
 
         window.saveGameSettings = (key, value) => {
-            const settings = JSON.parse(localStorage.getItem('gameSettings') || '{}');
+            const settings = JSON.parse(localStorage.getItem('gameSettings') ?? '{}') as Record<string, string>;
             settings[key] = value;
             localStorage.setItem('gameSettings', JSON.stringify(settings));
         };
 
         window.loadScores = (key) => {
-            const scores = JSON.parse(localStorage.getItem('gameScores') || '{}');
-            return scores[key] || '';
+            const scores = JSON.parse(localStorage.getItem('gameScores') ?? '{}') as Record<string, string>;
+            return scores[key] ?? '';
         };
 
         window.saveTopScore = (key, value) => {
-            const scores = JSON.parse(localStorage.getItem('gameScores') || '{}');
+            const scores = JSON.parse(localStorage.getItem('gameScores') ?? '{}') as Record<string, string>;
             scores[key] = value;
             localStorage.setItem('gameScores', JSON.stringify(scores));
         };
 
         window.loadSensModifier = () => {
-            // Higher number lower overall sens
             return '8';
         };
 
         async function loadUnity() {
-            if (!canvasRef.current) return;
+            if (!canvasRef.current) {
+                return;
+            }
+
             const buildPath = '/aim-trainer/Build';
             const loaderUrl = `${buildPath}/aim-trainer.loader.js?v=2`;
 
             const config = {
                 arguments: [],
-                dataUrl: `${buildPath}/aim-trainer.data.br`,
-                frameworkUrl: `${buildPath}/aim-trainer.framework.js.br`,
-                codeUrl: `${buildPath}/aim-trainer.wasm.br`,
+                dataUrl: `${buildPath}/aim-trainer.data`,
+                frameworkUrl: `${buildPath}/aim-trainer.framework.js`,
+                codeUrl: `${buildPath}/aim-trainer.wasm`,
                 streamingAssetsUrl: '/StreamingAssets',
                 companyName: 'comp',
                 productName: 'aim-trainer',
@@ -114,20 +141,17 @@ export function AimTrainer() {
             script.async = true;
 
             script.onload = () => {
-                if (window.createUnityInstance) {
-                    window
-                        .createUnityInstance(canvasRef.current as HTMLCanvasElement, config, (progress) => {
-                            setLoadingProgress(progress);
-                        })
-                        .then((instance) => {
-                            setUnityInstance(instance);
-                        })
-                        .catch((message) => {
-                            console.error('Unity Loading Error:', message);
-                        });
-                } else {
-                    console.error('Unity loader script did not define createUnityInstance');
+                if (!window.createUnityInstance) {
+                    return;
                 }
+                window
+                    .createUnityInstance(canvasRef.current as HTMLCanvasElement, config, (progress) => {
+                        setLoadingProgress(progress);
+                    })
+                    .then((instance) => {
+                        setUnityInstance(instance);
+                    })
+                    .catch(() => {});
             };
 
             document.body.appendChild(script);
@@ -151,8 +175,13 @@ export function AimTrainer() {
     }
 
     async function signOut() {
-        const { error } = await supabase.auth.signOut();
+        await fetch('/api/auth/twitch/logout', { method: 'POST', credentials: 'include' });
         location.reload();
+    }
+
+    function startTwitchLogin() {
+        const returnTo = window.location.pathname;
+        window.location.href = `/api/auth/twitch?returnTo=${encodeURIComponent(returnTo)}`;
     }
 
     if (windowWidth < screenWidthMin) {
@@ -172,7 +201,6 @@ export function AimTrainer() {
         <>
             <h2 className='flex items-center justify-end gap-4 text-pretty text-lg'></h2>
 
-            {/* The canvas ref must exist for unityInstance to become populated so rather than an early return, hide elements depending on the instance state */}
             <div
                 className={cn(
                     'group relative flex h-full w-full items-center justify-center rounded bg-base-300 motion-safe:animate-pulse xl:h-[540px] xl:w-[960px]',
@@ -181,12 +209,15 @@ export function AimTrainer() {
                 <div tabIndex={0} className='peer flex h-full w-full items-center justify-center'>
                     <Loaders.Trio />
                 </div>
-                <ToolTip session={session} />
+                <ToolTip isLoggedIn={me !== null} />
                 <GameButtons
-                    session={session}
+                    isLoggedIn={me !== null}
                     unityInstance={unityInstance}
-                    signOut={() => signOut()}
-                    handleEnterFullscreen={() => handleEnterFullscreen()}
+                    signOut={() => {
+                        void signOut();
+                    }}
+                    startLogin={startTwitchLogin}
+                    handleEnterFullscreen={handleEnterFullscreen}
                 />
             </div>
 
@@ -200,19 +231,22 @@ export function AimTrainer() {
                     )}
                     tabIndex={-1}
                 />
-                <ToolTip session={session} />
+                <ToolTip isLoggedIn={me !== null} />
                 <GameButtons
-                    session={session}
+                    isLoggedIn={me !== null}
                     unityInstance={unityInstance}
-                    signOut={() => signOut()}
-                    handleEnterFullscreen={() => handleEnterFullscreen()}
+                    signOut={() => {
+                        void signOut();
+                    }}
+                    startLogin={startTwitchLogin}
+                    handleEnterFullscreen={handleEnterFullscreen}
                 />
             </div>
         </>
     );
 }
 
-function ToolTip({ session }: { session: Session | null }) {
+function ToolTip({ isLoggedIn }: { isLoggedIn: boolean }) {
     return (
         <div className='absolute top-0 hidden h-1/3 w-full items-start justify-end rounded-t bg-gradient-to-b from-black/70 to-transparent p-4 group-hover:inline-flex peer-focus-within:hidden'>
             <div className='relative flex w-[34%] items-start justify-end'>
@@ -243,7 +277,7 @@ function ToolTip({ session }: { session: Session | null }) {
                     </h1>
                     <div className='flex w-full flex-col items-center justify-between gap-4'>
                         <span>You can full screen the game by clicking on the icon at the bottom right</span>
-                        {session ? (
+                        {!isLoggedIn ? (
                             <span className='w-full text-pretty'>
                                 To update the leaderboard, you must login with Twitch
                             </span>
@@ -271,31 +305,28 @@ function ToolTip({ session }: { session: Session | null }) {
 }
 
 function GameButtons({
-    session,
+    isLoggedIn,
     unityInstance,
     signOut,
+    startLogin,
     handleEnterFullscreen,
 }: {
-    session: Session | null;
-    unityInstance: string;
+    isLoggedIn: boolean;
+    unityInstance: { SetFullscreen: (value: 0 | 1) => void } | null;
     signOut: () => void;
+    startLogin: () => void;
     handleEnterFullscreen: () => void;
 }) {
     return (
         <div className='absolute bottom-0 hidden h-1/3 w-full items-end justify-between rounded-b bg-gradient-to-t from-black/70 to-transparent p-4 group-hover:inline-flex peer-focus-within:hidden'>
-            {session ? (
+            {isLoggedIn ? (
                 <Button size='icon' variant='accent' onClick={signOut}>
                     <Icons.LogOut className='text-white' />
                 </Button>
             ) : (
                 <Button
                     className={cn('w-fit gap-4 bg-twitchPurple text-white hover:bg-twitchPurple/80')}
-                    onClick={() => {
-                        const next = '/aim-trainer';
-                        // const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
-                        const redirectTo = `${window.location.origin}/auth/callback`;
-                        signInOauth('twitch', redirectTo);
-                    }}>
+                    onClick={startLogin}>
                     <Icons.Socials.Twitch width={20} height={20} /> Login With Twitch
                 </Button>
             )}
@@ -303,7 +334,7 @@ function GameButtons({
                 <Button
                     variant='accent'
                     size='icon'
-                    className={cn('p-2', session ? 'null' : 'bg-twitchPurple hover:bg-twitchPurple/80')}
+                    className={cn('p-2', isLoggedIn ? 'null' : 'bg-twitchPurple hover:bg-twitchPurple/80')}
                     onClick={handleEnterFullscreen}>
                     <Icons.FullScreen width={20} height={20} className='text-white' />
                 </Button>

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/lesi97/lesi.dev/internal/app"
+	app "github.com/lesi97/lesi.dev/internal/bootsrap"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -20,6 +20,7 @@ func main() {
 		panic(err)
 	}
 	defer application.DB.Close()
+	defer application.Redis.Close()
 
 	server := &http.Server{
 		Addr: fmt.Sprintf(":%d", port),

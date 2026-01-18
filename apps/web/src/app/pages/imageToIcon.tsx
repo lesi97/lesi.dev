@@ -1,14 +1,21 @@
 import { Description, illustrations } from '@/components/ui';
 import { Dropbox } from '@/components/layout';
-import { useImageToIcon } from '@/hooks/useImageToIcon';
 import { usePageMeta } from '@/hooks';
+import { ConvertApp } from '@/lib/iconConverter';
+import { useCallback } from 'react';
 
 export function ImageToIcon() {
     usePageMeta({
         title: 'Icon Converter | Lesi',
         description: 'Convert an image to a .ico file',
     });
-    const { convertFile } = useImageToIcon();
+
+    const convertFile = useCallback((file: File) => {
+        if (!file) {
+            return;
+        }
+        ConvertApp.convert(file);
+    }, []);
 
     return (
         <>

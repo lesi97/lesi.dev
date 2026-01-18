@@ -65,7 +65,7 @@ export function SeasonProvider({ children }: { children: ReactNode }) {
 
         applyTheme(systemTheme);
         localStorage.setItem('theme', JSON.stringify(themeData));
-        document.cookie = `theme=${JSON.stringify(themeData)}; path=/;`;
+        // document.cookie = `theme=${JSON.stringify(themeData)}; path=/;`;
     }, []);
 
     useEffect(() => {

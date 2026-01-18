@@ -79,7 +79,7 @@ export function Dropbox({
                     <div className={cn('relative flex h-full w-full rounded-lg bg-inherit md:w-[70%]')}>
                         <div
                             className={cn(
-                                'm-5 h-full w-full cursor-pointer rounded-lg bg-base-100 p-4 lg:p-[60px_80px]',
+                                'm-5 max-h-full w-full cursor-pointer rounded-lg bg-base-100 p-4 lg:p-[60px_80px]',
                                 url ? '!pb-[143px]' : ''
                             )}
                             onClick={() => {
@@ -109,7 +109,7 @@ export function Dropbox({
                 </div>
             </div>
             <div
-                className='absolute left-0 top-0 z-0 inline-block h-full w-full cursor-default rounded-lg opacity-0 outline-dashed outline-4 outline-accent focus:opacity-50 focus-visible:z-40'
+                className='absolute left-0 top-0 z-0 inline-block h-full w-full cursor-default rounded-lg opacity-0 outline-dashed outline-4 outline-accent focus:opacity-50 focus-visible:z-40 mb-20'
                 tabIndex={0}
                 role='button'
                 ref={hiddenDropAreaRef}
