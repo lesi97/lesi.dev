@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -20,7 +21,9 @@ func GetWeapon(ctx context.Context, database *db.DB, logger *utils.Logger, redis
 	go func() {
 		weapon, err := getWeaponData(ctx, database, logger, redis, weaponHashID)
 		if err != nil {
-			fmt.Printf("ERROR: mtx_getWeapon: getWeaponData: %v\n", err)
+			if !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) && ctx.Err() == nil {
+				fmt.Printf("ERROR: mtx_getWeapon: getWeaponData: %v\n", err)
+			}
 			ch <- WeaponResult{err: err}
 			return
 		}
@@ -30,7 +33,9 @@ func GetWeapon(ctx context.Context, database *db.DB, logger *utils.Logger, redis
 	go func() {
 		perks, err := getWeaponPerks(ctx, database, logger, redis, perkHashIDs)
 		if err != nil {
-			fmt.Printf("ERROR: mtx_getWeapon: getWeaponPerks: %v\n", err)
+			if !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) && ctx.Err() == nil {
+				fmt.Printf("ERROR: mtx_getWeapon: getWeaponPerks: %v\n", err)
+			}
 			ch <- WeaponResult{err: err}
 			return
 		}

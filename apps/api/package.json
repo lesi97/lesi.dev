@@ -1,7 +1,10 @@
 {
     "scripts": {
         "dev": "go run ./cmd/main.go",
-        "test": "go test ./..."
+        "test": "go test ./...",
+        "test:clean": "go clean -testcache && go test ./...",
+        "test:withLogs": "go test ./... -v",
+        "test:clean:withLogs": "go clean -testcache && go test ./... -v"
     },
     "name": "apps",
     "private": true,

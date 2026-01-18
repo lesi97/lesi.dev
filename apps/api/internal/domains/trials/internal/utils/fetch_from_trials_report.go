@@ -5,11 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/domains/trials/internal/model"
+	"github.com/lesi97/lesi.dev/internal/httpapi"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -51,21 +51,10 @@ func FetchFromTrialsReport(ctx context.Context, logger *utils.Logger, url string
 	defer cancel()
 
 	shouldLog = true
-	req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
+	headers := map[string]string{
+		"Accept": "application/json",
 	}
-	req.Header.Add("Accept", "application/json")
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		if cachedData != nil && cacheAge < staleFor {
-			return cachedData, nil
-		}
-		return nil, err
-	}
-
-	defer res.Body.Close()
-	body, err := io.ReadAll(res.Body)
+	body, _, err := httpapi.DoRequest(reqCtx, http.DefaultClient, http.MethodGet, url, nil, headers)
 	if err != nil {
 		if cachedData != nil && cacheAge < staleFor {
 			return cachedData, nil

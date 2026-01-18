@@ -46,8 +46,12 @@ func setupRoutes(app *Application) *chi.Mux {
 	routes := chi.NewRouter()
 	routes.Use(middleware.Measure(app.Logger))
 	routes.Route("/v1", func(r chi.Router) {
-		registerRoutes(app.tarot, r)
-		registerRoutes(app.time, r)
+		if app.TarotHandler != nil {
+			registerRoutes(app.TarotHandler, r)
+		}
+		if app.TimeHandler != nil {
+			registerRoutes(app.TimeHandler, r)
+		}
 		if app.AnilistHandler != nil {
 			registerRoutes(app.AnilistHandler, r)
 		}

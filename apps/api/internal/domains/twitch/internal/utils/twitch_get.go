@@ -2,11 +2,11 @@ package utils
 
 import (
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/db"
+	"github.com/lesi97/lesi.dev/internal/httpapi"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -26,26 +26,17 @@ func TwitchGET(
 		return nil, err
 	}
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
+	headers := map[string]string{
+		"Client-ID":     clientID,
+		"Authorization": fmt.Sprintf("Bearer %v", *apiDetails.AccessToken),
 	}
-
-	req.Header.Set("Client-ID", clientID)
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", *apiDetails.AccessToken))
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	body, statusCode, err := httpapi.DoRequest(nil, &http.Client{}, http.MethodGet, url, nil, headers)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response: %w", err)
-	}
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("unexpected status code %d: %s", resp.StatusCode, string(body))
+	if statusCode < 200 || statusCode >= 300 {
+		return nil, fmt.Errorf("unexpected status code %d: %s", statusCode, string(body))
 	}
 
 	return body, nil

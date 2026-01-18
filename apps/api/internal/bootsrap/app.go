@@ -24,9 +24,9 @@ type Application struct {
 	Logger            *utils.Logger
 	DB                *db.DB
 	Redis             *redis.Client
-	tarot             *tarot_handler.Handler
+	TarotHandler      *tarot_handler.Handler
 	CountdownHandler  *countdown_handler.Handler
-	time              *time_handler.Handler
+	TimeHandler       *time_handler.Handler
 	BungieHandler     *bungie_handler.Handler
 	TrialsHandler     *trials_handler.Handler
 	AnilistHandler    *anilist_handler.Handler
@@ -52,10 +52,42 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		return nil, nil, err
 	}
 	cfg := RedisLoadConfig()
-	rdb := RedisNew(cfg)
+	redis := RedisNew(cfg)
 
-	tarot := tarot_handler.NewHandler(logger)
-	time := time_handler.NewHandler(logger)
+	var tarotHandler *tarot_handler.Handler
+	tarotHandler, tarotErr := tarot_handler.NewHandler(logger)
+	if tarotErr != nil {
+		logger.Error("Tarot handler disabled: " + tarotErr.Error())
+		tarotHandler = nil
+	}
+
+	var timeHandler *time_handler.Handler
+	timeHandler, timeErr := time_handler.NewHandler(logger)
+	if timeErr != nil {
+		logger.Error("Time handler disabled: " + timeErr.Error())
+		timeHandler = nil
+	}
+
+	var countdownHandler *countdown_handler.Handler
+	countdownHandler, countdownErr := countdown_handler.NewHandler(logger, db)
+	if countdownErr != nil {
+		logger.Error("Countdown handler disabled: " + countdownErr.Error())
+		countdownHandler = nil
+	}
+
+	var localHandler *local_handler.Handler
+	localHandler, localErr := local_handler.NewHandler(logger, db)
+	if localErr != nil {
+		logger.Error("Local handler disabled: " + localErr.Error())
+		localHandler = nil
+	}
+
+	var aimTrainerHandler *aim_trainer_handler.Handler
+	aimTrainerHandler, aimTrainerErr := aim_trainer_handler.NewHandler(logger, db)
+	if aimTrainerErr != nil {
+		logger.Error("Aim trainer handler disabled: " + aimTrainerErr.Error())
+		aimTrainerHandler = nil
+	}
 
 	var trialsHandler *trials_handler.Handler
 	trialsHandler, trialsErr := trials_handler.NewHandler(logger, db)
@@ -63,9 +95,6 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		logger.Error("Trials store disabled: " + trialsErr.Error())
 		trialsHandler = nil
 	}
-	countdownHandler := countdown_handler.NewHandler(logger, db)
-	localHandler := local_handler.NewHandler(logger, db)
-	aimTrainerHandler := aim_trainer_handler.NewHandler(logger, db)
 
 	var anilistHandler *anilist_handler.Handler
 	anilistHandler, anilistErr := anilist_handler.NewHandler(logger, db)
@@ -75,14 +104,14 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	}
 
 	var bungieHandler *bungie_handler.Handler
-	bungieHandler, bungieErr := bungie_handler.NewHandler(logger, db, rdb)
+	bungieHandler, bungieErr := bungie_handler.NewHandler(logger, db, redis)
 	if bungieErr != nil {
 		logger.Error("Bungie store disabled: " + bungieErr.Error())
 		bungieHandler = nil
 	}
 
 	var twitchHandler *twitch_handler.Handler
-	twitchHandler, twitchErr := twitch_handler.NewHandler(logger, db, rdb)
+	twitchHandler, twitchErr := twitch_handler.NewHandler(logger, db, redis)
 	if twitchErr != nil {
 		logger.Error("Twitch store disabled: " + twitchErr.Error())
 		twitchHandler = nil
@@ -98,9 +127,9 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	app := &Application{
 		Logger:            logger,
 		DB:                db,
-		Redis:             rdb,
-		tarot:             tarot,
-		time:              time,
+		Redis:             redis,
+		TarotHandler:      tarotHandler,
+		TimeHandler:       timeHandler,
 		TrialsHandler:     trialsHandler,
 		BungieHandler:     bungieHandler,
 		AnilistHandler:    anilistHandler,
