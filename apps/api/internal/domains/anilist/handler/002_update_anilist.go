@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 
@@ -19,8 +20,10 @@ func (h *Handler) HandleUpdateAnilist(w http.ResponseWriter, r *http.Request) {
 
 	status, plexUsername, err := h.httpUtils.ValidateRequest(r)
 	if err != nil {
-		utils.Error(w, status, err.Error())
-		return
+		if os.Getenv("GO_ENV") != "development" {
+			utils.Error(w, status, err.Error())
+			return
+		}
 	}
 
 	const discord_username = "Anilist Updater"

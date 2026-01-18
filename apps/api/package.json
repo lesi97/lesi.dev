@@ -1,6 +1,7 @@
 {
     "scripts": {
-        "dev": "go run ./cmd/main.go"
+        "dev": "go run ./cmd/main.go",
+        "test": "go test ./..."
     },
     "name": "apps",
     "private": true,

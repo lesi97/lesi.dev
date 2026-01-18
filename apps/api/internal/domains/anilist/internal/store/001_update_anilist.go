@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/lesi97/lesi.dev/internal/domains/anilist/internal/model"
 	ani_utils "github.com/lesi97/lesi.dev/internal/domains/anilist/internal/utils/anilist"
@@ -71,6 +72,12 @@ func (s *Store) UpdateAnilist(ctx context.Context, data model.PlexWebhookPayload
 		return nil
 	}
 
+	if os.Getenv("GO_ENV") == "development" {
+		s.Logger.Printf("SHOW NAME: %v\n", showName)
+		s.Logger.Printf("MEDIA ID: %v\n", targetMediaID)
+		s.Logger.Printf("PROGRESS: %v\n", progress)
+		return nil
+	} 
 	_ = s.AniUtils.UpdateProgress(ctx, targetMediaID, progress)
 	return nil
 }

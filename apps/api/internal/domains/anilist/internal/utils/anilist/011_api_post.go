@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -17,7 +16,6 @@ func (s *Store) anilistPOST(
 	query string,
 	variables map[string]interface{},
 ) ([]byte, error) {
-	defer s.logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), time.Now(), nil)
 
 	err := s.validateRefresh(ctx)
 	if err != nil {

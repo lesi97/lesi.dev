@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 )
 
 func (s *Store) anilistGET(ctx context.Context, url string) ([]byte, error) {
-	defer s.logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), time.Now(), nil)
 
 	err := s.validateRefresh(ctx)
 	if err != nil {

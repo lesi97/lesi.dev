@@ -9,7 +9,6 @@ import (
 )
 
 func (s *Store) plexGET(ctx context.Context, url string) ([]byte, error) {
-	defer s.logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), time.Now(), nil)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {

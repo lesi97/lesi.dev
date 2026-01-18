@@ -11,6 +11,7 @@
         "redis:down": "docker compose -f infra/templates/compose-redis.dev.yml down",
         "redis:reset": "docker compose -f infra/templates/compose-redis.dev.yml down -v",
         "dev:all": "concurrently --kill-others \"npm run dev:redis\" \"npm run dev:api\" \"npm run dev:web\"",
+        "test:api": "npm run -w apps/api test",
         "build": "npm run -w apps/web build",
         "typecheck": "npm run -w apps/web typecheck",
         "docker:build": "docker build -t lesi.dev .",
