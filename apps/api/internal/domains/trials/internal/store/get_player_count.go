@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -11,6 +12,8 @@ import (
 )
 
 func (s *Store) GetPlayerCount() *string {
+	trialsAvailable := trials_utils.IsTrialsReportAvailable(time.Now())
+
 	trialsCh := make(chan struct {
 		data *model.TrialsData
 		err  error
@@ -21,33 +24,23 @@ func (s *Store) GetPlayerCount() *string {
 		err  error
 	}, 1)
 
-	go func() {
-		data, err := trials_utils.FetchFromTrialsReport(s.Logger, s.URL)
-		trialsCh <- struct {
-			data *model.TrialsData
-			err  error
-		}{data, err}
-	}()
-
-	if s.SteamClientIDAvailable {
+	if trialsAvailable {
 		go func() {
-			data, err := trials_utils.FetchFromSteam(s.Logger, s.SteamURL, s.SteamClientID)
-			steamCh <- struct {
-				data *model.SteamData
+			data, err := trials_utils.FetchFromTrialsReport(context.Background(), s.Logger, s.URL)
+			trialsCh <- struct {
+				data *model.TrialsData
 				err  error
 			}{data, err}
 		}()
 	}
 
-	trialsResult := <-trialsCh
-	if trialsResult.err != nil {
-		s.Logger.Printf("ERROR: fetchFromTrialsReport: %v\n", trialsResult.err)
-		message := "failed to fetch data from trials report"
-		return &message
-	}
-
-	updatedAtTime, _ := trials_utils.ParseTrialsUpdatedAt(trialsResult.data)
-	trialsFresh := trials_utils.IsTrialsFresh(updatedAtTime)
+	go func() {
+		data, err := trials_utils.FetchFromSteam(s.Logger, s.SteamURL, s.SteamClientID)
+		steamCh <- struct {
+			data *model.SteamData
+			err  error
+		}{data, err}
+	}()
 
 	var steamResult struct {
 		data *model.SteamData
@@ -55,20 +48,37 @@ func (s *Store) GetPlayerCount() *string {
 	}
 	steamAvailable := false
 
-	if s.SteamClientIDAvailable {
-		steamResult = <-steamCh
-		if steamResult.err != nil {
-			err := fmt.Sprintf("ERROR: fetchFromSteam: %v\n", steamResult.err)
-			s.Logger.Print(err)
-			s.Logger.SendDiscordNotification(core_utils.SendDiscordNotificationArgs{
-				Content:  err,
-				Username: "Trials Store",
-				Title:    "Trials Store Error",
-			})
-			message := "failed to fetch data from steam"
-			return &message
-		}
+	steamResult = <-steamCh
+	if steamResult.err != nil {
+		err := fmt.Sprintf("ERROR: fetchFromSteam: %v\n", steamResult.err)
+		s.Logger.Print(err)
+		s.Logger.SendDiscordNotification(core_utils.SendDiscordNotificationArgs{
+			Content:  err,
+			Username: "Trials Store",
+			Title:    "Trials Store Error",
+		})
+	} else {
 		steamAvailable = true
+	}
+
+	var trialsResult struct {
+		data *model.TrialsData
+		err  error
+	}
+	trialsFresh := false
+	var updatedAtTime time.Time
+
+	if trialsAvailable {
+		select {
+		case trialsResult = <-trialsCh:
+		case <-time.After(2 * time.Second):
+			trialsResult.err = fmt.Errorf("trials report request timed out")
+		}
+
+		if trialsResult.err == nil {
+			updatedAtTime, _ = trials_utils.ParseTrialsUpdatedAt(trialsResult.data)
+			trialsFresh = trials_utils.IsTrialsFresh(updatedAtTime)
+		}
 	}
 
 	if !steamAvailable && !trialsFresh {
@@ -85,15 +95,13 @@ func (s *Store) GetPlayerCount() *string {
 		return &message
 	}
 
-	elapsedMinutes := int64(time.Since(updatedAtTime).Minutes())
-	minuteLabel := "minutes"
-	if elapsedMinutes == 1 {
-		minuteLabel = "minute"
-	}
-
-	trialsPlayerCount := humanize.Comma(int64(trialsResult.data.Platforms.Num0.RecentStats.PlayerCount))
-
 	if !steamAvailable {
+		elapsedMinutes := int64(time.Since(updatedAtTime).Minutes())
+		minuteLabel := "minutes"
+		if elapsedMinutes == 1 {
+			minuteLabel = "minute"
+		}
+		trialsPlayerCount := humanize.Comma(int64(trialsResult.data.Platforms.Num0.RecentStats.PlayerCount))
 		message := fmt.Sprintf(
 			"There are currently %s players in Trials of Osiris across all platforms | Trials data last updated: %s %s ago from https://trials.report",
 			trialsPlayerCount,
@@ -103,6 +111,12 @@ func (s *Store) GetPlayerCount() *string {
 		return &message
 	}
 
+	elapsedMinutes := int64(time.Since(updatedAtTime).Minutes())
+	minuteLabel := "minutes"
+	if elapsedMinutes == 1 {
+		minuteLabel = "minute"
+	}
+	trialsPlayerCount := humanize.Comma(int64(trialsResult.data.Platforms.Num0.RecentStats.PlayerCount))
 	steamPlayerCount := humanize.Comma(int64(steamResult.data.Response.PlayerCount))
 	message := fmt.Sprintf(
 		"There are currently %s players playing on Steam & %s players in Trials of Osiris across all platforms | Trials data last updated: %s %s ago from https://trials.report",

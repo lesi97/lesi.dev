@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/domains/trials/internal/store"
+	trials_utils "github.com/lesi97/lesi.dev/internal/domains/trials/internal/utils"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -22,11 +23,15 @@ func TestHandleGetLootReturnsMessage(t *testing.T) {
 	}))
 	defer server.Close()
 
+	if !trials_utils.IsTrialsReportAvailable(time.Now()) {
+		t.Skip("trials report is not available")
+	}
+
 	logger := utils.NewColourLogger("brightBlack")
 	s := &store.Store{
-		Logger:                 logger,
-		URL:                    server.URL,
-		SteamClientIDAvailable: false,
+		Logger:        logger,
+		URL:           server.URL,
+		SteamClientID: "",
 	}
 	h := &Handler{
 		logger: logger,
@@ -56,11 +61,15 @@ func TestHandleGetPlayerCountUsesTrialsReport(t *testing.T) {
 	}))
 	defer server.Close()
 
+	if !trials_utils.IsTrialsReportAvailable(time.Now()) {
+		t.Skip("trials report is not available")
+	}
+
 	logger := utils.NewColourLogger("brightBlack")
 	s := &store.Store{
-		Logger:                 logger,
-		URL:                    server.URL,
-		SteamClientIDAvailable: false,
+		Logger:        logger,
+		URL:           server.URL,
+		SteamClientID: "",
 	}
 	h := &Handler{
 		logger: logger,

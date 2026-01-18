@@ -49,6 +49,7 @@ func (s *Store) GetYungerWeapon(ctx context.Context) (*string, error) {
 
 	go func() {
 		profile, err := bungie_utils.GetBungieProfileByMembershipID(
+			ctx,
 			s.Redis,
 			s.Logger,
 			s.ClientID,

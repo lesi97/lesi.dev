@@ -16,5 +16,4 @@ type Store struct {
 	URL                    string
 	SteamClientID          string
 	SteamURL               string
-	SteamClientIDAvailable bool
 }

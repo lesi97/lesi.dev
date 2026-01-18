@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -21,7 +22,7 @@ type manifestDefinitions struct {
 func GetManifestURL(logger *utils.Logger, clientID string, baseURL string) (*string, error) {
 	url := fmt.Sprintf("%s/Platform/Destiny2/Manifest", baseURL)
 
-	body, err := BungieGET(logger, clientID, url)
+	body, err := BungieGET(context.Background(), logger, clientID, url)
 	if err != nil {
 		return nil, err
 	}

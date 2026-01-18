@@ -22,7 +22,7 @@ func InsertKillCounts(
 			(membership_id, weapon_id, pvp_kills, pve_kills, trials_kills, weapon_hash)
 		VALUES 
 			($1, $2, $3, $4, $5, $6)
-		ON CONFLICT (membership_id, weapon_id) DO UPDATE
+		ON CONFLICT ON CONSTRAINT unique_membership_weapon DO UPDATE
 		SET 
 			pvp_kills = COALESCE(EXCLUDED.pvp_kills, destiny_weapon_kill_counts.pvp_kills),
 			pve_kills = COALESCE(EXCLUDED.pve_kills, destiny_weapon_kill_counts.pve_kills),

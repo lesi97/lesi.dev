@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -32,9 +33,11 @@ func GetUser(
 	ch := make(chan userResult, 2)
 
 	go func() {
-		dbUser, err := getUserFromDatabaseByGamertag(ctx, database, logger, gt)
+		dbUser, err := getUserFromDatabaseByGamertag(ctx, database, logger, redis, gt)
 		if err != nil || dbUser == nil {
-			logger.Printf("ERROR in Matrix - getUserFromDatabase: %v\n", err)
+			if err != nil && !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) && ctx.Err() == nil {
+				logger.Printf("ERROR in Matrix - getUserFromDatabase: %v\n", err)
+			}
 			ch <- userResult{nil, fmt.Errorf("no users found in db with gt: %v", gt)}
 			return
 		}
@@ -50,7 +53,9 @@ func GetUser(
 	go func() {
 		apiUser, err := getUserFromBungieByGamertag(ctx, database, logger, redis, baseURL, clientID, gt, platform)
 		if err != nil || apiUser == nil || apiUser.Response == nil || len(apiUser.Response) == 0 {
-			logger.Printf("ERROR in Matrix - getUserFromBungie: %v\n", err)
+			if err != nil && !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) && ctx.Err() == nil {
+				logger.Printf("ERROR in Matrix - getUserFromBungie: %v\n", err)
+			}
 			ch <- userResult{nil, fmt.Errorf("bungie response was empty")}
 			return
 		}

@@ -11,6 +11,7 @@ import (
 )
 
 func GetBungieProfileByMembershipID(
+	ctx context.Context,
 	redis *redis.Client,
 	logger *utils.Logger,
 	clientID string,
@@ -19,7 +20,9 @@ func GetBungieProfileByMembershipID(
 	preferredPlatform string,
 	components string,
 ) (*BungieProfile, error) {
-	ctx := context.Background()
+	if ctx == nil {
+		ctx = context.Background()
+	}
 
 	freshFor := 15 * time.Second
 	staleFor := 2 * time.Minute
@@ -38,20 +41,23 @@ func GetBungieProfileByMembershipID(
 			age := now.Sub(time.Unix(wrap.CachedAtUnix, 0))
 
 			if age <= freshFor {
-				logger.Printf("CACHE HIT fresh getBungieProfile %s", cacheKey)
+				logger.PrintColour(true, "brightBlack", "CACHE HIT fresh getBungieProfile %s", cacheKey)
 				v := wrap.Value
 				return &v, nil
 			}
 
 			if age <= staleFor {
-				logger.Printf("CACHE HIT stale getBungieProfile %s", cacheKey)
+				logger.PrintColour(true, "brightBlack", "CACHE HIT stale getBungieProfile %s", cacheKey)
 
 				lockKey := cacheKey + ":lock"
 				ok, _ := redis.SetNX(ctx, lockKey, "1", 5*time.Second).Result()
 				if ok {
 					go func() {
 						defer redis.Del(context.Background(), lockKey).Err()
-						_, _ = fetchAndCacheBungieProfile(redis, logger, clientID, baseURL, membershipID, preferredPlatform, components, cacheKey)
+						if ctx.Err() != nil {
+							return
+						}
+						_, _ = fetchAndCacheBungieProfile(ctx, redis, logger, clientID, baseURL, membershipID, preferredPlatform, components, cacheKey)
 					}()
 				}
 
@@ -65,5 +71,5 @@ func GetBungieProfileByMembershipID(
 		return nil, err
 	}
 
-	return fetchAndCacheBungieProfile(redis, logger, clientID, baseURL, membershipID, preferredPlatform, components, cacheKey)
+	return fetchAndCacheBungieProfile(ctx, redis, logger, clientID, baseURL, membershipID, preferredPlatform, components, cacheKey)
 }

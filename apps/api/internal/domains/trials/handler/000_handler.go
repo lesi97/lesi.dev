@@ -11,11 +11,14 @@ type Handler struct {
 	store  trials_store.Methods
 }
 
-func NewHandler(logger *utils.Logger, db *db.DB) *Handler {
-	store := trials_store.NewStore(db, logger)
+func NewHandler(logger *utils.Logger, db *db.DB) (*Handler, error) {
+	store, err := trials_store.NewStore(db, logger)
+	if err != nil {
+		return nil, err
+	}
 
 	return &Handler{
 		logger: logger,
 		store:  store,
-	}
+	}, nil
 }

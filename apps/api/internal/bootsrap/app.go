@@ -57,7 +57,12 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	tarot := tarot_handler.NewHandler(logger)
 	time := time_handler.NewHandler(logger)
 
-	trialsHandler := trials_handler.NewHandler(logger, db)
+	var trialsHandler *trials_handler.Handler
+	trialsHandler, trialsErr := trials_handler.NewHandler(logger, db)
+	if trialsErr != nil {
+		logger.Error("Trials store disabled: " + trialsErr.Error())
+		trialsHandler = nil
+	}
 	countdownHandler := countdown_handler.NewHandler(logger, db)
 	localHandler := local_handler.NewHandler(logger, db)
 	aimTrainerHandler := aim_trainer_handler.NewHandler(logger, db)

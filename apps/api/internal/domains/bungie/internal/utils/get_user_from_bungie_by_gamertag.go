@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"time"
@@ -42,9 +43,11 @@ func getUserFromBungieByGamertag(
 	escapedID := url.PathEscape(id)
 	reqURL := fmt.Sprintf("%s/Platform/Destiny2/SearchDestinyPlayer/%s/%s/", baseURL, platformEnum, escapedID)
 
-	body, err := BungieGET(logger, clientID, reqURL)
+	body, err := BungieGET(ctx, logger, clientID, reqURL)
 	if err != nil {
-		fmt.Println("ERROR in getUserFromBungieByGamertag")
+		if !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) && ctx.Err() == nil {
+			fmt.Printf("ERROR in getUserFromBungieByGamertag: %v\n", err.Error())
+		}
 		return nil, err
 	}
 

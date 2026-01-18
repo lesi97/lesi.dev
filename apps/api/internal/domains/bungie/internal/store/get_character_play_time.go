@@ -22,7 +22,7 @@ func (s *Store) GetCharacterPlayTime(ctx context.Context) (*string, error) {
 	}
 
 	preferredPlatform := bungie_utils.GetPlatformEnum(request.Platform, user.MembershipType)
-	characters, err := bungie_utils.GetBungieProfileByMembershipID(s.Redis, s.Logger, s.ClientID, s.BaseURL, user.MembershipID, preferredPlatform, "200")
+	characters, err := bungie_utils.GetBungieProfileByMembershipID(ctx, s.Redis, s.Logger, s.ClientID, s.BaseURL, user.MembershipID, preferredPlatform, "200")
 	if err != nil {
 		s.Logger.Printf("ERROR: getBungieProfileByMembershipID %v\n", err)
 		return nil, err

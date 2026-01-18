@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,22 +13,63 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func FetchFromTrialsReport(logger *utils.Logger, url string) (*model.TrialsData, error) {
-	defer logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), time.Now(), nil)
+func FetchFromTrialsReport(ctx context.Context, logger *utils.Logger, url string) (*model.TrialsData, error) {
+	now := time.Now()
+	freshFor := 5 * time.Minute
+	staleFor := 30 * time.Minute
+	shouldLog := false
+	startedAt := time.Now()
+	defer func() {
+		if shouldLog {
+			logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), startedAt, nil)
+		}
+	}()
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	var cachedData *model.TrialsData
+	var cacheAge time.Duration
+
+	trialsReportCacheMu.Lock()
+	if trialsReportCache != nil {
+		cachedData = trialsReportCache.Data
+		cacheAge = now.Sub(trialsReportCache.CachedAt)
+	}
+	trialsReportCacheMu.Unlock()
+
+	if cachedData != nil && cacheAge < freshFor {
+		logger.PrintColour(true, "brightBlack", "TRIALS CACHE HIT | RETURNING EARLY")
+		return cachedData, nil
+	}
+
+	if !IsTrialsReportAvailable(now) {
+		if cachedData != nil && cacheAge < staleFor {
+			return cachedData, nil
+		}
+		return nil, fmt.Errorf("trials report is not available")
+	}
+
+	reqCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	shouldLog = true
+	req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Add("Accept", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
+		if cachedData != nil && cacheAge < staleFor {
+			return cachedData, nil
+		}
 		return nil, err
 	}
 
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
+		if cachedData != nil && cacheAge < staleFor {
+			return cachedData, nil
+		}
 		return nil, err
 	}
 
@@ -35,7 +77,18 @@ func FetchFromTrialsReport(logger *utils.Logger, url string) (*model.TrialsData,
 	err = json.NewDecoder(bytes.NewReader(body)).Decode(result)
 	if err != nil {
 		fmt.Printf("Decode error: %v\n", err)
+		if cachedData != nil && cacheAge < staleFor {
+			return cachedData, nil
+		}
 		return nil, err
 	}
+
+	trialsReportCacheMu.Lock()
+	trialsReportCache = &TrialsReportCache{
+		Data:     result,
+		CachedAt: time.Now(),
+	}
+	trialsReportCacheMu.Unlock()
+
 	return result, nil
 }

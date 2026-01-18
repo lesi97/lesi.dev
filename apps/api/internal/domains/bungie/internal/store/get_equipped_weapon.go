@@ -22,6 +22,7 @@ func (s *Store) GetEquippedWeapon(ctx context.Context) (*string, error) {
 
 	preferredPlatform := bungie_utils.GetPlatformEnum(request.Platform, user.MembershipType)
 	profile, err := bungie_utils.GetBungieProfileByMembershipID(
+		ctx,
 		s.Redis,
 		s.Logger,
 		s.ClientID,
@@ -50,7 +51,7 @@ func (s *Store) GetEquippedWeapon(ctx context.Context) (*string, error) {
 	plugObjectives := profile.Response.ItemComponents.PlugObjectives.Data[itemInstanceID].ObjectivesPerPlug
 	killCount, category := bungie_utils.GetKillCounts(plugObjectives)
 
-	weapon, err := bungie_utils.GetWeapon(ctx, s.DB, s.Logger, itemHashID, perkHashIDs)
+	weapon, err := bungie_utils.GetWeapon(ctx, s.DB, s.Logger, s.Redis, itemHashID, perkHashIDs)
 	if err != nil {
 		fmt.Printf("ERROR: GetEquippedWeapon: getWeaponData: %v\n", err)
 		go func() {

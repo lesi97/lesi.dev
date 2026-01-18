@@ -1,13 +1,14 @@
 package store
 
 import (
+	"errors"
 	"os"
 
 	"github.com/lesi97/lesi.dev/internal/db"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func NewStore(db *db.DB, logger *utils.Logger) *Store {
+func NewStore(db *db.DB, logger *utils.Logger) (*Store, error) {
 	steamApiKey := os.Getenv("STEAM_CLIENT_ID")
 	if steamApiKey == "" {
 		err := "FATAL: ERROR GETTING STEAM_CLIENT_ID ENV VAR"
@@ -16,13 +17,13 @@ func NewStore(db *db.DB, logger *utils.Logger) *Store {
 			Username: "STEAM STORE FATAL",
 			Title:    "STEAM STORE FATAL",
 		})
+		return nil, errors.New(err)
 	}
 	return &Store{
-		DB:                     db,
-		Logger:                 logger,
-		URL:                    "https://api.trialsofthenine.com/weeks/0",
-		SteamClientID:          steamApiKey,
-		SteamURL:               "https://api.steampowered.com",
-		SteamClientIDAvailable: steamApiKey != "",
-	}
+		DB:            db,
+		Logger:        logger,
+		URL:           "https://api.trialsofthenine.com/weeks/0",
+		SteamClientID: steamApiKey,
+		SteamURL:      "https://api.steampowered.com",
+	}, nil
 }

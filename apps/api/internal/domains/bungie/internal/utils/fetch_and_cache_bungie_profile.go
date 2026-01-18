@@ -12,6 +12,7 @@ import (
 )
 
 func fetchAndCacheBungieProfile(
+	ctx context.Context,
 	redis *redis.Client,
 	logger *utils.Logger,
 	clientID string,
@@ -21,11 +22,16 @@ func fetchAndCacheBungieProfile(
 	components string,
 	cacheKey string,
 ) (*BungieProfile, error) {
-	ctx := context.Background()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
 
 	reqURL := fmt.Sprintf("%s/Platform/Destiny2/%s/Profile/%s/?components=%s", baseURL, preferredPlatform, membershipID, components)
 
-	body, err := BungieGET(logger, clientID, reqURL)
+	body, err := BungieGET(ctx, logger, clientID, reqURL)
 	if err != nil {
 		return nil, err
 	}

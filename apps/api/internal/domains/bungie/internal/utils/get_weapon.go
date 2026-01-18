@@ -7,9 +7,10 @@ import (
 
 	"github.com/lesi97/lesi.dev/internal/db"
 	"github.com/lesi97/lesi.dev/internal/utils"
+	"github.com/redis/go-redis/v9"
 )
 
-func GetWeapon(ctx context.Context, database *db.DB, logger *utils.Logger, weaponHashID string, perkHashIDs []string) (*WeaponResult, error) {
+func GetWeapon(ctx context.Context, database *db.DB, logger *utils.Logger, redis *redis.Client, weaponHashID string, perkHashIDs []string) (*WeaponResult, error) {
 	defer logger.LogExecutionTime("MATRIX: getWeapon", time.Now(), ctx)
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -17,7 +18,7 @@ func GetWeapon(ctx context.Context, database *db.DB, logger *utils.Logger, weapo
 	ch := make(chan WeaponResult, 2)
 
 	go func() {
-		weapon, err := getWeaponData(ctx, database, logger, weaponHashID)
+		weapon, err := getWeaponData(ctx, database, logger, redis, weaponHashID)
 		if err != nil {
 			fmt.Printf("ERROR: mtx_getWeapon: getWeaponData: %v\n", err)
 			ch <- WeaponResult{err: err}
@@ -27,7 +28,7 @@ func GetWeapon(ctx context.Context, database *db.DB, logger *utils.Logger, weapo
 	}()
 
 	go func() {
-		perks, err := getWeaponPerks(ctx, database, logger, perkHashIDs)
+		perks, err := getWeaponPerks(ctx, database, logger, redis, perkHashIDs)
 		if err != nil {
 			fmt.Printf("ERROR: mtx_getWeapon: getWeaponPerks: %v\n", err)
 			ch <- WeaponResult{err: err}
