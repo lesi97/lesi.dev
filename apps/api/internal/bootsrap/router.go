@@ -32,7 +32,6 @@ func handleIndex(r chi.Router) http.HandlerFunc {
 	}
 }
 
-
 func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
@@ -40,12 +39,13 @@ func setupRoutes(app *Application) *chi.Mux {
 	routes.Route("/v1", func(r chi.Router) {
 		app.tarot.RegisterRoutes(r)
 		app.time.RegisterRoutes(r)
+		if app.AnilistHandler != nil {
+			app.AnilistHandler.RegisterRoutes(r)
+		}
 	})
-	
 
 	return routes
 	// routes.Get("/healthcheck", api.Healthcheck)
-
 
 	// routes.Post("/v1/countdown", http.HandlerFunc(app.CountdownHandler.HandleCountdownPost))
 	// routes.Get("/v1/countdown/{id}", http.HandlerFunc(app.CountdownHandler.HandleGetCountdown))
@@ -55,7 +55,6 @@ func setupRoutes(app *Application) *chi.Mux {
 
 	// routes.Get("/v1/aim-trainer", http.HandlerFunc(app.AimTrainerHandler.HandleGetLeaderboard))
 	// routes.Post("/v1/aim-trainer", http.HandlerFunc(app.AimTrainerHandler.HandleUpdateLeaderboard))
-
 
 	// if app.BungieHandler != nil {
 	// 	routes.Get("/v1/d2/{id}/time", http.HandlerFunc(app.BungieHandler.HandleGetPlayTime))
@@ -76,7 +75,6 @@ func setupRoutes(app *Application) *chi.Mux {
 	// 	routes.Route("/v1/d2/{id}", disabled.RegisterRoutes)
 	// }
 
-
 	// if app.AnilistHandler != nil {
 	// 	routes.Post("/v1/anilist", http.HandlerFunc(app.AnilistHandler.HandleUpdateAnilist))
 	// } else {
@@ -88,10 +86,9 @@ func setupRoutes(app *Application) *chi.Mux {
 	// 		routes.Get("/v1/auth/anilist/login", http.HandlerFunc(app.AuthHandler.HandleAniAuthInitialRedirect))
 	// 		routes.Get("/v1/auth/anilist/callback", http.HandlerFunc(app.AuthHandler.HandleAnilistAuthCallback))
 	// 	}
-		
+
 	// 	routes.Route("/v1/anilist", disabled.RegisterRoutes)
 	// }
-	
 
 	// if app.TwitchHandler != nil {
 	// 	routes.Get("/v1/twitch/{streamer}/chatters", http.HandlerFunc(app.TwitchHandler.HandleGetRandomChatter))
@@ -105,7 +102,7 @@ func setupRoutes(app *Application) *chi.Mux {
 	// 		routes.Get("/v1/auth/twitch/login", http.HandlerFunc(app.AuthHandler.HandleTwitchModAuthInitialRedirect))
 	// 		routes.Get("/v1/auth/twitch/callback", http.HandlerFunc(app.AuthHandler.HandleTwitchModAuthCallback))
 	// 	}
-		
+
 	// 	routes.Route("/v1/twitch", disabled.RegisterRoutes)
 	// }
 	// // Always allow the below routes to allow users to login to the aim trainer
@@ -113,7 +110,6 @@ func setupRoutes(app *Application) *chi.Mux {
 	// routes.Get("/auth/twitch/callback", app.AuthHandler.HandleTwitchFrontendAuthCallback)
 	// routes.Get("/auth/twitch/me", app.AuthHandler.HandleTwitchAuthMe)
 	// routes.Post("/auth/twitch/logout", app.AuthHandler.HandleTwitchAuthLogout)
-
 
 	// if os.Getenv("GO_ENV") == "development" {
 	// 	routes.Post("/local/db-dump", http.HandlerFunc(app.LocalHandler.HandleDbDump))
@@ -127,8 +123,6 @@ func setupRoutes(app *Application) *chi.Mux {
 	// if os.Getenv("GO_ENV") == "development" {
 	// 	routes.Get("/", handleIndex(routes))
 	// }
-	
 
-	
 	return routes
 }

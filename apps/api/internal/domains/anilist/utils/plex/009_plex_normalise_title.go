@@ -1,11 +1,11 @@
-package anilist_store
+package plex
 
 import (
 	"regexp"
 	"strings"
 )
 
-func normaliseTitle(value string) string {
+func normalisePlexTitle(value string) string {
 	value = strings.TrimSpace(value)
 	value = strings.ToLower(value)
 

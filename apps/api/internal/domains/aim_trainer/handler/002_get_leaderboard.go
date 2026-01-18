@@ -7,7 +7,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/utils"
 )
 
-func (h *Handler) HandleGetLeaderboard(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) getLeaderboard(w http.ResponseWriter, r *http.Request) {
 	rows, err := h.store.GetLeaderboard(r.Context())
 	if err != nil {
 		utils.WriteJSON(w, http.StatusInternalServerError, model.ErrorResponse{

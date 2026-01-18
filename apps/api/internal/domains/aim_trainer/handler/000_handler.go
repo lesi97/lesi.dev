@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/lesi97/lesi.dev/internal/db"
+	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/model"
 	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
@@ -29,7 +30,7 @@ type errorResponse struct {
 }
 
 type leaderboardResponse struct {
-	Data []aim_trainer_store.LeaderboardRow `json:"data"`
+	Data []model.LeaderboardRow `json:"data"`
 }
 
 

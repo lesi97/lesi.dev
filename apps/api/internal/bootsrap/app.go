@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/lesi97/lesi.dev/internal/db"
+	anilist_handler "github.com/lesi97/lesi.dev/internal/domains/anilist/handler"
 	tarot_handler "github.com/lesi97/lesi.dev/internal/domains/tarot/handler"
 	time_handler "github.com/lesi97/lesi.dev/internal/domains/time/handler"
 	"github.com/lesi97/lesi.dev/internal/utils"
@@ -13,19 +14,19 @@ import (
 )
 
 type Application struct {
-	Logger				*utils.Logger
-	DB					*db.DB
-	Redis				*redis.Client
-	tarot				*tarot_handler.Handler
-	CountdownHandler	*api.CountdownHandler
-	time				*time_handler.Handler
-	BungieHandler		*api.BungieHandler
-	TrialsHandler		*api.TrialsHandler
-	AnilistHandler 		*api.AnilistHandler
-	LocalHandler		*api.LocalHandler
-	TwitchHandler		*api.TwitchHandler
-	AuthHandler			*api.AuthHandler
-	AimTrainerHandler	*api.AimTrainerHandler
+	Logger            *utils.Logger
+	DB                *db.DB
+	Redis             *redis.Client
+	tarot             *tarot_handler.Handler
+	CountdownHandler  *api.CountdownHandler
+	time              *time_handler.Handler
+	BungieHandler     *api.BungieHandler
+	TrialsHandler     *api.TrialsHandler
+	AnilistHandler    *anilist_handler.Handler
+	LocalHandler      *api.LocalHandler
+	TwitchHandler     *api.TwitchHandler
+	AuthHandler       *api.AuthHandler
+	AimTrainerHandler *api.AimTrainerHandler
 }
 
 func init() {
@@ -48,7 +49,14 @@ func NewApplication() (*Application, *chi.Mux, error) {
 
 	tarot := tarot_handler.NewHandler(logger)
 	time := time_handler.NewHandler(logger)
-	
+
+	var anilistHandler *anilist_handler.Handler
+	anilistHandler, anilistErr := anilist_handler.NewHandler(logger, db)
+	if anilistErr != nil {
+		logger.Error("AniList store disabled: " + anilistErr.Error())
+		anilistHandler = nil
+	}
+
 	// trialsStore := trials_store.NewStore(db, logger)
 	// countdownStore := countdown_store.NewStore(db, logger)
 	// aimTrainerStore := aim_trainer_store.NewStore(db, logger)
@@ -60,7 +68,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	// aimTrainerHandler := api.NewAimTrainerHandler(logger, aimTrainerStore)
 
 	// var bungieHandler *api.BungieHandler
-	// bungieStore, bungieErr := bungie_store.NewStore(db, logger, rdb)	
+	// bungieStore, bungieErr := bungie_store.NewStore(db, logger, rdb)
 	// if bungieErr != nil {
 	// 	logger.Error("Bungie store disabled: " + bungieErr.Error())
 	// } else {
@@ -92,21 +100,20 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	// }
 
 	app := &Application{
-		Logger: logger,
-		DB: db,
-		Redis: rdb,
-		tarot: tarot,
-		time: time,
-		TrialsHandler: trialsHandler,
-		BungieHandler: bungieHandler,
-		AnilistHandler: anilistHandler,
-		CountdownHandler: countdownHandler,
-		LocalHandler: localHandler,
-		TwitchHandler: twitchHandler,
-		AuthHandler: authHandler,
+		Logger:            logger,
+		DB:                db,
+		Redis:             rdb,
+		tarot:             tarot,
+		time:              time,
+		TrialsHandler:     trialsHandler,
+		BungieHandler:     bungieHandler,
+		AnilistHandler:    anilistHandler,
+		CountdownHandler:  countdownHandler,
+		LocalHandler:      localHandler,
+		TwitchHandler:     twitchHandler,
+		AuthHandler:       authHandler,
 		AimTrainerHandler: aimTrainerHandler,
 	}
-
 
 	routes := setupRoutes(app)
 

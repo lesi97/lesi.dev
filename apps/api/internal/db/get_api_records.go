@@ -1,11 +1,10 @@
-package api_details
+package db
 
 import (
 	"context"
 	"errors"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/lesi97/lesi.dev/internal/db"
 	"github.com/lesi97/lesi.dev/internal/db/crypto"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
@@ -34,7 +33,7 @@ func isAllowedApplication(app string) bool {
 	return ok
 }
 
-func (db *db.DB) FetchApiDetails(ctx context.Context, application string, logger *utils.Logger) (*ApiDetails, error) {
+func (db *DB) FetchApiDetails(ctx context.Context, application string, logger *utils.Logger) (*ApiDetails, error) {
 	if !isAllowedApplication(application) {
 		logger.Errorf("Invalid application: " + application)
 		return nil, errors.New("invalid application")

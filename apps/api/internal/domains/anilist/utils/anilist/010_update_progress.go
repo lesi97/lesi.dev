@@ -1,24 +1,25 @@
-package anilist_store
+package anilist
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+
+	"github.com/lesi97/lesi.dev/internal/domains/anilist/model"
 )
 
-type saveEntryData struct {
-	SaveMediaListEntry struct {
-		ID       int `json:"id"`
-		MediaID  int `json:"mediaId"`
-		Progress int `json:"progress"`
-	} `json:"SaveMediaListEntry"`
+type updateProgressResponse struct {
+	Data struct {
+		SaveMediaListEntry struct {
+			ID       int `json:"id"`
+			MediaID  int `json:"mediaId"`
+			Progress int `json:"progress"`
+		} `json:"SaveMediaListEntry"`
+	} `json:"data"`
+	Errors []model.AnilistGraphQLError `json:"errors,omitempty"`
 }
 
-type saveEntryResponse struct {
-	Data   saveEntryData  `json:"data"`
-	Errors []graphqlError `json:"errors,omitempty"`
-}
-
-func (s *AnilistStore) updateAniListProgress(mediaID int, progress int) error {
+func (s *Store) UpdateProgress(ctx context.Context, mediaID int, progress int) error {
 	query := `
 mutation ($mediaId: Int, $progress: Int) {
   SaveMediaListEntry(mediaId: $mediaId, progress: $progress) {
@@ -30,7 +31,8 @@ mutation ($mediaId: Int, $progress: Int) {
 `
 
 	raw, err := s.anilistPOST(
-		s.graphql_url,
+		ctx,
+		s.env.GraphqlUrl,
 		query,
 		map[string]interface{}{
 			"mediaId":  mediaID,
@@ -41,7 +43,7 @@ mutation ($mediaId: Int, $progress: Int) {
 		return err
 	}
 
-	var res saveEntryResponse
+	var res updateProgressResponse
 	err = json.Unmarshal(raw, &res)
 	if err != nil {
 		return err

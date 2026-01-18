@@ -1,4 +1,4 @@
-package api_details
+package db
 
 import (
 	"context"

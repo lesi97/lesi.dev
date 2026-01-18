@@ -1,4 +1,4 @@
-package api_details
+package db
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/lesi97/lesi.dev/internal/db/crypto"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -32,7 +33,7 @@ func (db *DB) UpdateApiDetails(
 	args := []any{application}
 
 	if accessToken != nil {
-		enc, err := Encrypt(*accessToken)
+		enc, err := crypto.Encrypt(*accessToken)
 		if err != nil {
 			return err
 		}
@@ -41,7 +42,7 @@ func (db *DB) UpdateApiDetails(
 	}
 
 	if refreshToken != nil {
-		enc, err := Encrypt(*refreshToken)
+		enc, err := crypto.Encrypt(*refreshToken)
 		if err != nil {
 			return err
 		}
@@ -55,7 +56,7 @@ func (db *DB) UpdateApiDetails(
 	}
 
 	if clientID != nil {
-		enc, err := Encrypt(*clientID)
+		enc, err := crypto.Encrypt(*clientID)
 		if err != nil {
 			return err
 		}
@@ -64,7 +65,7 @@ func (db *DB) UpdateApiDetails(
 	}
 
 	if clientSecret != nil {
-		enc, err := Encrypt(*clientSecret)
+		enc, err := crypto.Encrypt(*clientSecret)
 		if err != nil {
 			return err
 		}
