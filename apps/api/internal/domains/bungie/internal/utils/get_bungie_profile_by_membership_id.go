@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/utils"
@@ -27,10 +28,13 @@ func GetBungieProfileByMembershipID(
 	freshFor := 15 * time.Second
 	staleFor := 2 * time.Minute
 
+	normalisedComponents := strings.ReplaceAll(strings.TrimSpace(components), " ", "")
+
 	cacheKey := fmt.Sprintf(
-		"bungie:profile:%v:%v",
+		"bungie:profile:%v:%v:%v",
+		preferredPlatform,
 		membershipID,
-		components,
+		normalisedComponents,
 	)
 
 	now := time.Now()
@@ -42,13 +46,13 @@ func GetBungieProfileByMembershipID(
 			age := now.Sub(time.Unix(wrap.CachedAtUnix, 0))
 
 			if age <= freshFor {
-				logger.PrintColour(true, "brightBlack", "CACHE HIT fresh getBungieProfile %s", cacheKey)
+				logger.PrintCache("CACHE HIT fresh getBungieProfile %s", cacheKey)
 				v := wrap.Value
 				return &v, nil
 			}
 
 			if age <= staleFor {
-				logger.PrintColour(true, "brightBlack", "CACHE HIT stale getBungieProfile %s", cacheKey)
+				logger.PrintCache("CACHE HIT stale getBungieProfile %s", cacheKey)
 
 				lockKey := cacheKey + ":lock"
 				ok, _ := redis.SetNX(ctx, lockKey, "1", 5*time.Second).Result()
@@ -58,7 +62,7 @@ func GetBungieProfileByMembershipID(
 						if ctx.Err() != nil {
 							return
 						}
-						_, _ = fetchAndCacheBungieProfile(ctx, redis, logger, clientID, baseURL, membershipID, preferredPlatform, components, cacheKey)
+						_, _ = fetchAndCacheBungieProfile(ctx, redis, logger, clientID, baseURL, membershipID, preferredPlatform, normalisedComponents, cacheKey)
 					}()
 				}
 
@@ -72,5 +76,5 @@ func GetBungieProfileByMembershipID(
 		return nil, err
 	}
 
-	return fetchAndCacheBungieProfile(ctx, redis, logger, clientID, baseURL, membershipID, preferredPlatform, components, cacheKey)
+	return fetchAndCacheBungieProfile(ctx, redis, logger, clientID, baseURL, membershipID, preferredPlatform, normalisedComponents, cacheKey)
 }

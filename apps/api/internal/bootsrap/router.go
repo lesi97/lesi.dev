@@ -70,11 +70,12 @@ func setupRoutes(app *Application) *chi.Mux {
 		if app.TwitchHandler != nil {
 			registerRoutes(app.TwitchHandler, r)
 		}
-		if app.AuthHandler != nil {
-			registerRoutes(app.AuthHandler, r)
-		}
 
 	})
+
+	if app.AuthHandler != nil {
+		registerRoutes(app.AuthHandler, routes)
+	}
 
 	if app.LocalHandler != nil && os.Getenv("GO_ENV") == "development" {
 		registerRoutes(app.LocalHandler, routes)

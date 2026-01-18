@@ -36,12 +36,12 @@ func GetChatters(
 			age := time.Since(wrapper.FetchedAt)
 
 			if age <= freshFor {
-				logger.Printf("%vCACHE HIT getChatters %v%v", utils.Colours["brightBlack"], cacheKey, utils.Colours["reset"])
+				logger.PrintCache("CACHE HIT getChatters %v", cacheKey)
 				return &wrapper.Data, nil
 			}
 
 			if age <= staleFor {
-				logger.Printf("%vCACHE STALE getChatters %v%v", utils.Colours["brightBlack"], cacheKey, utils.Colours["reset"])
+				logger.PrintCache("CACHE STALE getChatters %v", cacheKey)
 
 				go func() {
 					RefreshChatters(

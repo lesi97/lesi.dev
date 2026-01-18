@@ -31,7 +31,7 @@ func GetStreamerData(
 	if err == nil {
 		result := &model.StreamerData{}
 		if err := json.Unmarshal([]byte(cached), result); err == nil {
-			logger.Printf("%vCACHE HIT getStreamerData %v%v", utils.Colours["brightBlack"], cacheKey, utils.Colours["reset"])
+			logger.PrintCache("CACHE HIT getStreamerData %v", cacheKey)
 			return result, nil
 		}
 		_ = redis.Del(ctx, cacheKey).Err()

@@ -36,7 +36,7 @@ func FetchFromTrialsReport(ctx context.Context, logger *utils.Logger, url string
 	trialsReportCacheMu.Unlock()
 
 	if cachedData != nil && cacheAge < freshFor {
-		logger.PrintColour(true, "brightBlack", "TRIALS CACHE HIT | RETURNING EARLY")
+		logger.PrintCache("CACHE HIT fetchFromTrialsReport")
 		return cachedData, nil
 	}
 

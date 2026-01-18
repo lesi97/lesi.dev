@@ -31,7 +31,7 @@ func getUserFromBungieByGamertag(
 	if err == nil {
 		result := &bungieSearch{}
 		if err := json.Unmarshal([]byte(cached), result); err == nil {
-			logger.Printf("CACHE HIT getUserFromBungieByGamertag %s", cacheKey)
+			logger.PrintCache("CACHE HIT getUserFromBungieByGamertag %s", cacheKey)
 			return result, nil
 		}
 		_ = redis.Del(ctx, cacheKey).Err()
