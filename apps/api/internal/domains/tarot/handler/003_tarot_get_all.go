@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/lesi97/lesi.dev/internal/domains/tarot/model"
+	"github.com/lesi97/lesi.dev/internal/domains/tarot/internal/model"
 )
 
 

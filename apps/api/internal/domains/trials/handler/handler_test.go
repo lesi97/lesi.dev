@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/lesi97/lesi.dev/internal/domains/trials/store"
+	"github.com/lesi97/lesi.dev/internal/domains/trials/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/lesi97/lesi.dev/internal/domains/tarot/store"
+	"github.com/lesi97/lesi.dev/internal/domains/tarot/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

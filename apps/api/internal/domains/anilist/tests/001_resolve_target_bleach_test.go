@@ -15,11 +15,11 @@ import (
 	"time"
 
 	anilist_handler "github.com/lesi97/lesi.dev/internal/domains/anilist/handler"
-	"github.com/lesi97/lesi.dev/internal/domains/anilist/model"
-	"github.com/lesi97/lesi.dev/internal/domains/anilist/store"
-	ani_utils "github.com/lesi97/lesi.dev/internal/domains/anilist/utils/anilist"
-	http_utils "github.com/lesi97/lesi.dev/internal/domains/anilist/utils/http"
-	"github.com/lesi97/lesi.dev/internal/domains/anilist/utils/plex"
+	"github.com/lesi97/lesi.dev/internal/domains/anilist/internal/model"
+	"github.com/lesi97/lesi.dev/internal/domains/anilist/internal/store"
+	ani_utils "github.com/lesi97/lesi.dev/internal/domains/anilist/internal/utils/anilist"
+	http_utils "github.com/lesi97/lesi.dev/internal/domains/anilist/internal/utils/http"
+	"github.com/lesi97/lesi.dev/internal/domains/anilist/internal/utils/plex"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

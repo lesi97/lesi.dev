@@ -11,7 +11,6 @@ import (
 	auth_handler "github.com/lesi97/lesi.dev/internal/domains/auth/handler"
 	bungie_handler "github.com/lesi97/lesi.dev/internal/domains/bungie/handler"
 	countdown_handler "github.com/lesi97/lesi.dev/internal/domains/countdown/handler"
-	countdown_store "github.com/lesi97/lesi.dev/internal/domains/countdown/store"
 	local_handler "github.com/lesi97/lesi.dev/internal/domains/local/handler"
 	tarot_handler "github.com/lesi97/lesi.dev/internal/domains/tarot/handler"
 	time_handler "github.com/lesi97/lesi.dev/internal/domains/time/handler"
@@ -59,8 +58,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	time := time_handler.NewHandler(logger)
 
 	trialsHandler := trials_handler.NewHandler(logger, db)
-	countdownStore := countdown_store.NewStore(db, logger)
-	countdownHandler := countdown_handler.NewCountdownHandler(logger, countdownStore)
+	countdownHandler := countdown_handler.NewHandler(logger, db)
 	localHandler := local_handler.NewHandler(logger, db)
 	aimTrainerHandler := aim_trainer_handler.NewHandler(logger, db)
 

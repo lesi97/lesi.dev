@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/lesi97/lesi.dev/internal/domains/local/model"
+	"github.com/lesi97/lesi.dev/internal/domains/local/internal/model"
 )
 
 func DecodeUpdateApiDetailsRequest(r *http.Request) (model.UpdateApiDetailsRequest, error) {

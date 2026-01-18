@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/model"
-	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/utils"
+	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/internal/model"
+	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/internal/utils"
 )
 
 func (h *Handler) updateLeaderboard(w http.ResponseWriter, r *http.Request) {

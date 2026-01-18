@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/lesi97/lesi.dev/internal/db"
-	bungie_store "github.com/lesi97/lesi.dev/internal/domains/bungie/store"
+	bungie_store "github.com/lesi97/lesi.dev/internal/domains/bungie/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 	"github.com/redis/go-redis/v9"
 )

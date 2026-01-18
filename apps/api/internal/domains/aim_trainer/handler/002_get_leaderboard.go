@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/model"
-	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/utils"
+	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/internal/model"
+	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/internal/utils"
 )
 
 func (h *Handler) getLeaderboard(w http.ResponseWriter, r *http.Request) {

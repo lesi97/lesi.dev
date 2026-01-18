@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/lesi97/lesi.dev/internal/domains/countdown/model"
+	"github.com/lesi97/lesi.dev/internal/domains/countdown/internal/model"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

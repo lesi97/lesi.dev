@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	auth_store "github.com/lesi97/lesi.dev/internal/domains/auth/store"
+	auth_store "github.com/lesi97/lesi.dev/internal/domains/auth/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

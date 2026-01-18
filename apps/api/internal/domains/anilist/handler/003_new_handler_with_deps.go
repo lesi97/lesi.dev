@@ -1,8 +1,8 @@
 package handler
 
 import (
-	ani "github.com/lesi97/lesi.dev/internal/domains/anilist/store"
-	hu "github.com/lesi97/lesi.dev/internal/domains/anilist/utils/http"
+	ani "github.com/lesi97/lesi.dev/internal/domains/anilist/internal/store"
+	hu "github.com/lesi97/lesi.dev/internal/domains/anilist/internal/utils/http"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/lesi97/lesi.dev/internal/domains/anilist/model"
+	"github.com/lesi97/lesi.dev/internal/domains/anilist/internal/model"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

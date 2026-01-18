@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/lesi97/lesi.dev/internal/db"
-	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/model"
-	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/store"
+	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/internal/model"
+	"github.com/lesi97/lesi.dev/internal/domains/aim_trainer/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

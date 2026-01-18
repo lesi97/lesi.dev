@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/lesi97/lesi.dev/internal/db"
-	twitch_store "github.com/lesi97/lesi.dev/internal/domains/twitch/store"
+	twitch_store "github.com/lesi97/lesi.dev/internal/domains/twitch/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 	"github.com/redis/go-redis/v9"
 )

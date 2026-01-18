@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	bungie_store "github.com/lesi97/lesi.dev/internal/domains/bungie/store"
+	bungie_store "github.com/lesi97/lesi.dev/internal/domains/bungie/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

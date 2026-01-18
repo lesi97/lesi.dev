@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/lesi97/lesi.dev/internal/domains/local/model"
+	"github.com/lesi97/lesi.dev/internal/domains/local/internal/model"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 

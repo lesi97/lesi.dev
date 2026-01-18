@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/lesi97/lesi.dev/internal/domains/time/model"
-	"github.com/lesi97/lesi.dev/internal/domains/time/utils"
+	"github.com/lesi97/lesi.dev/internal/domains/time/internal/model"
+	"github.com/lesi97/lesi.dev/internal/domains/time/internal/utils"
 	su "github.com/lesi97/lesi.dev/internal/utils"
 )
 

@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/lesi97/lesi.dev/internal/db"
-	trials_store "github.com/lesi97/lesi.dev/internal/domains/trials/store"
+	trials_store "github.com/lesi97/lesi.dev/internal/domains/trials/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
