@@ -6,8 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/lesi97/lesi.dev/internal/database"
-	"github.com/lesi97/lesi.dev/internal/store"
+	"github.com/lesi97/lesi.dev/internal/db"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -32,29 +31,15 @@ type ApiApplication struct {
 }
 
 type Store struct {
-	store.StoreBase
+	DB      *db.DB
+	Logger  *utils.Logger
 	anilist ApiApplication
 	twitch ApiApplication
 	apiUrl *string
 	webUrl *string
 }
 
-type OAuthClientConfig struct {
-	ClientID     string
-	ClientSecret string
-	RedirectURI  string
-}
-
-type OAuthTokens struct {
-	AccessToken  string
-	RefreshToken string
-	ExpiresAt    *time.Time
-	TokenType    string
-}
-
-
-func NewStore(db *database.DB, logger *utils.Logger) (*Store, error) {
-	const userName = "Auth Store"
+func NewStore(db *db.DB, logger *utils.Logger) (*Store, error) {
 	const discord = "AUTH STORE FATAL"
 
 	apiUrl := os.Getenv("API_URL")
@@ -137,7 +122,8 @@ func NewStore(db *database.DB, logger *utils.Logger) (*Store, error) {
 	}
 
 	return &Store{
-		StoreBase: store.NewStoreBase(db, logger),
+		DB:      db,
+		Logger:  logger,
 		anilist: anilist,
 		twitch: twitch,
 		apiUrl: &apiUrl,

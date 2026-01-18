@@ -1,4 +1,4 @@
-package html_pages
+package html
 
 import (
 	"fmt"

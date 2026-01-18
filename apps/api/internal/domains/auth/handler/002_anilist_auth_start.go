@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/lesi97/lesi.dev/internal/html_pages"
+	"github.com/lesi97/lesi.dev/internal/ui/html"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -22,6 +22,6 @@ func (h *Handler) HandleAniAuthInitialRedirect(w http.ResponseWriter, r *http.Re
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	html := html_pages.GenerateAuthButton(*url, "Authenticate with Anilist")
+	html := html.GenerateAuthButton(*url, "Authenticate with Anilist")
 	_, _ = w.Write([]byte(html))
 }

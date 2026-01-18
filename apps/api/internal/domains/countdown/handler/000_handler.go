@@ -5,14 +5,13 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-type handler struct {
+type Handler struct {
 	logger     *utils.Logger
 	store	   store.Methods
 }
 
-func NewCountdownHandler(logger *utils.Logger, store store.Methods)  *handler {
-	
-	return &handler{
+func NewCountdownHandler(logger *utils.Logger, store store.Methods) *Handler {
+	return &Handler{
 		logger: logger,
 		store: store,
 	}

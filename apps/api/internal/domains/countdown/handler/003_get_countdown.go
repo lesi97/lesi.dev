@@ -7,7 +7,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func (h *handler) getCountdown(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) getCountdown(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
 	if idParam == "" {
 		utils.TextResponse(w, http.StatusBadRequest, "invalid ID")

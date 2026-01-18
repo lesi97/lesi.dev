@@ -8,7 +8,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func (h *handler) createCountdown(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateCountdown(w http.ResponseWriter, r *http.Request) {
 	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 
 	dec := json.NewDecoder(r.Body)

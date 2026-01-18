@@ -1,12 +1,14 @@
-package trials_store
+package store
 
 import (
 	"fmt"
 	"time"
+
+	trials_utils "github.com/lesi97/lesi.dev/internal/domains/trials/utils"
 )
 
-func (s *TrialsStore) GetLoot() *string {
-	trialsData, err := s.fetchFromTrialsReport()
+func (s *Store) GetLoot() *string {
+	trialsData, err := trials_utils.FetchFromTrialsReport(s.Logger, s.URL)
 	if err != nil {
 		s.Logger.Printf("ERROR: fetchFromTrialsReport: %v\n", err)
 		message := "failed to fetch data from trials report"
@@ -26,7 +28,11 @@ func (s *TrialsStore) GetLoot() *string {
 		return &message
 	}
 
-	message := fmt.Sprintf("Map: %s | Flawless Loot: %s & Random 3, 5 or 7 win drop | Adept Mode: Random | Chance at Ship, Sparrow & Ghost", trialsData.Maps[0].Name, trialsData.Rewards.Flawless)
+	message := fmt.Sprintf(
+		"Map: %s | Flawless Loot: %s & Random 3, 5 or 7 win drop | Adept Mode: Random | Chance at Ship, Sparrow & Ghost",
+		trialsData.Maps[0].Name,
+		trialsData.Rewards.Flawless,
+	)
 
 	return &message
 }

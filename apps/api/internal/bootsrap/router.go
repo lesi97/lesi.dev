@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/lesi97/lesi.dev/internal/httpapi/middleware"
@@ -9,6 +10,14 @@ import (
 
 type DisabledServiceHandler struct {
 	ServiceName string
+}
+
+type RouteRegistrar interface {
+	RegisterRoutes(r chi.Router)
+}
+
+func registerRoutes(registrar RouteRegistrar, r chi.Router) {
+	registrar.RegisterRoutes(r)
 }
 
 func (h *DisabledServiceHandler) RegisterRoutes(r chi.Router) {
@@ -36,13 +45,36 @@ func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
 	routes.Use(middleware.Measure(app.Logger))
-	routes.Route("/v1", func(r chi.Router) {
-		app.tarot.RegisterRoutes(r)
-		app.time.RegisterRoutes(r)
-		if app.AnilistHandler != nil {
-			app.AnilistHandler.RegisterRoutes(r)
-		}
-	})
+	registerRoutes(app.tarot, routes)
+	registerRoutes(app.time, routes)
+	if app.AnilistHandler != nil {
+		registerRoutes(app.AnilistHandler, routes)
+	}
+	if app.AimTrainerHandler != nil {
+		registerRoutes(app.AimTrainerHandler, routes)
+	}
+	if app.CountdownHandler != nil {
+		registerRoutes(app.CountdownHandler, routes)
+	}
+	if app.TrialsHandler != nil {
+		registerRoutes(app.TrialsHandler, routes)
+	}
+	if app.BungieHandler != nil {
+		registerRoutes(app.BungieHandler, routes)
+	}
+	if app.TwitchHandler != nil {
+		registerRoutes(app.TwitchHandler, routes)
+	}
+	if app.AuthHandler != nil {
+		registerRoutes(app.AuthHandler, routes)
+	}
+	if app.LocalHandler != nil && os.Getenv("GO_ENV") == "development" {
+		registerRoutes(app.LocalHandler, routes)
+	}
+
+	if os.Getenv("GO_ENV") == "development" {
+		routes.Get("/", handleIndex(routes))
+	}
 
 	return routes
 	// routes.Get("/healthcheck", api.Healthcheck)

@@ -14,7 +14,7 @@ type TwitchFrontendUser struct {
 	TwitchAvatarURL  *string `json:"twitchAvatarUrl"`
 }
 
-func (s *AuthStore) TwitchFrontendGetUserBySession(ctx context.Context, sessionToken string) (*TwitchFrontendUser, error) {
+func (s *Store) TwitchFrontendGetUserBySession(ctx context.Context, sessionToken string) (*TwitchFrontendUser, error) {
 	if sessionToken == "" {
 		return nil, fmt.Errorf("missing session token")
 	}
@@ -44,22 +44,9 @@ func (s *AuthStore) TwitchFrontendGetUserBySession(ctx context.Context, sessionT
 	}
 
 	if time.Now().After(expiresAt) {
-		_ = s.DeleteSessionByToken(ctx, sessionToken)
+		_ = s.TwitchFrontendDeleteSessionByToken(ctx, sessionToken)
 		return nil, fmt.Errorf("session expired")
 	}
 
 	return &u, nil
-}
-
-func (s *AuthStore) DeleteSessionByToken(ctx context.Context, sessionToken string) error {
-	if sessionToken == "" {
-		return fmt.Errorf("missing session token")
-	}
-
-	_, err := s.DB.Exec(
-		ctx,
-		`delete from public.app_session where session_token = $1`,
-		sessionToken,
-	)
-	return err
 }

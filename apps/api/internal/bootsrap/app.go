@@ -6,9 +6,17 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/lesi97/lesi.dev/internal/db"
+	aim_trainer_handler "github.com/lesi97/lesi.dev/internal/domains/aim_trainer/handler"
 	anilist_handler "github.com/lesi97/lesi.dev/internal/domains/anilist/handler"
+	auth_handler "github.com/lesi97/lesi.dev/internal/domains/auth/handler"
+	bungie_handler "github.com/lesi97/lesi.dev/internal/domains/bungie/handler"
+	countdown_handler "github.com/lesi97/lesi.dev/internal/domains/countdown/handler"
+	countdown_store "github.com/lesi97/lesi.dev/internal/domains/countdown/store"
+	local_handler "github.com/lesi97/lesi.dev/internal/domains/local/handler"
 	tarot_handler "github.com/lesi97/lesi.dev/internal/domains/tarot/handler"
 	time_handler "github.com/lesi97/lesi.dev/internal/domains/time/handler"
+	trials_handler "github.com/lesi97/lesi.dev/internal/domains/trials/handler"
+	twitch_handler "github.com/lesi97/lesi.dev/internal/domains/twitch/handler"
 	"github.com/lesi97/lesi.dev/internal/utils"
 	"github.com/redis/go-redis/v9"
 )
@@ -18,15 +26,15 @@ type Application struct {
 	DB                *db.DB
 	Redis             *redis.Client
 	tarot             *tarot_handler.Handler
-	CountdownHandler  *api.CountdownHandler
+	CountdownHandler  *countdown_handler.Handler
 	time              *time_handler.Handler
-	BungieHandler     *api.BungieHandler
-	TrialsHandler     *api.TrialsHandler
+	BungieHandler     *bungie_handler.Handler
+	TrialsHandler     *trials_handler.Handler
 	AnilistHandler    *anilist_handler.Handler
-	LocalHandler      *api.LocalHandler
-	TwitchHandler     *api.TwitchHandler
-	AuthHandler       *api.AuthHandler
-	AimTrainerHandler *api.AimTrainerHandler
+	LocalHandler      *local_handler.Handler
+	TwitchHandler     *twitch_handler.Handler
+	AuthHandler       *auth_handler.Handler
+	AimTrainerHandler *aim_trainer_handler.Handler
 }
 
 func init() {
@@ -50,6 +58,12 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	tarot := tarot_handler.NewHandler(logger)
 	time := time_handler.NewHandler(logger)
 
+	trialsHandler := trials_handler.NewHandler(logger, db)
+	countdownStore := countdown_store.NewStore(db, logger)
+	countdownHandler := countdown_handler.NewCountdownHandler(logger, countdownStore)
+	localHandler := local_handler.NewHandler(logger, db)
+	aimTrainerHandler := aim_trainer_handler.NewHandler(logger, db)
+
 	var anilistHandler *anilist_handler.Handler
 	anilistHandler, anilistErr := anilist_handler.NewHandler(logger, db)
 	if anilistErr != nil {
@@ -57,47 +71,26 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		anilistHandler = nil
 	}
 
-	// trialsStore := trials_store.NewStore(db, logger)
-	// countdownStore := countdown_store.NewStore(db, logger)
-	// aimTrainerStore := aim_trainer_store.NewStore(db, logger)
+	var bungieHandler *bungie_handler.Handler
+	bungieHandler, bungieErr := bungie_handler.NewHandler(logger, db, rdb)
+	if bungieErr != nil {
+		logger.Error("Bungie store disabled: " + bungieErr.Error())
+		bungieHandler = nil
+	}
 
-	// trialsHandler := api.NewTrialsHandler(logger, trialsStore)
-	// countdownHandler := api.NewCountdownHandler(logger, countdownStore)
-	// timeapiHandler := api.NewTimeapiHandler(logger)
-	// localHandler := api.NewLocalHandler(logger, db)
-	// aimTrainerHandler := api.NewAimTrainerHandler(logger, aimTrainerStore)
+	var twitchHandler *twitch_handler.Handler
+	twitchHandler, twitchErr := twitch_handler.NewHandler(logger, db, rdb)
+	if twitchErr != nil {
+		logger.Error("Twitch store disabled: " + twitchErr.Error())
+		twitchHandler = nil
+	}
 
-	// var bungieHandler *api.BungieHandler
-	// bungieStore, bungieErr := bungie_store.NewStore(db, logger, rdb)
-	// if bungieErr != nil {
-	// 	logger.Error("Bungie store disabled: " + bungieErr.Error())
-	// } else {
-	// 	bungieHandler = api.NewBungieHandler(logger, bungieStore)
-	// }
-
-	// var anilistHandler *api.AnilistHandler
-	// anilistStore, anilistErr := anilist_store.NewStore(db, logger)
-	// if anilistErr != nil {
-	// 	logger.Error("AniList store disabled: " + anilistErr.Error())
-	// } else {
-	// 	anilistHandler = api.NewAnilistHandler(logger, anilistStore)
-	// }
-
-	// var twitchHandler *api.TwitchHandler
-	// twitchStore, twitchErr := twitch_store.NewStore(db, logger, rdb)
-	// if twitchErr != nil {
-	// 	logger.Error("Twitch store disabled: " + twitchErr.Error())
-	// } else {
-	// 	twitchHandler = api.NewTwitchHandler(logger, twitchStore)
-	// }
-
-	// var authHandler *api.AuthHandler
-	// authStore, authErr := auth_store.NewStore(db, logger)
-	// if authErr != nil {
-	// 	logger.Error("Auth store disabled: " + authErr.Error())
-	// } else {
-	// 	authHandler = api.NewAuthHandler(logger, authStore)
-	// }
+	var authHandler *auth_handler.Handler
+	authHandler, authErr := auth_handler.NewHandler(logger, db)
+	if authErr != nil {
+		logger.Error("Auth store disabled: " + authErr.Error())
+		authHandler = nil
+	}
 
 	app := &Application{
 		Logger:            logger,

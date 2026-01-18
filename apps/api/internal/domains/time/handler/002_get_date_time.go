@@ -9,7 +9,7 @@ import (
 	su "github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func (h *Handler) getDateTime(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetDateTime(w http.ResponseWriter, r *http.Request) {
 
 	zone := utils.GetGeoLocationZone(r)
 	loc, err := time.LoadLocation(*zone)

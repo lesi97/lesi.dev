@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (s *AuthStore) TwitchFrontendDeleteSessionByToken(ctx context.Context, sessionToken string) error {
+func (s *Store) TwitchFrontendDeleteSessionByToken(ctx context.Context, sessionToken string) error {
 	if sessionToken == "" {
 		return fmt.Errorf("missing session token")
 	}

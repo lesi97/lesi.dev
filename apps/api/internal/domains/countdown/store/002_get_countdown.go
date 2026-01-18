@@ -10,13 +10,13 @@ import (
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func (s *Store) GetCountdownByID(ctx *context.Context, uuid *string) (*string, error) {
+func (s *Store) GetCountdownByID(ctx context.Context, uuid string) (*string, error) {
 	defer s.Logger.LogExecutionTime("DATABASE CALL: getCountdownById", time.Now(), nil)
 
 	data := &model.FetchData{
-		UUID: uuid,
+		UUID: &uuid,
 	}
-	err := data.Select(s.DB, ctx, uuid)
+	err := data.Select(s.DB, &ctx, &uuid)
 
 	if err != nil {
 		return nil, err
