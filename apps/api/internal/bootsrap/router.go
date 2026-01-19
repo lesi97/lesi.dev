@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/lesi97/lesi.dev/internal/httpapi"
 	"github.com/lesi97/lesi.dev/internal/httpapi/middleware"
 )
 
@@ -45,6 +46,10 @@ func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
 	routes.Use(middleware.Measure(app.Logger))
+	
+	routes.Get("/healthcheck", http.HandlerFunc(httpapi.Healthcheck))
+	httpapi.AddScriptRoutes(routes)
+
 	routes.Route("/v1", func(r chi.Router) {
 		if app.TarotHandler != nil {
 			registerRoutes(app.TarotHandler, r)
@@ -70,11 +75,12 @@ func setupRoutes(app *Application) *chi.Mux {
 		if app.TwitchHandler != nil {
 			registerRoutes(app.TwitchHandler, r)
 		}
-		if app.AuthHandler != nil {
-			registerRoutes(app.AuthHandler, r)
-		}
 
 	})
+
+	if app.AuthHandler != nil {
+		registerRoutes(app.AuthHandler, routes)
+	}
 
 	if app.LocalHandler != nil && os.Getenv("GO_ENV") == "development" {
 		registerRoutes(app.LocalHandler, routes)

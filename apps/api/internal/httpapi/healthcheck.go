@@ -7,5 +7,5 @@ import (
 )
 
 func Healthcheck(w http.ResponseWriter, r *http.Request) {
-	utils.TextResponse(w, http.StatusOK, "healthy")
+	utils.TextResponse(w, http.StatusOK, "healthy 🫡")
 }

@@ -46,7 +46,7 @@ func TestHandleGetPlayerCountUsesTrialsReport(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("expected status %d got %d", http.StatusOK, rec.Code)
 	}
-	if !strings.Contains(rec.Body.String(), "Trials of Osiris") {
+	if !strings.Contains(rec.Body.String(), "trials") {
 		t.Fatalf("unexpected body: %s", rec.Body.String())
 	}
 }

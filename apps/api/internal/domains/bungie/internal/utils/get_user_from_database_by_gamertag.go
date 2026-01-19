@@ -39,13 +39,13 @@ func getUserFromDatabaseByGamertag(ctx context.Context, database *db.DB, logger 
 		if err := json.Unmarshal([]byte(cached), &wrap); err == nil {
 			age := now.Sub(time.Unix(wrap.CachedAtUnix, 0))
 			if age <= freshFor {
-				logger.PrintColour(true, "brightBlack", "CACHE HIT fresh getUserFromDatabaseByGamertag %s", cacheKey)
+				logger.PrintCache("CACHE HIT fresh getUserFromDatabaseByGamertag %s", cacheKey)
 				shouldLog = false
 				v := wrap.Value
 				return &v, nil
 			}
 			if age <= staleFor {
-				logger.PrintColour(true, "brightBlack", "CACHE HIT stale getUserFromDatabaseByGamertag %s", cacheKey)
+				logger.PrintCache("CACHE HIT stale getUserFromDatabaseByGamertag %s", cacheKey)
 				shouldLog = false
 				lockKey := cacheKey + ":lock"
 				ok, _ := redis.SetNX(ctx, lockKey, "1", 5*time.Second).Result()

@@ -35,13 +35,13 @@ func getWeaponPerks(ctx context.Context, database *db.DB, logger *utils.Logger, 
 		if err := json.Unmarshal([]byte(cached), &wrap); err == nil {
 			age := now.Sub(time.Unix(wrap.CachedAtUnix, 0))
 			if age <= freshFor {
-				logger.PrintColour(true, "brightBlack", "CACHE HIT fresh getWeaponPerks %s", cacheKey)
+				logger.PrintCache("CACHE HIT fresh getWeaponPerks %s", cacheKey)
 				shouldLog = false
 				v := wrap.Value
 				return &v, nil
 			}
 			if age <= staleFor {
-				logger.PrintColour(true, "brightBlack", "CACHE HIT stale getWeaponPerks %s", cacheKey)
+				logger.PrintCache("CACHE HIT stale getWeaponPerks %s", cacheKey)
 				shouldLog = false
 				lockKey := cacheKey + ":lock"
 				ok, _ := redis.SetNX(ctx, lockKey, "1", 5*time.Second).Result()

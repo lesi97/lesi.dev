@@ -119,6 +119,11 @@ func (l *Logger) PrintColour(includeTimestamp bool, colour string, format string
 	}
 }
 
+func (l *Logger) PrintCache(format string, args ...interface{}) {
+	code := fmt.Sprintf("%v%v",Colours["yellow"], Colours["dim"])
+	l.Printf("%s%s%s", code, fmt.Sprintf(format, args...), Colours["reset"])
+}
+
 func (cw *ColourWriter) Write(p []byte) (n int, err error) {
 	text := string(p)
 

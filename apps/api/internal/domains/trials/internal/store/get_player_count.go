@@ -103,7 +103,7 @@ func (s *Store) GetPlayerCount() *string {
 		}
 		trialsPlayerCount := humanize.Comma(int64(trialsResult.data.Platforms.Num0.RecentStats.PlayerCount))
 		message := fmt.Sprintf(
-			"There are currently %s players in Trials of Osiris across all platforms | Trials data last updated: %s %s ago from https://trials.report",
+			"There are currently %s players in trials across all platforms | Trials data last updated: %s %s ago from https://trials.report",
 			trialsPlayerCount,
 			humanize.Comma(elapsedMinutes),
 			minuteLabel,
@@ -119,7 +119,7 @@ func (s *Store) GetPlayerCount() *string {
 	trialsPlayerCount := humanize.Comma(int64(trialsResult.data.Platforms.Num0.RecentStats.PlayerCount))
 	steamPlayerCount := humanize.Comma(int64(steamResult.data.Response.PlayerCount))
 	message := fmt.Sprintf(
-		"There are currently %s players playing on Steam & %s players in Trials of Osiris across all platforms | Trials data last updated: %s %s ago from https://trials.report",
+		"There are currently %s players playing on Steam & %s players in Trials across all platforms | Trials data last updated: %s %s ago from https://trials.report",
 		steamPlayerCount,
 		trialsPlayerCount,
 		humanize.Comma(elapsedMinutes),
