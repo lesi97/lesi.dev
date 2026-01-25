@@ -109,4 +109,8 @@ type PlexMetadata struct {
 		Role   string `json:"role"`
 		Thumb  string `json:"thumb"`
 	} `json:"Role"`
+
+	Location []struct {
+		Path string `json:"path"`
+	} `json:"location`
 }

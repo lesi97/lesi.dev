@@ -12,6 +12,7 @@ import (
 
 type Methods interface {
 	UpdateAnilist(ctx context.Context, data model.PlexWebhookPayload) error
+	UpdatePlexLabels(ctx context.Context, data model.PlexWebhookPayload) error
 }
 
 type Store struct {
