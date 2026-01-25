@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -16,11 +17,13 @@ func (s *Store) ValidateRequest(r *http.Request) (int, string, error) {
 	}
 
 	if secret == "" || secret != os.Getenv("PLEX_WEBHOOK_SECRET") {
+		fmt.Printf("Error with plex webhook secret")
 		return http.StatusForbidden, plexUsername, errors.New("forbidden")
 	}
 
 	ua := r.Header.Get("User-Agent")
 	if !strings.Contains(ua, "PlexMediaServer") {
+		fmt.Printf("Error with plex user-agent")
 		return http.StatusForbidden, plexUsername, errors.New("forbidden")
 	}
 
