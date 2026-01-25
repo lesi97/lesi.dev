@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/lesi97/lesi.dev/internal/domains/anilist/internal/model"
 	ani_utils "github.com/lesi97/lesi.dev/internal/domains/anilist/internal/utils/anilist"
@@ -20,6 +21,7 @@ func (s *Store) UpdateAnilist(ctx context.Context, data model.PlexWebhookPayload
 	plexSeason := data.Metadata.ParentIndex
 	plexShowYear := data.Metadata.Year
 	plexEpisode := data.GetEpisodeNumber()
+	isSpecial := strings.EqualFold(strings.TrimSpace(data.Metadata.ParentTitle), "specials")
 
 	allowed, err := s.PlexUtils.ValidateLabels(ctx, &data)
 	if err != nil {
@@ -29,12 +31,23 @@ func (s *Store) UpdateAnilist(ctx context.Context, data model.PlexWebhookPayload
 		return nil
 	}
 
-	results, err := s.AniUtils.SearchTitle(ctx, showName)
+	searchTitle := showName
+	if isSpecial && strings.TrimSpace(data.Metadata.Title) != "" {
+		searchTitle = fmt.Sprintf("%s %s", showName, data.Metadata.Title)
+	}
+
+	results, err := s.AniUtils.SearchTitle(ctx, searchTitle)
 	if err != nil {
 		return err
 	}
 
-	best, ok := ani_utils.PickBestMatch(results, showName, plexShowYear)
+	best := &model.AnilistMedia{}
+	ok := false
+	if isSpecial {
+		best, ok = ani_utils.PickBestSpecialMatch(results, showName, data.Metadata.Title, plexShowYear)
+	} else {
+		best, ok = ani_utils.PickBestMatch(results, showName, plexShowYear)
+	}
 	if !ok {
 		return fmt.Errorf("no anilist results found")
 	}
@@ -43,27 +56,36 @@ func (s *Store) UpdateAnilist(ctx context.Context, data model.PlexWebhookPayload
 		return nil
 	}
 
-	absEpisode, err := s.PlexUtils.AbsoluteEpisodeFromPlex(ctx, data.Metadata.GrandparentRatingKey, plexSeason, plexEpisode)
-	if err != nil {
-		return err
-	}
-
 	targetMediaID := best.ID
-	progress := absEpisode
+	progress := plexEpisode
 
-	chain, chainErr := s.AniUtils.BuildSeasonChain(ctx, best.ID)
-	if chainErr != nil {
-		chain = nil
-	}
+	if isSpecial {
+		if best.Episodes != nil && *best.Episodes > 0 && progress > *best.Episodes {
+			progress = *best.Episodes
+		}
+		if progress < 1 {
+			progress = 1
+		}
+	} else {
+		absEpisode, err := s.PlexUtils.AbsoluteEpisodeFromPlex(ctx, data.Metadata.GrandparentRatingKey, plexSeason, plexEpisode)
+		if err != nil {
+			return err
+		}
 
-	targetMediaID, progress = ResolveTargetProgress(*best, chain, plexSeason, plexEpisode, absEpisode)
+		chain, chainErr := s.AniUtils.BuildSeasonChain(ctx, best.ID)
+		if chainErr != nil {
+			chain = nil
+		}
 
-	if absEpisode%100 == 0 {
-		s.Logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
-			Content:  "",
-			Title:    fmt.Sprintf("Episde %v of %v watched!", absEpisode, showName),
-			Username: "Anilist Milestone",
-		})
+		targetMediaID, progress = ResolveTargetProgress(*best, chain, plexSeason, plexEpisode, absEpisode)
+
+		if absEpisode%100 == 0 {
+			s.Logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
+				Content:  "",
+				Title:    fmt.Sprintf("Episde %v of %v watched!", absEpisode, showName),
+				Username: "Anilist Milestone",
+			})
+		}
 	}
 
 	if preview, ok := ctx.Value(updatePreviewKey).(*UpdatePreview); ok && preview != nil {
