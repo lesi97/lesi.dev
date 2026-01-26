@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/lesi97/lesi.dev/internal/cache"
 	"github.com/lesi97/lesi.dev/internal/utils"
 	"github.com/redis/go-redis/v9"
 )
@@ -72,7 +73,7 @@ func GetBungieProfileByMembershipID(
 		} else {
 			_ = redis.Del(ctx, cacheKey).Err()
 		}
-	} else if !IsRedisNil(err) {
+	} else if !cache.IsRedisNil(err) {
 		return nil, err
 	}
 

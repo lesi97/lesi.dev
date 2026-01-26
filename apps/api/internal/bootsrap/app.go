@@ -90,7 +90,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	}
 
 	var trialsHandler *trials_handler.Handler
-	trialsHandler, trialsErr := trials_handler.NewHandler(logger, db)
+	trialsHandler, trialsErr := trials_handler.NewHandler(logger, db, redis)
 	if trialsErr != nil {
 		logger.Error("Trials store disabled: " + trialsErr.Error())
 		trialsHandler = nil

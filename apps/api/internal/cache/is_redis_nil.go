@@ -1,4 +1,4 @@
-package utils
+package cache
 
 func IsRedisNil(err error) bool {
 	if err == nil {
