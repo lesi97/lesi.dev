@@ -1,22 +1,21 @@
 package utils
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
 
+	"github.com/lesi97/lesi.dev/internal/cache"
 	"github.com/lesi97/lesi.dev/internal/domains/trials/internal/model"
-	"github.com/lesi97/lesi.dev/internal/httpapi"
 	"github.com/lesi97/lesi.dev/internal/utils"
+	"github.com/redis/go-redis/v9"
 )
 
-func FetchFromTrialsReport(ctx context.Context, logger *utils.Logger, url string) (*model.TrialsData, error) {
+const trialsReportCacheKey = "trials:report"
+
+func FetchFromTrialsReport(ctx context.Context, logger *utils.Logger, url string, redis *redis.Client) (*model.TrialsData, error) {
 	now := time.Now()
-	freshFor := 5 * time.Minute
-	staleFor := 30 * time.Minute
 	shouldLog := false
 	startedAt := time.Now()
 	defer func() {
@@ -25,25 +24,53 @@ func FetchFromTrialsReport(ctx context.Context, logger *utils.Logger, url string
 		}
 	}()
 
-	var cachedData *model.TrialsData
-	var cacheAge time.Duration
-
-	trialsReportCacheMu.Lock()
-	if trialsReportCache != nil {
-		cachedData = trialsReportCache.Data
-		cacheAge = now.Sub(trialsReportCache.CachedAt)
-	}
-	trialsReportCacheMu.Unlock()
-
-	if cachedData != nil && cacheAge < freshFor {
-		logger.PrintCache("CACHE HIT fetchFromTrialsReport")
-		return cachedData, nil
+	cacheKey := trialsReportCacheKey
+	if redis != nil {
+		cached, err := redis.Get(ctx, cacheKey).Result()
+		if err == nil {
+			var wrap cachedTrialsReport
+			if err := json.Unmarshal([]byte(cached), &wrap); err == nil {
+				freshFor, staleFor := GetTrialsReportCacheDurations(now, &wrap.Value)
+				age := now.Sub(time.Unix(wrap.CachedAtUnix, 0))
+				if freshFor > 0 && age <= freshFor {
+					logger.PrintCache("CACHE HIT fresh fetchFromTrialsReport %s", cacheKey)
+					return &wrap.Value, nil
+				}
+				if staleFor > 0 && age <= staleFor {
+					logger.PrintCache("CACHE HIT stale fetchFromTrialsReport %s", cacheKey)
+					lockKey := cacheKey + ":lock"
+					ok, _ := redis.SetNX(ctx, lockKey, "1", 5*time.Second).Result()
+					if ok {
+						go func() {
+							defer redis.Del(context.Background(), lockKey).Err()
+							data, err := FetchTrialsReportFromAPI(context.Background(), url)
+							if err != nil {
+								return
+							}
+							_, ttl := GetTrialsReportCacheDurations(time.Now(), data)
+							if ttl <= 0 {
+								return
+							}
+							wrap := cachedTrialsReport{
+								CachedAtUnix: time.Now().Unix(),
+								Value:        *data,
+							}
+							if b, err := json.Marshal(wrap); err == nil {
+								_ = redis.Set(context.Background(), cacheKey, b, ttl).Err()
+							}
+						}()
+					}
+					return &wrap.Value, nil
+				}
+			} else {
+				_ = redis.Del(ctx, cacheKey).Err()
+			}
+		} else if !cache.IsRedisNil(err) {
+			return nil, err
+		}
 	}
 
 	if !IsTrialsReportAvailable(now) {
-		if cachedData != nil && cacheAge < staleFor {
-			return cachedData, nil
-		}
 		return nil, fmt.Errorf("trials report is not available")
 	}
 
@@ -51,33 +78,23 @@ func FetchFromTrialsReport(ctx context.Context, logger *utils.Logger, url string
 	defer cancel()
 
 	shouldLog = true
-	headers := map[string]string{
-		"Accept": "application/json",
-	}
-	body, _, err := httpapi.DoRequest(reqCtx, http.DefaultClient, http.MethodGet, url, nil, headers)
+	result, err := FetchTrialsReportFromAPI(reqCtx, url)
 	if err != nil {
-		if cachedData != nil && cacheAge < staleFor {
-			return cachedData, nil
-		}
 		return nil, err
 	}
 
-	result := &model.TrialsData{}
-	err = json.NewDecoder(bytes.NewReader(body)).Decode(result)
-	if err != nil {
-		fmt.Printf("Decode error: %v\n", err)
-		if cachedData != nil && cacheAge < staleFor {
-			return cachedData, nil
+	if redis != nil {
+		_, ttl := GetTrialsReportCacheDurations(now, result)
+		if ttl > 0 {
+			wrap := cachedTrialsReport{
+				CachedAtUnix: time.Now().Unix(),
+				Value:        *result,
+			}
+			if b, err := json.Marshal(wrap); err == nil {
+				_ = redis.Set(ctx, cacheKey, b, ttl).Err()
+			}
 		}
-		return nil, err
 	}
-
-	trialsReportCacheMu.Lock()
-	trialsReportCache = &TrialsReportCache{
-		Data:     result,
-		CachedAt: time.Now(),
-	}
-	trialsReportCacheMu.Unlock()
 
 	return result, nil
 }

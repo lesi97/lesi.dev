@@ -26,7 +26,7 @@ func (s *Store) GetPlayerCount() *string {
 
 	if trialsAvailable {
 		go func() {
-			data, err := trials_utils.FetchFromTrialsReport(context.Background(), s.Logger, s.URL)
+			data, err := trials_utils.FetchFromTrialsReport(context.Background(), s.Logger, s.URL, s.Redis)
 			trialsCh <- struct {
 				data *model.TrialsData
 				err  error

@@ -24,8 +24,6 @@ func TestHandleGetLootReturnsMessage(t *testing.T) {
 	}))
 	defer server.Close()
 
-	trials_utils.ClearTrialsReportCache()
-
 	if !trials_utils.IsTrialsReportAvailable(time.Now()) {
 		t.Skip("trials report is not available")
 	}

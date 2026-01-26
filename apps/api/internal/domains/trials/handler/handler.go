@@ -4,6 +4,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/db"
 	trials_store "github.com/lesi97/lesi.dev/internal/domains/trials/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
+	"github.com/redis/go-redis/v9"
 )
 
 type Handler struct {
@@ -11,8 +12,8 @@ type Handler struct {
 	store  trials_store.Methods
 }
 
-func NewHandler(logger *utils.Logger, db *db.DB) (*Handler, error) {
-	store, err := trials_store.NewStore(db, logger)
+func NewHandler(logger *utils.Logger, db *db.DB, redis *redis.Client) (*Handler, error) {
+	store, err := trials_store.NewStore(db, logger, redis)
 	if err != nil {
 		return nil, err
 	}
