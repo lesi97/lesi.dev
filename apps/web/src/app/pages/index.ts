@@ -1,9 +1,9 @@
 export { Home } from './home';
 export { AspectRatio } from './aspectRatio';
-export { PdfToPng } from './pdfToPng';
+export { loadPdfToPng } from './pdfToPng';
 export { ImageToIcon } from './imageToIcon';
-export { VideoToMp3 } from './videoToMp3';
-export { VideoCropper } from './videoCropper';
+export { loadVideoToMp3 } from './videoToMp3';
+export { loadVideoCropper } from './videoCropper';
 export { PasswordGenerator } from './passwordGenerator';
 export { WeightConverter } from './weightConverter';
 export { Minifier } from './minifier';
