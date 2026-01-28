@@ -24,7 +24,7 @@ func LogStreamElementsChannel(logger *utils.Logger, headers http.Header, respons
 			utils.Colours["reset"],
 		)
 		logger.Printf(
-			"%vResponse: %v%v",
+			"%vStreamElements Response: %v%v",
 			utils.Colours["brightMagenta"],
 			responseBody,
 			utils.Colours["reset"],

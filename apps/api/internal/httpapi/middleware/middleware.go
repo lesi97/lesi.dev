@@ -67,15 +67,20 @@ func Measure(logger *utils.Logger) func(http.Handler) http.Handler {
 				if responseBody == "" {
 					responseBody = "<empty>"
 				}
+				hasNightbotHeaders := r.Header.Get("Nightbot-User") != "" || r.Header.Get("Nightbot-Channel") != ""
+				hasStreamElementsHeader := r.Header.Get("X-Streamelements-Channel") != ""
 				userDisplayName, channelDisplayName, ok := GetNightbotDisplayNames(r.Header)
 				if ok {
 					nightbotColour := utils.Colours["brightMagenta"]
 					logger.Printf("%vNightbot User: %v%v", nightbotColour, userDisplayName, reset)
 					logger.Printf("%vNightbot Channel: %v%v", nightbotColour, channelDisplayName, reset)
-					logger.Printf("%vResponse: %v%v", nightbotColour, responseBody, reset)
+					logger.Printf("%vNightbot Response: %v%v", nightbotColour, responseBody, reset)
 				}
 				LogStreamElementsChannel(logger, r.Header, responseBody)
 				if sw.status == http.StatusNotFound {
+					if hasNightbotHeaders || hasStreamElementsHeader {
+						return
+					}
 					fmt.Println()
 					logger.Printf("%v | %v %v", statusBlock, pathBlock, timeBlock)
 					for key, values := range r.Header {
