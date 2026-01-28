@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/utils"
@@ -11,11 +12,17 @@ import (
 type statusResponseWriter struct {
 	http.ResponseWriter
 	status int
+	body   []byte
 }
 
 func (w *statusResponseWriter) WriteHeader(code int) {
 	w.status = code
 	w.ResponseWriter.WriteHeader(code)
+}
+
+func (w *statusResponseWriter) Write(data []byte) (int, error) {
+	w.body = append(w.body, data...)
+	return w.ResponseWriter.Write(data)
 }
 
 func Measure(logger *utils.Logger) func(http.Handler) http.Handler {
@@ -56,6 +63,17 @@ func Measure(logger *utils.Logger) func(http.Handler) http.Handler {
 				statusBlock := fmt.Sprintf("%vStatus: %v%v", statusColour, sw.status, reset)
 				pathBlock := fmt.Sprintf("%v%v%v", pathColour, path, reset)
 				timeBlock := fmt.Sprintf("%vtook %v%v", timeColour, duration, reset)
+				userDisplayName, channelDisplayName, ok := GetNightbotDisplayNames(r.Header)
+				if ok {
+					nightbotColour := utils.Colours["brightMagenta"]
+					responseBody := strings.TrimSpace(string(sw.body))
+					if responseBody == "" {
+						responseBody = "<empty>"
+					}
+					logger.Printf("%vNightbot User: %v%v", nightbotColour, userDisplayName, reset)
+					logger.Printf("%vNightbot Channel: %v%v", nightbotColour, channelDisplayName, reset)
+					logger.Printf("%vResponse: %v%v", nightbotColour, responseBody, reset)
+				}
 				if sw.status == http.StatusNotFound {
 					fmt.Println()
 					logger.Printf("%v | %v %v", statusBlock, pathBlock, timeBlock)
