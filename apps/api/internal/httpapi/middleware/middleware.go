@@ -70,7 +70,7 @@ func Measure(logger *utils.Logger) func(http.Handler) http.Handler {
 				hasNightbotHeaders := r.Header.Get("Nightbot-User") != "" || r.Header.Get("Nightbot-Channel") != ""
 				hasStreamElementsHeader := r.Header.Get("X-Streamelements-Channel") != ""
 				userDisplayName, channelDisplayName, ok := GetNightbotDisplayNames(r.Header)
-				if ok {
+				if ok && sw.status != http.StatusNotFound {
 					nightbotColour := utils.Colours["brightMagenta"]
 					logger.Printf("%vNightbot User: %v%v", nightbotColour, userDisplayName, reset)
 					logger.Printf("%vNightbot Channel: %v%v", nightbotColour, channelDisplayName, reset)

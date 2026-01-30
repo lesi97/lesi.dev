@@ -46,6 +46,7 @@ func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
 	routes.Use(middleware.Measure(app.Logger))
+	routes.Use(middleware.RateLimit())
 	
 	routes.Get("/healthcheck", http.HandlerFunc(httpapi.Healthcheck))
 	httpapi.AddScriptRoutes(routes)
