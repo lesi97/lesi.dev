@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 export function useTime() {
     const [time, setTime] = useState<string>('');
     const [serverTime, setServerTime] = useState<Date | null>(null);
-    const [intervalId, setIntervalId] = useState<number | null>(null);
+    const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
     const [date, setDate] = useState<string | null>(null);
 
     function formatDate(d: Date): string {

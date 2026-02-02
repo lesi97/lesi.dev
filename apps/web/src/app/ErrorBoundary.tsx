@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button } from '../components/ui';
+import { sendTelemetry } from '@/lib/telemetry/sendTelemetry';
 
 type ErrorBoundaryProps = {
     children: ReactNode;
@@ -35,6 +36,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     componentDidCatch(error: Error, info: ErrorInfo): void {
         this.setState({ error, errorInfo: info });
+        sendTelemetry(window.location.pathname, error.message);
     }
 
     resetError = () => {
