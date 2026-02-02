@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import { StrictMode, lazy, Suspense } from 'react';
+import { StrictMode, lazy, Suspense, useEffect } from 'react';
 import './index.css';
 import { Routes, Route, BrowserRouter, useLocation } from 'react-router-dom';
 import { Home } from './pages/home';
@@ -23,6 +23,7 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { DefaultLayout, FfmpegLayout, WideLayout, Ltoe, Nav } from '@/components/layout';
 import { PopoverLayout } from '@/components/layout/popoverLayout';
 import { WordpressAdmin } from './pages';
+import { sendTelemetry } from '@/lib/telemetry/sendTelemetry';
 
 const PdfToPng = lazy(loadPdfToPng);
 const VideoToMp3 = lazy(loadVideoToMp3);
@@ -31,6 +32,10 @@ const VideoCropper = lazy(loadVideoCropper);
 function Router() {
     const location = useLocation();
     const isWordpressAdmin = location.pathname === '/wp-admin';
+
+    useEffect(() => {
+        sendTelemetry(location.pathname);
+    }, [location.pathname]);
 
     return (
         <>
