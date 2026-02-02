@@ -31,7 +31,7 @@ const VideoCropper = lazy(loadVideoCropper);
 
 function Router() {
     const location = useLocation();
-    const isWordpressAdmin = location.pathname === '/wp-admin';
+    const isWordpressAdmin = location.pathname.startsWith('/wp-admin') || location.pathname.startsWith('/wp-content');
 
     useEffect(() => {
         sendTelemetry(location.pathname);
@@ -70,7 +70,10 @@ function Router() {
                         <Route path='/docs/browser-gpu-acceleration' element={<BrowserGpuAcceleration />} />
                     </Route>
 
-                    <Route path='/wp-admin' element={<WordpressAdmin />} />
+                    <Route element={<WordpressAdmin />}>
+                        <Route path='/wp-admin/*' />
+                        <Route path='/wp-content/*' />
+                    </Route>
 
                     <Route element={<DefaultLayout />}>
                         <Route path='*' element={<NotFound />} />

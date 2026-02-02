@@ -15,10 +15,10 @@ export function WordpressAdmin() {
 
     function onClick(e: MouseEvent<HTMLButtonElement>) {
         try {
-            setLoading(true);
             if (e.currentTarget.innerText === 'Log In') {
                 fakeLoginSchema.parse(data);
             }
+            setLoading(true);
             const rick = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
             setTimeout(() => {
                 window.location.replace(rick);
