@@ -154,7 +154,7 @@ export function WordpressAdmin() {
                         />
                         <div className='flex flex-row justify-between items-center'>
                             <label className='flex flex-row items-center justify-center gap-2'>
-                                <input type='checkbox' />
+                                <input type='checkbox' className='accent-[#2271b1]' />
                                 <span>Remember Me</span>
                             </label>
                             <button className='bg-[#2271b1] rounded py-1.5 px-3 text-white' onClick={onClick}>
