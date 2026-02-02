@@ -11,3 +11,4 @@ export { Countdown } from './countdown';
 export { AimTrainer } from './aimTrainer';
 export { Settings } from './settings';
 export { NotFound } from './notFound';
+export { WordpressAdmin } from './wordpressAdmin';

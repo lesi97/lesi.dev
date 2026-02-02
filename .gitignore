@@ -1,6 +1,7 @@
 .env
 .env.local
 !.env.example
+!/apps/web/public/.env
 
 /example-data/
 README.Docker.md
