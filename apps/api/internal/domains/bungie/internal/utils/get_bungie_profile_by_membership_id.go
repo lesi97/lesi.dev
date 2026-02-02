@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -16,6 +17,7 @@ func GetBungieProfileByMembershipID(
 	ctx context.Context,
 	redis *redis.Client,
 	logger *utils.Logger,
+	httpClient *http.Client,
 	clientID string,
 	baseURL string,
 	membershipID string,
@@ -63,7 +65,7 @@ func GetBungieProfileByMembershipID(
 						if ctx.Err() != nil {
 							return
 						}
-						_, _ = fetchAndCacheBungieProfile(ctx, redis, logger, clientID, baseURL, membershipID, preferredPlatform, normalisedComponents, cacheKey)
+						_, _ = fetchAndCacheBungieProfile(ctx, redis, logger, httpClient, clientID, baseURL, membershipID, preferredPlatform, normalisedComponents, cacheKey)
 					}()
 				}
 
@@ -77,5 +79,5 @@ func GetBungieProfileByMembershipID(
 		return nil, err
 	}
 
-	return fetchAndCacheBungieProfile(ctx, redis, logger, clientID, baseURL, membershipID, preferredPlatform, normalisedComponents, cacheKey)
+	return fetchAndCacheBungieProfile(ctx, redis, logger, httpClient, clientID, baseURL, membershipID, preferredPlatform, normalisedComponents, cacheKey)
 }

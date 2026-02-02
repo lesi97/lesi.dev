@@ -52,6 +52,7 @@ func (s *Store) GetTerrorWeapon(ctx context.Context) (*string, error) {
 			ctx,
 			s.Redis,
 			s.Logger,
+			s.HTTPClient,
 			s.ClientID,
 			s.BaseURL,
 			membershipID,

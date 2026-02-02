@@ -15,14 +15,14 @@ func (s *Store) GetCharacterPlayTime(ctx context.Context) (*string, error) {
 		return nil, fmt.Errorf("invalid context")
 	}
 
-	user, err := bungie_utils.GetUser(ctx, s.DB, s.Logger, s.Redis, s.BaseURL, s.ClientID, request.Gamertag, request.Platform)
+	user, err := bungie_utils.GetUser(ctx, s.DB, s.Logger, s.Redis, s.HTTPClient, s.BaseURL, s.ClientID, request.Gamertag, request.Platform)
 	if err != nil {
 		s.Logger.Printf("ERROR: getCharacterPlayTime %v\n", err)
 		return nil, err
 	}
 
 	preferredPlatform := bungie_utils.GetPlatformEnum(request.Platform, user.MembershipType)
-	characters, err := bungie_utils.GetBungieProfileByMembershipID(ctx, s.Redis, s.Logger, s.ClientID, s.BaseURL, user.MembershipID, preferredPlatform, "200")
+	characters, err := bungie_utils.GetBungieProfileByMembershipID(ctx, s.Redis, s.Logger, s.HTTPClient, s.ClientID, s.BaseURL, user.MembershipID, preferredPlatform, "200")
 	if err != nil {
 		s.Logger.Printf("ERROR: getBungieProfileByMembershipID %v\n", err)
 		return nil, err

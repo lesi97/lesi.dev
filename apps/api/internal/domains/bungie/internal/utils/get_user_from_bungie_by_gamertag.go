@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"time"
 
@@ -20,6 +21,7 @@ func getUserFromBungieByGamertag(
 	database *db.DB,
 	logger *utils.Logger,
 	redis *redis.Client,
+	httpClient *http.Client,
 	baseURL string,
 	clientID string,
 	id string,
@@ -43,7 +45,7 @@ func getUserFromBungieByGamertag(
 	escapedID := url.PathEscape(id)
 	reqURL := fmt.Sprintf("%s/Platform/Destiny2/SearchDestinyPlayer/%s/%s/", baseURL, platformEnum, escapedID)
 
-	body, err := BungieGET(ctx, logger, clientID, reqURL)
+	body, err := BungieGET(ctx, logger, httpClient, clientID, reqURL)
 	if err != nil {
 		if !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) && ctx.Err() == nil {
 			fmt.Printf("ERROR in getUserFromBungieByGamertag: %v\n", err.Error())

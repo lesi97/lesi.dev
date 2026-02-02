@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/lesi97/lesi.dev/internal/db"
 	bungie_store "github.com/lesi97/lesi.dev/internal/domains/bungie/internal/store"
 	"github.com/lesi97/lesi.dev/internal/utils"
@@ -14,8 +16,8 @@ type Handler struct {
 
 const bungieContextKey = "bungie"
 
-func NewHandler(logger *utils.Logger, db *db.DB, redis *redis.Client) (*Handler, error) {
-	store, err := bungie_store.NewStore(db, logger, redis)
+func NewHandler(logger *utils.Logger, db *db.DB, redis *redis.Client, httpClient *http.Client) (*Handler, error) {
+	store, err := bungie_store.NewStore(db, logger, redis, httpClient)
 	if err != nil {
 		return nil, err
 	}

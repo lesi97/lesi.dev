@@ -1,7 +1,9 @@
 package bootstrap
 
 import (
+	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
@@ -25,6 +27,7 @@ type Application struct {
 	Logger            *utils.Logger
 	DB                *db.DB
 	Redis             *redis.Client
+	HTTPClient        *http.Client
 	TarotHandler      *tarot_handler.Handler
 	CountdownHandler  *countdown_handler.Handler
 	TimeHandler       *time_handler.Handler
@@ -55,6 +58,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	}
 	cfg := RedisLoadConfig()
 	redis := RedisNew(cfg)
+	httpClient := &http.Client{Timeout: 15 * time.Second}
 
 	var tarotHandler *tarot_handler.Handler
 	tarotHandler, tarotErr := tarot_handler.NewHandler(logger)
@@ -106,7 +110,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	}
 
 	var bungieHandler *bungie_handler.Handler
-	bungieHandler, bungieErr := bungie_handler.NewHandler(logger, db, redis)
+	bungieHandler, bungieErr := bungie_handler.NewHandler(logger, db, redis, httpClient)
 	if bungieErr != nil {
 		logger.Error("Bungie store disabled: " + bungieErr.Error())
 		bungieHandler = nil
@@ -137,6 +141,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		Logger:            logger,
 		DB:                db,
 		Redis:             redis,
+		HTTPClient:        httpClient,
 		TarotHandler:      tarotHandler,
 		TimeHandler:       timeHandler,
 		TrialsHandler:     trialsHandler,

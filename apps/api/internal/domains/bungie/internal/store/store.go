@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/lesi97/lesi.dev/internal/db"
@@ -18,14 +19,15 @@ type Methods interface {
 }
 
 type Store struct {
-	DB       *db.DB
-	Logger   *utils.Logger
-	Redis    *redis.Client
-	BaseURL  string
-	ClientID string
+	DB         *db.DB
+	Logger     *utils.Logger
+	Redis      *redis.Client
+	HTTPClient *http.Client
+	BaseURL    string
+	ClientID   string
 }
 
-func NewStore(db *db.DB, logger *utils.Logger, redis *redis.Client) (*Store, error) {
+func NewStore(db *db.DB, logger *utils.Logger, redis *redis.Client, httpClient *http.Client) (*Store, error) {
 	bungieApiKey := os.Getenv("BUNGIE_CLIENT_ID")
 	if bungieApiKey == "" {
 		message := "FATAL: ERROR GETTING BUNGIE_CLIENT_ID ENV VAR"
@@ -38,10 +40,11 @@ func NewStore(db *db.DB, logger *utils.Logger, redis *redis.Client) (*Store, err
 	}
 
 	return &Store{
-		DB:       db,
-		Logger:   logger,
-		Redis:    redis,
-		BaseURL:  "https://www.bungie.net",
-		ClientID: bungieApiKey,
+		DB:         db,
+		Logger:     logger,
+		Redis:      redis,
+		HTTPClient: httpClient,
+		BaseURL:    "https://www.bungie.net",
+		ClientID:   bungieApiKey,
 	}, nil
 }

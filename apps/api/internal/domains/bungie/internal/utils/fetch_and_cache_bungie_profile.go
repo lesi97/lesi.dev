@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/utils"
@@ -15,6 +16,7 @@ func fetchAndCacheBungieProfile(
 	ctx context.Context,
 	redis *redis.Client,
 	logger *utils.Logger,
+	httpClient *http.Client,
 	clientID string,
 	baseURL string,
 	membershipID string,
@@ -31,7 +33,7 @@ func fetchAndCacheBungieProfile(
 
 	reqURL := fmt.Sprintf("%s/Platform/Destiny2/%s/Profile/%s/?components=%s", baseURL, preferredPlatform, membershipID, components)
 
-	body, err := BungieGET(ctx, logger, clientID, reqURL)
+	body, err := BungieGET(ctx, logger, httpClient, clientID, reqURL)
 	if err != nil {
 		return nil, err
 	}

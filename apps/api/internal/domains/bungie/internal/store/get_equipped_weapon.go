@@ -14,7 +14,7 @@ func (s *Store) GetEquippedWeapon(ctx context.Context) (*string, error) {
 		return nil, fmt.Errorf("invalid context")
 	}
 
-	user, err := bungie_utils.GetUser(ctx, s.DB, s.Logger, s.Redis, s.BaseURL, s.ClientID, request.Gamertag, request.Platform)
+	user, err := bungie_utils.GetUser(ctx, s.DB, s.Logger, s.Redis, s.HTTPClient, s.BaseURL, s.ClientID, request.Gamertag, request.Platform)
 	if err != nil {
 		s.Logger.Printf("ERROR in %v:\n - GetEquippedPrimary\n   - getUser: %v\n", request.Handler, err)
 		return nil, err
@@ -25,6 +25,7 @@ func (s *Store) GetEquippedWeapon(ctx context.Context) (*string, error) {
 		ctx,
 		s.Redis,
 		s.Logger,
+		s.HTTPClient,
 		s.ClientID,
 		s.BaseURL,
 		user.MembershipID,
@@ -55,7 +56,7 @@ func (s *Store) GetEquippedWeapon(ctx context.Context) (*string, error) {
 	if err != nil {
 		fmt.Printf("ERROR: GetEquippedWeapon: getWeaponData: %v\n", err)
 		go func() {
-			bungie_utils.GetNewWeapons(s.DB, s.Logger, s.BaseURL, s.ClientID)
+			bungie_utils.GetNewWeapons(s.DB, s.Logger, s.HTTPClient, s.BaseURL, s.ClientID)
 		}()
 		return nil, fmt.Errorf("weapon not found, please try again shortly, I'm updating my records ??")
 	}

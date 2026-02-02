@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
@@ -19,10 +20,10 @@ type manifestDefinitions struct {
 	} `json:"Response"`
 }
 
-func GetManifestURL(logger *utils.Logger, clientID string, baseURL string) (*string, error) {
+func GetManifestURL(logger *utils.Logger, httpClient *http.Client, clientID string, baseURL string) (*string, error) {
 	url := fmt.Sprintf("%s/Platform/Destiny2/Manifest", baseURL)
 
-	body, err := BungieGET(context.Background(), logger, clientID, url)
+	body, err := BungieGET(context.Background(), logger, httpClient, clientID, url)
 	if err != nil {
 		return nil, err
 	}

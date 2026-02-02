@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/db"
@@ -21,6 +22,7 @@ func GetUser(
 	database *db.DB,
 	logger *utils.Logger,
 	redis *redis.Client,
+	httpClient *http.Client,
 	baseURL string,
 	clientID string,
 	gt string,
@@ -51,7 +53,7 @@ func GetUser(
 	}()
 
 	go func() {
-		apiUser, err := getUserFromBungieByGamertag(ctx, database, logger, redis, baseURL, clientID, gt, platform)
+		apiUser, err := getUserFromBungieByGamertag(ctx, database, logger, redis, httpClient, baseURL, clientID, gt, platform)
 		if err != nil || apiUser == nil || apiUser.Response == nil || len(apiUser.Response) == 0 {
 			if err != nil && !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) && ctx.Err() == nil {
 				logger.Printf("ERROR in Matrix - getUserFromBungie: %v\n", err)
