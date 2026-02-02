@@ -4,16 +4,33 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func ValidateTelemetryAccess(r *http.Request) error {
-	allowedOrigin := os.Getenv("WEB_URL")
-	if allowedOrigin == "" {
+	origin, ok := GetRequestOrigin(r)
+	if !ok {
+		return errors.New("telemetry origin denied")
+	}
+
+	webURL := strings.TrimSpace(os.Getenv("WEB_URL"))
+	vercelURL := strings.TrimSpace(os.Getenv("VERCEL_URL"))
+
+	if webURL == "" {
 		return errors.New("telemetry origin not configured")
 	}
 
-	origin, ok := GetRequestOrigin(r)
-	if !ok || origin != allowedOrigin {
+	isAllowed := false
+
+	if origin == webURL {
+		isAllowed = true
+	}
+
+	if vercelURL != "" && origin == vercelURL {
+		isAllowed = true
+	}
+
+	if !isAllowed {
 		return errors.New("telemetry origin denied")
 	}
 
