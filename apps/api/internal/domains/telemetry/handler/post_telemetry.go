@@ -11,6 +11,7 @@ import (
 
 func (h *Handler) PostTelemetry(w http.ResponseWriter, r *http.Request) {
 	if err := domain_utils.ValidateTelemetryAccess(r); err != nil {
+		h.logger.Printf("Telemetry access denied: %v", err)
 		utils.TextResponse(w, http.StatusForbidden, "telemetry access denied")
 		return
 	}
