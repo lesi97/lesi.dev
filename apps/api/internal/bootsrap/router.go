@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/go-chi/chi/v5"
+	api_logs_store "github.com/lesi97/lesi.dev/internal/domains/api_logs/store"
 	"github.com/lesi97/lesi.dev/internal/httpapi"
 	"github.com/lesi97/lesi.dev/internal/httpapi/middleware"
 )
@@ -45,7 +46,8 @@ func handleIndex(r chi.Router) http.HandlerFunc {
 func setupRoutes(app *Application) *chi.Mux {
 
 	routes := chi.NewRouter()
-	routes.Use(middleware.Measure(app.Logger))
+	apiLogStore := api_logs_store.NewStore(app.DB, app.Logger)
+	routes.Use(middleware.Measure(app.Logger, apiLogStore))
 	routes.Use(middleware.RateLimit())
 	
 	routes.Get("/healthcheck", http.HandlerFunc(httpapi.Healthcheck))
@@ -76,6 +78,9 @@ func setupRoutes(app *Application) *chi.Mux {
 		}
 		if app.TwitchHandler != nil {
 			registerRoutes(app.TwitchHandler, r)
+		}
+		if app.TelemetryHandler != nil {
+			registerRoutes(app.TelemetryHandler, r)
 		}
 
 	})

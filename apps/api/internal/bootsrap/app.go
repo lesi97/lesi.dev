@@ -12,6 +12,7 @@ import (
 	bungie_handler "github.com/lesi97/lesi.dev/internal/domains/bungie/handler"
 	countdown_handler "github.com/lesi97/lesi.dev/internal/domains/countdown/handler"
 	local_handler "github.com/lesi97/lesi.dev/internal/domains/local/handler"
+	telemetry_handler "github.com/lesi97/lesi.dev/internal/domains/telemetry/handler"
 	tarot_handler "github.com/lesi97/lesi.dev/internal/domains/tarot/handler"
 	time_handler "github.com/lesi97/lesi.dev/internal/domains/time/handler"
 	trials_handler "github.com/lesi97/lesi.dev/internal/domains/trials/handler"
@@ -34,6 +35,7 @@ type Application struct {
 	TwitchHandler     *twitch_handler.Handler
 	AuthHandler       *auth_handler.Handler
 	AimTrainerHandler *aim_trainer_handler.Handler
+	TelemetryHandler  *telemetry_handler.Handler
 }
 
 func init() {
@@ -117,6 +119,13 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		twitchHandler = nil
 	}
 
+	var telemetryHandler *telemetry_handler.Handler
+	telemetryHandler, telemetryErr := telemetry_handler.NewHandler(logger, db)
+	if telemetryErr != nil {
+		logger.Error("Telemetry handler disabled: " + telemetryErr.Error())
+		telemetryHandler = nil
+	}
+
 	var authHandler *auth_handler.Handler
 	authHandler, authErr := auth_handler.NewHandler(logger, db)
 	if authErr != nil {
@@ -138,6 +147,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		TwitchHandler:     twitchHandler,
 		AuthHandler:       authHandler,
 		AimTrainerHandler: aimTrainerHandler,
+		TelemetryHandler:  telemetryHandler,
 	}
 
 	routes := setupRoutes(app)
