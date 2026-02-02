@@ -11,4 +11,5 @@ type ApiLog struct {
 	BotType         *string
 	Response        string
 	ExecutionTimeMS int64
+	NonceElapsedMS  *int64
 }

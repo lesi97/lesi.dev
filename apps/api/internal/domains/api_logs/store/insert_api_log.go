@@ -8,8 +8,8 @@ import (
 
 func (s *Store) InsertApiLog(ctx context.Context, log model.ApiLog) error {
 	query := `
-		INSERT INTO logs.api (event_timestamp, route, ip, channel, user_name, bot_type, response, execution_time_ms)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		INSERT INTO logs.api (event_timestamp, route, ip, channel, user_name, bot_type, response, execution_time_ms, nonce_elapsed_ms)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	`
 
 	_, err := s.DB.Exec(
@@ -23,6 +23,7 @@ func (s *Store) InsertApiLog(ctx context.Context, log model.ApiLog) error {
 		log.BotType,
 		log.Response,
 		log.ExecutionTimeMS,
+		log.NonceElapsedMS,
 	)
 	if err != nil {
 		return err

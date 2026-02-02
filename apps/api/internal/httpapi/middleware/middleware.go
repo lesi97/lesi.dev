@@ -51,7 +51,8 @@ func Measure(logger *utils.Logger, apiLogStore api_logs_store.Methods) func(http
 				timeColour := utils.Colours["green"]
 				statusColour := utils.Colours["green"]
 
-				duration := time.Since(start)
+				now := time.Now()
+				duration := now.Sub(start)
 
 				if duration > 100*time.Millisecond {
 					timeColour = utils.Colours["brightRed"] + utils.Colours["bold"]
@@ -66,6 +67,15 @@ func Measure(logger *utils.Logger, apiLogStore api_logs_store.Methods) func(http
 				statusBlock := fmt.Sprintf("%vStatus: %v%v", statusColour, sw.status, reset)
 				pathBlock := fmt.Sprintf("%v%v%v", pathColour, path, reset)
 				timeBlock := fmt.Sprintf("%vtook %v%v", timeColour, duration, reset)
+				nonceBlock := ""
+				nonceElapsed, nonceOk := GetNonceElapsed(r.URL.Query().Get("nonce"), now)
+				if nonceOk {
+					nonceBlock = fmt.Sprintf("%vnonce %v%v", timeColour, FormatNonceElapsed(nonceElapsed), reset)
+				}
+				logLine := fmt.Sprintf("%v | %v %v", statusBlock, pathBlock, timeBlock)
+				if nonceBlock != "" {
+					logLine = fmt.Sprintf("%v | %v", logLine, nonceBlock)
+				}
 				responseBody := strings.TrimSpace(string(sw.body))
 				if responseBody == "" {
 					responseBody = "<empty>"
@@ -87,6 +97,12 @@ func Measure(logger *utils.Logger, apiLogStore api_logs_store.Methods) func(http
 					response := responseBody
 					utils.TruncateString(&response, 2000)
 
+					var nonceElapsedMS *int64
+					if nonceOk {
+						value := nonceElapsed.Milliseconds()
+						nonceElapsedMS = &value
+					}
+
 					logEntry := model.ApiLog{
 						Timestamp:       time.Now().UTC(),
 						Route:           path,
@@ -96,6 +112,7 @@ func Measure(logger *utils.Logger, apiLogStore api_logs_store.Methods) func(http
 						BotType:         botType,
 						Response:        response,
 						ExecutionTimeMS: duration.Milliseconds(),
+						NonceElapsedMS:  nonceElapsedMS,
 					}
 
 					go func() {
@@ -109,7 +126,7 @@ func Measure(logger *utils.Logger, apiLogStore api_logs_store.Methods) func(http
 						return
 					}
 					fmt.Println()
-					logger.Printf("%v | %v %v", statusBlock, pathBlock, timeBlock)
+					logger.Printf("%v", logLine)
 					for key, values := range r.Header {
 						for _, value := range values {
 							keyBlock := fmt.Sprintf("%v%v%v: %v", utils.Colours["brightBlue"], utils.Colours["dim"], key, reset)
@@ -118,7 +135,7 @@ func Measure(logger *utils.Logger, apiLogStore api_logs_store.Methods) func(http
 					}
 					fmt.Println()
 				} else {
-					logger.Printf("%v | %v %v", statusBlock, pathBlock, timeBlock)
+					logger.Printf("%v", logLine)
 				}
 			}()
 
