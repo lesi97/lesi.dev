@@ -50,6 +50,7 @@ func setupRoutes(app *Application) *chi.Mux {
 	
 	routes.Get("/healthcheck", http.HandlerFunc(httpapi.Healthcheck))
 	httpapi.AddScriptRoutes(routes)
+	httpapi.AddFakeEnv(routes)
 
 	routes.Route("/v1", func(r chi.Router) {
 		if app.TarotHandler != nil {
