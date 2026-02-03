@@ -12,4 +12,5 @@ type ApiLog struct {
 	Response        string
 	ExecutionTimeMS int64
 	NonceElapsedMS  *int64
+	StatusCode		*int
 }
