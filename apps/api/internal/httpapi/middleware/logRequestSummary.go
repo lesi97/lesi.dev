@@ -33,7 +33,7 @@ func LogRequestSummary(
 	LogStreamElementsChannel(logger, r.Header, responseBody)
 
 	if apiLogStore != nil && path != "/v1/telemetry" {
-		LogApiRequest(apiLogStore, r, path, responseBody, duration, nonceElapsed, nonceOk)
+		LogApiRequest(apiLogStore, r, path, responseBody, duration, nonceElapsed, nonceOk, sw.status)
 	}
 	if sw.status == http.StatusNotFound {
 		LogNotFoundRequest(logger, logLine, r.Header, hasNightbotHeaders, hasStreamElementsHeader)
