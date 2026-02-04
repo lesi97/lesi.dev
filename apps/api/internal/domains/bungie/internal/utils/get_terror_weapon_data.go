@@ -14,6 +14,8 @@ func GetTerrorWeaponData(name string) (*SpecificUserWeaponData, error) {
 		return &SpecificUserWeaponData{Weapon: "6917529880229623656", HashID: "38912240", CrucibleTracker: "38912240"}, nil
 	case "thorn":
 		return &SpecificUserWeaponData{Weapon: "6917529935035554307", HashID: "3973202132", CrucibleTracker: "38912240"}, nil
+	case "rose":
+		return &SpecificUserWeaponData{Weapon: "6917530043689873988", HashID: "882778888", CrucibleTracker: "38912240"}, nil
 	default:
 		return nil, fmt.Errorf("weapon '%s' not found", name)
 	}
