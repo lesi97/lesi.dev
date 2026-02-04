@@ -35,19 +35,24 @@ func (s *Store) fetchAndCachePlayerCount(ctx context.Context, cacheKey string, s
 	}
 	body, statusCode, err := httpapi.DoRequest(ctx, s.HTTPClient, http.MethodGet, url, nil, headers)
 	if err != nil {
+		fmt.Printf("ERR 1: %v", err.Error())
 		return nil, err
 	}
 
 	if statusCode < 200 || statusCode >= 300 {
+		fmt.Printf("ERR 2: %v", statusCode)
 		return nil, fmt.Errorf("failed to fetch fortnite playercount")
 	}
 
 	var res FortnitePlayerCount
 	if err := json.Unmarshal(body, &res); err != nil {
+		fmt.Printf("STR: %v", string(body))
+		fmt.Printf("ERR 3: %v", err.Error())
 		return nil, err
 	}
 
 	if len(res.Data.Values) == 0 {
+		fmt.Printf("ERR 4: %v", "no data in fortnite payload")
 		return nil, fmt.Errorf("no data in fortnite payload")
 	}
 

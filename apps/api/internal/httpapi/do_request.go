@@ -1,6 +1,7 @@
 package httpapi
 
 import (
+	"compress/gzip"
 	"context"
 	"io"
 	"net/http"
@@ -36,7 +37,18 @@ func DoRequest(
 	}
 	defer resp.Body.Close()
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	var reader io.Reader = resp.Body
+
+	if resp.Header.Get("Content-Encoding") == "gzip" {
+		gz, err := gzip.NewReader(resp.Body)
+		if err != nil {
+			return nil, resp.StatusCode, err
+		}
+		defer gz.Close()
+		reader = gz
+	}
+
+	bodyBytes, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, resp.StatusCode, err
 	}
