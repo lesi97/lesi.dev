@@ -26,7 +26,9 @@ func (s *Store) fetchAndCachePlayerCount(ctx context.Context, cacheKey string, s
 	}
 
 	headers := map[string]string{
-		"Content-Type": "application/json; charset=utf-8",
+		"Accept": "*/*",
+		"Accept-Encoding": "gzip, deflate, br, zstd",
+		"Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8,ja;q=0.7",
 		"User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
 		"Referer": s.BaseURL,
 		"Origin": s.BaseURL,
