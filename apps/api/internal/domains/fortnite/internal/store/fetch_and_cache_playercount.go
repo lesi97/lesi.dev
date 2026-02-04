@@ -28,6 +28,8 @@ func (s *Store) fetchAndCachePlayerCount(ctx context.Context, cacheKey string, s
 	headers := map[string]string{
 		"Content-Type": "application/json; charset=utf-8",
 		"User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+		"Referer": s.BaseURL,
+		"Origin": s.BaseURL,
 	}
 	body, statusCode, err := httpapi.DoRequest(ctx, s.HTTPClient, http.MethodGet, url, nil, headers)
 	if err != nil {

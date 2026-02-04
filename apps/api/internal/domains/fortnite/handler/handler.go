@@ -14,8 +14,6 @@ type Handler struct {
 	store  fortnite_store.Methods
 }
 
-const contextKey = "fortnite"
-
 func NewHandler(logger *utils.Logger, db *db.DB, redis *redis.Client, httpClient *http.Client) (*Handler, error) {
 	store, err := fortnite_store.NewStore(db, logger, redis, httpClient)
 	if err != nil {

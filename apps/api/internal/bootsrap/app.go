@@ -60,7 +60,11 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	}
 	cfg := RedisLoadConfig()
 	redis := RedisNew(cfg)
-	httpClient := &http.Client{Timeout: 15 * time.Second}
+	tr := &http.Transport{
+		Proxy:             nil,
+		ForceAttemptHTTP2: true,
+	}
+	httpClient := &http.Client{Timeout: 15 * time.Second, Transport: tr}
 
 	var tarotHandler *tarot_handler.Handler
 	tarotHandler, tarotErr := tarot_handler.NewHandler(logger)
