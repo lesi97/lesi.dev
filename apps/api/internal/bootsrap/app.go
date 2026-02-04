@@ -13,9 +13,10 @@ import (
 	auth_handler "github.com/lesi97/lesi.dev/internal/domains/auth/handler"
 	bungie_handler "github.com/lesi97/lesi.dev/internal/domains/bungie/handler"
 	countdown_handler "github.com/lesi97/lesi.dev/internal/domains/countdown/handler"
+	fortnite_handler "github.com/lesi97/lesi.dev/internal/domains/fortnite/handler"
 	local_handler "github.com/lesi97/lesi.dev/internal/domains/local/handler"
-	telemetry_handler "github.com/lesi97/lesi.dev/internal/domains/telemetry/handler"
 	tarot_handler "github.com/lesi97/lesi.dev/internal/domains/tarot/handler"
+	telemetry_handler "github.com/lesi97/lesi.dev/internal/domains/telemetry/handler"
 	time_handler "github.com/lesi97/lesi.dev/internal/domains/time/handler"
 	trials_handler "github.com/lesi97/lesi.dev/internal/domains/trials/handler"
 	twitch_handler "github.com/lesi97/lesi.dev/internal/domains/twitch/handler"
@@ -39,6 +40,7 @@ type Application struct {
 	AuthHandler       *auth_handler.Handler
 	AimTrainerHandler *aim_trainer_handler.Handler
 	TelemetryHandler  *telemetry_handler.Handler
+	FortniteHandler   *fortnite_handler.Handler
 }
 
 func init() {
@@ -137,6 +139,13 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		authHandler = nil
 	}
 
+	var fortniteHandler *fortnite_handler.Handler
+	fortniteHandler, fortniteErr := fortnite_handler.NewHandler(logger, db, redis, httpClient)
+	if fortniteErr != nil {
+		logger.Error("Fortnite store disabled: " + fortniteErr.Error())
+		fortniteHandler = nil
+	}
+
 	app := &Application{
 		Logger:            logger,
 		DB:                db,
@@ -153,6 +162,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		AuthHandler:       authHandler,
 		AimTrainerHandler: aimTrainerHandler,
 		TelemetryHandler:  telemetryHandler,
+		FortniteHandler: fortniteHandler,
 	}
 
 	routes := setupRoutes(app)
