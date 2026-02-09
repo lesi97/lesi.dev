@@ -33,14 +33,19 @@ func (l *Logger) SendDiscordNotification(data SendDiscordNotificationArgs) {
 		return
 	}
 
+	var content string = "";
+	if data.Content != "" {
+		content = fmt.Sprintf("```%s```",data.Content)
+	}
+
 	
 	var contentMessage string
 	userID := os.Getenv("DISCORD_USER_ID")
 	if userID == "" {
 		l.Error("DISCORD_USER_ID is not defined in environment variables")
-		contentMessage = fmt.Sprintf("%v ```%s```", data.Title, data.Content)
+		contentMessage = fmt.Sprintf("%v %s", data.Title, content)
 	} else {
-		contentMessage = fmt.Sprintf("<@%s> %v ```%s```", userID, data.Title, data.Content)
+		contentMessage = fmt.Sprintf("<@%s> %v %s`", userID, data.Title, content)
 	}
 
 
