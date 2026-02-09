@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"errors"
 	"os"
 
@@ -11,18 +12,17 @@ import (
 
 type Methods interface {
 	GetLoot() *string
-	GetPlayerCount() *string
+	GetPlayerCount(ctx context.Context) *string
 }
 
 type Store struct {
-	DB                     *db.DB
-	Logger                 *utils.Logger
-	Redis                  *redis.Client
-	URL                    string
-	SteamClientID          string
-	SteamURL               string
+	DB            *db.DB
+	Logger        *utils.Logger
+	Redis         *redis.Client
+	URL           string
+	SteamClientID string
+	SteamURL      string
 }
-
 
 func NewStore(db *db.DB, logger *utils.Logger, redis *redis.Client) (*Store, error) {
 	steamApiKey := os.Getenv("STEAM_CLIENT_ID")

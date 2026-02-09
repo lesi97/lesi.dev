@@ -25,7 +25,7 @@ func RefreshChatters(
 ) {
 	ctx := context.Background()
 
-	result, err := FetchChatters(database, logger, apiDetails, baseURL, clientID, clientSecret, authURL, streamerID)
+	result, err := FetchChatters(ctx, database, logger, apiDetails, baseURL, clientID, clientSecret, authURL, streamerID)
 	if err != nil {
 		return
 	}

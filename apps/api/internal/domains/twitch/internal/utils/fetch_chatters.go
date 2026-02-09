@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -11,6 +12,7 @@ import (
 )
 
 func FetchChatters(
+	ctx context.Context,
 	database *db.DB,
 	logger *utils.Logger,
 	apiDetails *db.ApiDetails,
@@ -28,7 +30,7 @@ func FetchChatters(
 		modID,
 	)
 
-	body, err := TwitchGET(database, logger, apiDetails, clientID, clientSecret, authURL, url)
+	body, err := TwitchGET(ctx, database, logger, apiDetails, clientID, clientSecret, authURL, url)
 	if err != nil {
 		return nil, err
 	}

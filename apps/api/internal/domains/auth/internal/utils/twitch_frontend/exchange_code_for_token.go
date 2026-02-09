@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/lesi97/lesi.dev/internal/httpapi"
 )
 
 type tokenResponse struct {
@@ -47,18 +49,26 @@ func ExchangeCodeForToken(
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	resp, err := httpClient.Do(req)
+	bodyBytes, statusCode, err := httpapi.DoRequest(
+		ctx,
+		httpClient,
+		req.Method,
+		req.URL.String(),
+		req.Body,
+		map[string]string{
+			"Content-Type": req.Header.Get("Content-Type"),
+		},
+	)
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if statusCode < 200 || statusCode >= 300 {
 		return "", fmt.Errorf("twitch token exchange failed")
 	}
 
 	var tr tokenResponse
-	if err := json.NewDecoder(resp.Body).Decode(&tr); err != nil {
+	if err := json.Unmarshal(bodyBytes, &tr); err != nil {
 		return "", err
 	}
 

@@ -5,8 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
+
+	"github.com/lesi97/lesi.dev/internal/httpapi"
 )
 
 func ExchangeCodeForToken(
@@ -39,19 +40,23 @@ func ExchangeCodeForToken(
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := httpClient.Do(req)
+	bodyBytes, statusCode, err := httpapi.DoRequest(
+		ctx,
+		httpClient,
+		req.Method,
+		req.URL.String(),
+		req.Body,
+		map[string]string{
+			"Content-Type": req.Header.Get("Content-Type"),
+			"Accept":       req.Header.Get("Accept"),
+		},
+	)
 	if err != nil {
 		return TokenResponse{}, fmt.Errorf("do token request: %w", err)
 	}
-	defer resp.Body.Close()
 
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return TokenResponse{}, fmt.Errorf("read token response: %w", err)
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return TokenResponse{}, fmt.Errorf("token request failed: status=%d body=%s", resp.StatusCode, string(bodyBytes))
+	if statusCode < 200 || statusCode >= 300 {
+		return TokenResponse{}, fmt.Errorf("token request failed: status=%d body=%s", statusCode, string(bodyBytes))
 	}
 
 	var tokenResponse TokenResponse

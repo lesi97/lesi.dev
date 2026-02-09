@@ -16,6 +16,7 @@ import (
 )
 
 func GetStreamerData(
+	ctx context.Context,
 	redis *redis.Client,
 	logger *utils.Logger,
 	database *db.DB,
@@ -26,7 +27,6 @@ func GetStreamerData(
 	authURL string,
 	streamer string,
 ) (*model.StreamerData, error) {
-	ctx := context.Background()
 	cacheKey := fmt.Sprintf("twitch:user:%s", strings.ToLower(streamer))
 	cached, err := redis.Get(ctx, cacheKey).Result()
 	if err == nil {
@@ -41,7 +41,7 @@ func GetStreamerData(
 	}
 
 	url := fmt.Sprintf("%v/users?login=%v", baseURL, streamer)
-	body, err := TwitchGET(database, logger, apiDetails, clientID, clientSecret, authURL, url)
+	body, err := TwitchGET(ctx, database, logger, apiDetails, clientID, clientSecret, authURL, url)
 	if err != nil {
 		return nil, err
 	}

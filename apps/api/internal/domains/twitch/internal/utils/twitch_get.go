@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -11,6 +12,7 @@ import (
 )
 
 func TwitchGET(
+	ctx context.Context,
 	database *db.DB,
 	logger *utils.Logger,
 	apiDetails *db.ApiDetails,
@@ -30,7 +32,7 @@ func TwitchGET(
 		"Client-ID":     clientID,
 		"Authorization": fmt.Sprintf("Bearer %v", *apiDetails.AccessToken),
 	}
-	body, statusCode, err := httpapi.DoRequest(nil, &http.Client{}, http.MethodGet, url, nil, headers)
+	body, statusCode, err := httpapi.DoRequest(ctx, &http.Client{}, http.MethodGet, url, nil, headers)
 	if err != nil {
 		return nil, err
 	}

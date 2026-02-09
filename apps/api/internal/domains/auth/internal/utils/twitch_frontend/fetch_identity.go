@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/lesi97/lesi.dev/internal/httpapi"
 )
 
 type Identity struct {
@@ -22,26 +24,22 @@ func FetchIdentity(
 ) (*Identity, error) {
 	httpClient := &http.Client{Timeout: 15 * time.Second}
 
-	req, err := http.NewRequestWithContext(
+	bodyBytes, statusCode, err := httpapi.DoRequest(
 		ctx,
+		httpClient,
 		http.MethodGet,
 		"https://api.twitch.tv/helix/users",
 		nil,
+		map[string]string{
+			"Authorization": "Bearer " + accessToken,
+			"Client-Id":     clientID,
+		},
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("Authorization", "Bearer "+accessToken)
-	req.Header.Set("Client-Id", clientID)
-
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if statusCode < 200 || statusCode >= 300 {
 		return nil, fmt.Errorf("twitch users request failed")
 	}
 
@@ -54,7 +52,7 @@ func FetchIdentity(
 		} `json:"data"`
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	if err := json.Unmarshal(bodyBytes, &body); err != nil {
 		return nil, err
 	}
 

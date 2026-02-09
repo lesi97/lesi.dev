@@ -14,7 +14,7 @@ func (h *Handler) HandleGetRandomChatter(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	username, err := h.store.RandomViewer(streamerName)
+	username, err := h.store.RandomViewer(r.Context(), streamerName)
 	if err != nil {
 		h.logger.Errorf("ERROR: %v", err)
 		utils.TextResponse(w, http.StatusOK, "An error has occurred, take note of the current time and tell Lesi when this happened")

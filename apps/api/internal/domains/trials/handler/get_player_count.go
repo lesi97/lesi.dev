@@ -7,6 +7,6 @@ import (
 )
 
 func (h *Handler) HandleGetPlayerCount(w http.ResponseWriter, r *http.Request) {
-	message := h.store.GetPlayerCount()
+	message := h.store.GetPlayerCount(r.Context())
 	utils.TextResponse(w, http.StatusOK, *message)
 }

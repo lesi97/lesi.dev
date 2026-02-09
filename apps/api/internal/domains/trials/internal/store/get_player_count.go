@@ -11,7 +11,7 @@ import (
 	core_utils "github.com/lesi97/lesi.dev/internal/utils"
 )
 
-func (s *Store) GetPlayerCount() *string {
+func (s *Store) GetPlayerCount(ctx context.Context) *string {
 	trialsAvailable := trials_utils.IsTrialsReportAvailable(time.Now())
 
 	trialsCh := make(chan struct {
@@ -35,7 +35,7 @@ func (s *Store) GetPlayerCount() *string {
 	}
 
 	go func() {
-		data, err := trials_utils.FetchFromSteam(s.Logger, s.SteamURL, s.SteamClientID)
+		data, err := trials_utils.FetchFromSteam(ctx, s.Logger, s.SteamURL, s.SteamClientID)
 		steamCh <- struct {
 			data *model.SteamData
 			err  error

@@ -14,6 +14,7 @@ import (
 )
 
 func GetChatters(
+	ctx context.Context,
 	redis *redis.Client,
 	logger *utils.Logger,
 	database *db.DB,
@@ -24,7 +25,6 @@ func GetChatters(
 	authURL string,
 	streamerID string,
 ) (*model.TwitchChatters, error) {
-	ctx := context.Background()
 	cacheKey := fmt.Sprintf("twitch:chatters:%s", streamerID)
 
 	const freshFor = 2 * time.Minute
@@ -68,7 +68,7 @@ func GetChatters(
 		return nil, err
 	}
 
-	result, err := FetchChatters(database, logger, apiDetails, baseURL, clientID, clientSecret, authURL, streamerID)
+	result, err := FetchChatters(ctx, database, logger, apiDetails, baseURL, clientID, clientSecret, authURL, streamerID)
 	if err != nil {
 		return nil, err
 	}

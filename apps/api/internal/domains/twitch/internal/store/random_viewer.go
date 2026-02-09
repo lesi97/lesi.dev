@@ -1,13 +1,15 @@
 package store
 
 import (
+	"context"
 	"fmt"
 
 	twitch_utils "github.com/lesi97/lesi.dev/internal/domains/twitch/internal/utils"
 )
 
-func (s *Store) RandomViewer(streamer string) (*string, error) {
+func (s *Store) RandomViewer(ctx context.Context, streamer string) (*string, error) {
 	streamerData, err := twitch_utils.GetStreamerData(
+		ctx,
 		s.Redis,
 		s.Logger,
 		s.DB,
@@ -28,6 +30,7 @@ func (s *Store) RandomViewer(streamer string) (*string, error) {
 
 	streamerID := streamerData.Data[0].ID
 	chatters, err := twitch_utils.GetChatters(
+		ctx,
 		s.Redis,
 		s.Logger,
 		s.DB,

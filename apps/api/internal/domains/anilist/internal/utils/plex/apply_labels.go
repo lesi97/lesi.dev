@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/lesi97/lesi.dev/internal/httpapi"
 )
 
 func (s *Store) ApplyPlexLabels(ctx context.Context, ratingKey string, tagType string, labels []string) error {
@@ -33,14 +35,13 @@ func (s *Store) ApplyPlexLabels(ctx context.Context, ratingKey string, tagType s
 	}
 
 	client := &http.Client{Timeout: 15 * time.Second}
-	resp, err := client.Do(req)
+	_, statusCode, err := httpapi.DoRequest(ctx, client, req.Method, req.URL.String(), req.Body, nil)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("plex returned status %d", resp.StatusCode)
+	if statusCode < 200 || statusCode > 299 {
+		return fmt.Errorf("plex returned status %d", statusCode)
 	}
 
 	return nil

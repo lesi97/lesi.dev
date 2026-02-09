@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 	"time"
+
+	"github.com/lesi97/lesi.dev/internal/httpapi"
 )
 
 func (s *Store) anilistPOST(
@@ -44,15 +45,24 @@ func (s *Store) anilistPOST(
 	req.Header.Set("Authorization", "Bearer "+s.env.AccessToken)
 
 	client := &http.Client{Timeout: 10 * time.Second}
-	resp, err := client.Do(req)
+	respBody, statusCode, err := httpapi.DoRequest(
+		ctx,
+		client,
+		req.Method,
+		req.URL.String(),
+		req.Body,
+		map[string]string{
+			"Content-Type":  req.Header.Get("Content-Type"),
+			"Authorization": req.Header.Get("Authorization"),
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if statusCode < 200 || statusCode >= 300 {
 		return nil, errors.New("anilist request failed")
 	}
 
-	return io.ReadAll(resp.Body)
+	return respBody, nil
 }
