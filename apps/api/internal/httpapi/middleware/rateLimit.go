@@ -3,6 +3,7 @@ package middleware
 import (
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -85,9 +86,28 @@ func RateLimit() func(http.Handler) http.Handler {
 			client.count++
 			client.lastSeen = now
 			allowed := client.count <= maxRequests
+			remaining := maxRequests - client.count
+			if remaining < 0 {
+				remaining = 0
+			}
+
+			resetAfter := client.windowStart.Add(window).Sub(now)
+			if resetAfter < 0 {
+				resetAfter = 0
+			}
+
+			resetSeconds := int(resetAfter / time.Second)
+			if resetAfter%time.Second != 0 {
+				resetSeconds++
+			}
 			mu.Unlock()
 
+			w.Header().Set("RateLimit-Limit", strconv.Itoa(maxRequests))
+			w.Header().Set("RateLimit-Remaining", strconv.Itoa(remaining))
+			w.Header().Set("RateLimit-Reset", strconv.Itoa(resetSeconds))
+
 			if !allowed {
+				w.Header().Set("Retry-After", strconv.Itoa(resetSeconds))
 				utils.TextResponse(w, http.StatusTooManyRequests, "Too many requests")
 				return
 			}
