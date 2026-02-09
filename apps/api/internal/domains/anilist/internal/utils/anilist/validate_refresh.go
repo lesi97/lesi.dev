@@ -10,7 +10,7 @@ import (
 func (s *Store) validateRefresh(ctx context.Context) error {
 	expired := utils.IsRefreshTokenExpired(s.env.RefreshExpires)
 	if expired {
-		api, err := utils.RefreshToken("Anilist", s.env.ClientId, s.env.ClientSecret, s.env.RefreshToken, s.env.AuthUrl)
+		api, err := utils.RefreshToken(ctx, "Anilist", s.env.ClientId, s.env.ClientSecret, s.env.RefreshToken, s.env.AuthUrl)
 		if err != nil {
 			return fmt.Errorf("Failed to refresh Anilist API Details: %v", err)
 		}

@@ -9,6 +9,7 @@ import (
 )
 
 func EnsureValidApiDetails(
+	ctx context.Context,
 	database *db.DB,
 	logger *utils.Logger,
 	application string,
@@ -26,7 +27,7 @@ func EnsureValidApiDetails(
 		return nil
 	}
 
-	api, err := utils.RefreshToken(application, clientID, clientSecret, *apiDetails.RefreshToken, authURL)
+	api, err := utils.RefreshToken(ctx, application, clientID, clientSecret, *apiDetails.RefreshToken, authURL)
 	if err != nil {
 		return fmt.Errorf("failed to refresh twitch api details")
 	}
@@ -36,7 +37,7 @@ func EnsureValidApiDetails(
 	apiDetails.RefreshTokenExpiry = api.RefreshTokenExpiry
 
 	return database.UpdateApiDetails(
-		context.Background(),
+		ctx,
 		application,
 		&clientID,
 		&clientSecret,

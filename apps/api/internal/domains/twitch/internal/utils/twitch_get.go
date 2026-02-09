@@ -23,7 +23,7 @@ func TwitchGET(
 ) ([]byte, error) {
 	defer logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), time.Now(), nil)
 
-	err := EnsureValidApiDetails(database, logger, "Twitch_GO", clientID, clientSecret, authURL, apiDetails)
+	err := EnsureValidApiDetails(ctx, database, logger, "Twitch_GO", clientID, clientSecret, authURL, apiDetails)
 	if err != nil {
 		return nil, err
 	}

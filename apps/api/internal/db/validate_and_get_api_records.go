@@ -8,10 +8,10 @@ import (
 )
 
 type ValidateApiDetailsArgs struct {
-	Application string
-	Logger *utils.Logger
+	Application     string
+	Logger          *utils.Logger
 	DiscordUsername string
-	AuthUrl string
+	AuthUrl         string
 }
 
 func (db *DB) ValidateAndFetchApiDetails(data ValidateApiDetailsArgs) (*ApiDetails, error) {
@@ -37,7 +37,7 @@ func (db *DB) ValidateAndFetchApiDetails(data ValidateApiDetailsArgs) (*ApiDetai
 		logger.Error(message)
 		return nil, fmt.Errorf("%s", message)
 	}
-	
+
 	if apiDetails.RefreshTokenExpiry == nil {
 		message := fmt.Sprintf("No %v Refresh Token Expiry Found", application)
 		logger.Error(message)
@@ -46,7 +46,7 @@ func (db *DB) ValidateAndFetchApiDetails(data ValidateApiDetailsArgs) (*ApiDetai
 
 	expired := utils.IsRefreshTokenExpired(*apiDetails.RefreshTokenExpiry)
 	if expired {
-		newAuthData, err := utils.RefreshToken(application, *apiDetails.ClientID, *apiDetails.ClientSecret, *apiDetails.RefreshToken, authUrl)
+		newAuthData, err := utils.RefreshToken(context.Background(), application, *apiDetails.ClientID, *apiDetails.ClientSecret, *apiDetails.RefreshToken, authUrl)
 		if err != nil {
 			fmt.Printf("NEW AUTH DATA ERR: %v\n", err)
 			return nil, err
