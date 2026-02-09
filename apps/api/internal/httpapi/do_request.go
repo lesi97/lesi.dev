@@ -5,6 +5,9 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"time"
+
+	requestmetrics "github.com/lesi97/lesi.dev/internal/request_metrics"
 )
 
 func DoRequest(
@@ -15,6 +18,8 @@ func DoRequest(
 	body io.Reader,
 	headers map[string]string,
 ) ([]byte, int, error) {
+	start := time.Now()
+
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -33,6 +38,7 @@ func DoRequest(
 
 	resp, err := client.Do(req)
 	if err != nil {
+		requestmetrics.AddFetchCallsDuration(ctx, time.Since(start), err)
 		return nil, 0, err
 	}
 	defer resp.Body.Close()
@@ -42,6 +48,7 @@ func DoRequest(
 	if resp.Header.Get("Content-Encoding") == "gzip" {
 		gz, err := gzip.NewReader(resp.Body)
 		if err != nil {
+			requestmetrics.AddFetchCallsDuration(ctx, time.Since(start), err)
 			return nil, resp.StatusCode, err
 		}
 		defer gz.Close()
@@ -50,8 +57,10 @@ func DoRequest(
 
 	bodyBytes, err := io.ReadAll(reader)
 	if err != nil {
+		requestmetrics.AddFetchCallsDuration(ctx, time.Since(start), err)
 		return nil, resp.StatusCode, err
 	}
 
+	requestmetrics.AddFetchCallsDuration(ctx, time.Since(start), nil)
 	return bodyBytes, resp.StatusCode, nil
 }

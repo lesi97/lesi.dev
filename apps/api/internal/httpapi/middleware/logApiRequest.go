@@ -16,6 +16,9 @@ func LogApiRequest(
 	path string,
 	responseBody string,
 	duration time.Duration,
+	apiProcessingDuration time.Duration,
+	fetchCallsDuration time.Duration,
+	databaseCallsDuration time.Duration,
 	nonceElapsed time.Duration,
 	nonceOk bool,
 	status int,
@@ -40,9 +43,11 @@ func LogApiRequest(
 		BotType:         botType,
 		Response:        response,
 		ExecutionTimeMS: duration.Milliseconds(),
+		ApiProcessingMS: apiProcessingDuration.Milliseconds(),
+		FetchCallsMS:    fetchCallsDuration.Milliseconds(),
+		DatabaseCallsMS: databaseCallsDuration.Milliseconds(),
 		NonceElapsedMS:  nonceElapsedMS,
-		StatusCode: 	 &status,
-
+		StatusCode:      &status,
 	}
 
 	go func() {

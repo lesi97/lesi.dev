@@ -5,6 +5,7 @@ import (
 	"time"
 
 	api_logs_store "github.com/lesi97/lesi.dev/internal/domains/api_logs/store"
+	requestmetrics "github.com/lesi97/lesi.dev/internal/request_metrics"
 	"github.com/lesi97/lesi.dev/internal/utils"
 )
 
@@ -31,6 +32,7 @@ func Measure(logger *utils.Logger, apiLogStore api_logs_store.Methods) func(http
 				next.ServeHTTP(w, r)
 				return
 			}
+			r = r.WithContext(requestmetrics.WithRequestMetrics(r.Context()))
 			start := time.Now()
 			path := r.URL.RequestURI()
 
