@@ -8,8 +8,8 @@ import (
 	trials_utils "github.com/lesi97/lesi.dev/internal/domains/trials/internal/utils"
 )
 
-func (s *Store) GetLoot() *string {
-	trialsData, err := trials_utils.FetchFromTrialsReport(context.Background(), s.Logger, s.URL, s.Redis)
+func (s *Store) GetLoot(ctx context.Context) *string {
+	trialsData, err := trials_utils.FetchFromTrialsReport(ctx, s.Logger, s.URL, s.Redis)
 	if err != nil {
 		s.Logger.Printf("ERROR: fetchFromTrialsReport: %v\n", err)
 		message := "failed to fetch data from trials report"

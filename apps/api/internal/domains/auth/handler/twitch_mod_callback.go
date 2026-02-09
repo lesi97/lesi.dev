@@ -13,7 +13,7 @@ func (h *Handler) HandleTwitchModAuthCallback(w http.ResponseWriter, r *http.Req
 		utils.Error(w, http.StatusBadRequest, "bad request")
 	}
 
-	err := h.store.TwitchModCallback(code)
+	err := h.store.TwitchModCallback(r.Context(), code)
 	if err != nil {
 		utils.Error(w, http.StatusInternalServerError, err)
 		return

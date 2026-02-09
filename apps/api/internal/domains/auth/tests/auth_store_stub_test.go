@@ -33,7 +33,7 @@ func (s *authStoreStub) AnilistAuthUrl() (*string, error) {
 	return s.anilistAuthURL, s.anilistAuthErr
 }
 
-func (s *authStoreStub) AnilistCallback(code string) error {
+func (s *authStoreStub) AnilistCallback(ctx context.Context, code string) error {
 	return s.anilistCallbackErr
 }
 
@@ -41,7 +41,7 @@ func (s *authStoreStub) TwitchModAuthUrl() (*string, error) {
 	return s.twitchModAuthURL, s.twitchModAuthErr
 }
 
-func (s *authStoreStub) TwitchModCallback(code string) error {
+func (s *authStoreStub) TwitchModCallback(ctx context.Context, code string) error {
 	return s.twitchModCallbackErr
 }
 
@@ -49,7 +49,7 @@ func (s *authStoreStub) TwitchFrontendAuthStart() (*auth_store.TwitchFrontendAut
 	return s.twitchFrontendAuthStartResult, s.twitchFrontendAuthStartErr
 }
 
-func (s *authStoreStub) TwitchFrontendCallback(code string, state string, expectedState string, pkceVerifier string) (*auth_store.TwitchFrontendIdentity, error) {
+func (s *authStoreStub) TwitchFrontendCallback(ctx context.Context, code string, state string, expectedState string, pkceVerifier string) (*auth_store.TwitchFrontendIdentity, error) {
 	return s.twitchFrontendCallbackIdentity, s.twitchFrontendCallbackErr
 }
 

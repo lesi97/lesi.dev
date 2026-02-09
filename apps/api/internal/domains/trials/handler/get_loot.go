@@ -7,6 +7,6 @@ import (
 )
 
 func (h *Handler) HandleGetLoot(w http.ResponseWriter, r *http.Request) {
-	message := h.store.GetLoot()
+	message := h.store.GetLoot(r.Context())
 	utils.TextResponse(w, http.StatusOK, *message)
 }

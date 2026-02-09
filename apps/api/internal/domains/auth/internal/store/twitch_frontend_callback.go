@@ -15,6 +15,7 @@ type TwitchFrontendIdentity struct {
 }
 
 func (s *Store) TwitchFrontendCallback(
+	ctx context.Context,
 	code string,
 	state string,
 	expectedState string,
@@ -29,8 +30,6 @@ func (s *Store) TwitchFrontendCallback(
 	if pkceVerifier == "" {
 		return nil, fmt.Errorf("missing pkce verifier")
 	}
-
-	ctx := context.Background()
 
 	redirectURL := fmt.Sprintf("%v/api/auth/twitch/callback", *s.webUrl)
 	accessToken, err := twitch_frontend_utils.ExchangeCodeForToken(

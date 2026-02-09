@@ -11,7 +11,7 @@ import (
 )
 
 type Methods interface {
-	GetLoot() *string
+	GetLoot(ctx context.Context) *string
 	GetPlayerCount(ctx context.Context) *string
 }
 

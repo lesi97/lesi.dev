@@ -30,7 +30,7 @@ func (h *Handler) HandleTwitchFrontendAuthCallback(w http.ResponseWriter, r *htt
 		return
 	}
 
-	identity, err := h.store.TwitchFrontendCallback(code, state, stateCookie.Value, pkceCookie.Value)
+	identity, err := h.store.TwitchFrontendCallback(r.Context(), code, state, stateCookie.Value, pkceCookie.Value)
 	if err != nil {
 		utils.Error(w, http.StatusUnauthorized, err)
 		return

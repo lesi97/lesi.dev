@@ -13,7 +13,7 @@ func (h *Handler) HandleAnilistAuthCallback(w http.ResponseWriter, r *http.Reque
 		utils.Error(w, http.StatusBadRequest, "bad request")
 	}
 
-	err := h.store.AnilistCallback(code)
+	err := h.store.AnilistCallback(r.Context(), code)
 	if err != nil {
 		utils.Error(w, http.StatusInternalServerError, err)
 		return
