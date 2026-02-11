@@ -86,15 +86,9 @@ func RateLimit() func(http.Handler) http.Handler {
 			client.count++
 			client.lastSeen = now
 			allowed := client.count <= maxRequests
-			remaining := maxRequests - client.count
-			if remaining < 0 {
-				remaining = 0
-			}
+			remaining := max(maxRequests - client.count, 0)
 
-			resetAfter := client.windowStart.Add(window).Sub(now)
-			if resetAfter < 0 {
-				resetAfter = 0
-			}
+			resetAfter := max(client.windowStart.Add(window).Sub(now), 0)
 
 			resetSeconds := int(resetAfter / time.Second)
 			if resetAfter%time.Second != 0 {
