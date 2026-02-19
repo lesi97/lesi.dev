@@ -13,7 +13,8 @@ func (h *Handler) HandleGetPlayerCount(w http.ResponseWriter, r *http.Request) {
 	message, err := h.store.GetPlayerCount(r.Context(), gameID, gameName)
 	if err != nil {
 		h.logger.Printf("ERROR: GetPlayerCount | %v", err.Error())
-		utils.TextResponse(w, http.StatusBadRequest, err.Error())
+		// have to return ok for nightbot to return my error response
+		utils.TextResponse(w, http.StatusOK, err.Error())
 		return
 	}
 

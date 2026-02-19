@@ -61,15 +61,15 @@ func (s *Store) ResolveGameIDByName(ctx context.Context, gameName string) (strin
 		return "", "", err
 	}
 
-	target := strings.ToLower(strings.TrimSpace(trimmedGameName))
+	normalisedTarget := NormaliseGameName(trimmedGameName)
 	for _, item := range searchData.Items {
 		trimmedAppName := strings.TrimSpace(item.Name)
 		if trimmedAppName == "" {
 			continue
 		}
 
-		lowerAppName := strings.ToLower(trimmedAppName)
-		if lowerAppName == target {
+		normalisedAppName := NormaliseGameName(trimmedAppName)
+		if normalisedAppName == normalisedTarget {
 			resolvedGameID := fmt.Sprintf("%d", item.ID)
 			_ = s.Redis.Set(ctx, nameToIDCacheKey, resolvedGameID, steamGameNameCacheTTL).Err()
 			_ = s.Redis.Set(ctx, GetIDToNameCacheKey(resolvedGameID), trimmedAppName, steamGameNameCacheTTL).Err()
@@ -79,12 +79,49 @@ func (s *Store) ResolveGameIDByName(ctx context.Context, gameName string) (strin
 
 	for _, item := range searchData.Items {
 		trimmedAppName := strings.TrimSpace(item.Name)
-		if strings.Contains(strings.ToLower(trimmedAppName), target) {
+		normalisedAppName := NormaliseGameName(trimmedAppName)
+		if strings.Contains(normalisedAppName, normalisedTarget) || strings.Contains(normalisedTarget, normalisedAppName) {
 			resolvedGameID := fmt.Sprintf("%d", item.ID)
 			_ = s.Redis.Set(ctx, nameToIDCacheKey, resolvedGameID, steamGameNameCacheTTL).Err()
 			_ = s.Redis.Set(ctx, GetIDToNameCacheKey(resolvedGameID), trimmedAppName, steamGameNameCacheTTL).Err()
 			return resolvedGameID, trimmedAppName, nil
 		}
+	}
+
+	targetTokens := strings.Fields(normalisedTarget)
+	bestMatchID := int64(0)
+	bestMatchName := ""
+	bestScore := 0
+	for _, item := range searchData.Items {
+		trimmedAppName := strings.TrimSpace(item.Name)
+		if trimmedAppName == "" {
+			continue
+		}
+
+		normalisedAppName := NormaliseGameName(trimmedAppName)
+		if normalisedAppName == "" {
+			continue
+		}
+
+		matchedTokenCount := 0
+		for _, token := range targetTokens {
+			if token != "" && strings.Contains(normalisedAppName, token) {
+				matchedTokenCount++
+			}
+		}
+
+		if matchedTokenCount > bestScore {
+			bestScore = matchedTokenCount
+			bestMatchID = item.ID
+			bestMatchName = trimmedAppName
+		}
+	}
+
+	if bestScore > 0 && bestMatchName != "" {
+		resolvedGameID := fmt.Sprintf("%d", bestMatchID)
+		_ = s.Redis.Set(ctx, nameToIDCacheKey, resolvedGameID, steamGameNameCacheTTL).Err()
+		_ = s.Redis.Set(ctx, GetIDToNameCacheKey(resolvedGameID), bestMatchName, steamGameNameCacheTTL).Err()
+		return resolvedGameID, bestMatchName, nil
 	}
 
 	_ = s.Redis.Set(ctx, nameToIDCacheKey, steamGameNotFoundCacheValue, steamGameNegativeCacheTTL).Err()

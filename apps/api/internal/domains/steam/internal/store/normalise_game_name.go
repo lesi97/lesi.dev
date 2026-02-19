@@ -1,12 +1,24 @@
 package store
 
-import "strings"
+import (
+	"strings"
+	"unicode"
+)
 
 func NormaliseGameName(gameName string) string {
-	trimmed := strings.TrimSpace(gameName)
-	if trimmed == "" {
+	if strings.TrimSpace(gameName) == "" {
 		return ""
 	}
 
-	return strings.ToLower(strings.Join(strings.Fields(trimmed), " "))
+	mapped := strings.Map(func(char rune) rune {
+		if unicode.IsLetter(char) || unicode.IsNumber(char) {
+			return unicode.ToLower(char)
+		}
+		if unicode.IsSpace(char) {
+			return ' '
+		}
+		return ' '
+	}, gameName)
+
+	return strings.Join(strings.Fields(mapped), " ")
 }
