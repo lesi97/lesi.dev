@@ -49,7 +49,7 @@ func setupRoutes(app *Application) *chi.Mux {
 	apiLogStore := api_logs_store.NewStore(app.DB, app.Logger)
 	routes.Use(middleware.Measure(app.Logger, apiLogStore))
 	routes.Use(middleware.RateLimit())
-	
+
 	routes.Get("/healthcheck", http.HandlerFunc(httpapi.Healthcheck))
 	httpapi.AddScriptRoutes(routes)
 	httpapi.AddFakeEnv(routes)
@@ -72,6 +72,9 @@ func setupRoutes(app *Application) *chi.Mux {
 		}
 		if app.TrialsHandler != nil {
 			registerRoutes(app.TrialsHandler, r)
+		}
+		if app.SteamHandler != nil {
+			registerRoutes(app.SteamHandler, r)
 		}
 		if app.BungieHandler != nil {
 			registerRoutes(app.BungieHandler, r)

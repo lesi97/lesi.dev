@@ -15,6 +15,7 @@ import (
 	countdown_handler "github.com/lesi97/lesi.dev/internal/domains/countdown/handler"
 	fortnite_handler "github.com/lesi97/lesi.dev/internal/domains/fortnite/handler"
 	local_handler "github.com/lesi97/lesi.dev/internal/domains/local/handler"
+	steam_handler "github.com/lesi97/lesi.dev/internal/domains/steam/handler"
 	tarot_handler "github.com/lesi97/lesi.dev/internal/domains/tarot/handler"
 	telemetry_handler "github.com/lesi97/lesi.dev/internal/domains/telemetry/handler"
 	time_handler "github.com/lesi97/lesi.dev/internal/domains/time/handler"
@@ -34,6 +35,7 @@ type Application struct {
 	TimeHandler       *time_handler.Handler
 	BungieHandler     *bungie_handler.Handler
 	TrialsHandler     *trials_handler.Handler
+	SteamHandler      *steam_handler.Handler
 	AnilistHandler    *anilist_handler.Handler
 	LocalHandler      *local_handler.Handler
 	TwitchHandler     *twitch_handler.Handler
@@ -108,6 +110,13 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		trialsHandler = nil
 	}
 
+	var steamHandler *steam_handler.Handler
+	steamHandler, steamErr := steam_handler.NewHandler(logger, db, redis, httpClient)
+	if steamErr != nil {
+		logger.Error("Steam store disabled: " + steamErr.Error())
+		steamHandler = nil
+	}
+
 	var anilistHandler *anilist_handler.Handler
 	anilistHandler, anilistErr := anilist_handler.NewHandler(logger, db)
 	if anilistErr != nil {
@@ -158,6 +167,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		TarotHandler:      tarotHandler,
 		TimeHandler:       timeHandler,
 		TrialsHandler:     trialsHandler,
+		SteamHandler:      steamHandler,
 		BungieHandler:     bungieHandler,
 		AnilistHandler:    anilistHandler,
 		CountdownHandler:  countdownHandler,
@@ -166,7 +176,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		AuthHandler:       authHandler,
 		AimTrainerHandler: aimTrainerHandler,
 		TelemetryHandler:  telemetryHandler,
-		FortniteHandler: fortniteHandler,
+		FortniteHandler:   fortniteHandler,
 	}
 
 	routes := setupRoutes(app)
