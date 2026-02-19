@@ -18,9 +18,12 @@ func (s *Store) ResolveGameNameByID(ctx context.Context, gameID string) (string,
 	cachedGameName, cachedNameErr := s.Redis.Get(ctx, idToNameCacheKey).Result()
 	if cachedNameErr == nil {
 		if cachedGameName == steamGameNotFoundCacheValue {
+			_ = s.Redis.Expire(ctx, idToNameCacheKey, steamGameNegativeCacheTTL).Err()
 			return "", errors.New("gameId not found on Steam Store")
 		}
 		if strings.TrimSpace(cachedGameName) != "" {
+			_ = s.Redis.Expire(ctx, idToNameCacheKey, steamGameNameCacheTTL).Err()
+			_ = s.Redis.Expire(ctx, GetNameToIDCacheKey(NormaliseGameName(cachedGameName)), steamGameNameCacheTTL).Err()
 			s.Logger.PrintCache("CACHE HIT resolveGameNameByID %s", idToNameCacheKey)
 			return cachedGameName, nil
 		}

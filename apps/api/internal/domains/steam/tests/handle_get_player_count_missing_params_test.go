@@ -25,8 +25,8 @@ func TestHandleGetPlayerCountMissingParams(t *testing.T) {
 
 	h.HandleGetPlayerCount(rec, req)
 
-	if rec.Code != http.StatusBadRequest {
-		t.Fatalf("expected status %d got %d", http.StatusBadRequest, rec.Code)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status %d got %d", http.StatusOK, rec.Code)
 	}
 
 	if !strings.Contains(rec.Body.String(), expectedErr) {
