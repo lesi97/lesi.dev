@@ -19,6 +19,11 @@ func TestNormaliseGameName(t *testing.T) {
 			expected: "tom clancy s rainbow six siege",
 		},
 		{
+			name:     "removes registered symbol",
+			input:    "Tom Clancy's Rainbow Six® Siege",
+			expected: "tom clancy s rainbow six siege",
+		},
+		{
 			name:     "empty when only symbols",
 			input:    " ™®::: ",
 			expected: "",

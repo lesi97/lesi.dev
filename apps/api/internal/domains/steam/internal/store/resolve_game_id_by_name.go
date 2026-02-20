@@ -15,7 +15,8 @@ import (
 )
 
 func (s *Store) ResolveGameIDByName(ctx context.Context, gameName string) (string, string, error) {
-	trimmedGameName := strings.TrimSpace(gameName)
+	decodedGameName := DecodeGameName(gameName)
+	trimmedGameName := strings.TrimSpace(decodedGameName)
 	if trimmedGameName == "" {
 		return "", "", errors.New("you must provide gameName when gameId is not set")
 	}
@@ -25,7 +26,6 @@ func (s *Store) ResolveGameIDByName(ctx context.Context, gameName string) (strin
 	cachedGameID, cachedIDErr := s.Redis.Get(ctx, nameToIDCacheKey).Result()
 	if cachedIDErr == nil {
 		if cachedGameID == steamGameNotFoundCacheValue {
-			_ = s.Redis.Expire(ctx, nameToIDCacheKey, steamGameNegativeCacheTTL).Err()
 			return "", "", errors.New("game not found on Steam Store")
 		}
 
@@ -126,6 +126,25 @@ func (s *Store) ResolveGameIDByName(ctx context.Context, gameName string) (strin
 		_ = s.Redis.Set(ctx, nameToIDCacheKey, resolvedGameID, steamGameNameCacheTTL).Err()
 		_ = s.Redis.Set(ctx, GetIDToNameCacheKey(resolvedGameID), bestMatchName, steamGameNameCacheTTL).Err()
 		return resolvedGameID, bestMatchName, nil
+	}
+
+	fallbackGameID, fallbackGameName, fallbackErr := s.ResolveGameIDByNameFromAppList(ctx, trimmedGameName)
+	if fallbackErr == nil && fallbackGameID != "" && fallbackGameName != "" {
+		_ = s.Redis.Set(ctx, nameToIDCacheKey, fallbackGameID, steamGameNameCacheTTL).Err()
+		_ = s.Redis.Set(ctx, GetIDToNameCacheKey(fallbackGameID), fallbackGameName, steamGameNameCacheTTL).Err()
+		return fallbackGameID, fallbackGameName, nil
+	}
+
+	knownGameID, hasKnownGameID := GetKnownGameIDByName(normalisedTarget)
+	if hasKnownGameID {
+		knownGameName, knownNameErr := s.ResolveGameNameByID(ctx, knownGameID)
+		if knownNameErr != nil {
+			return "", "", knownNameErr
+		}
+
+		_ = s.Redis.Set(ctx, nameToIDCacheKey, knownGameID, steamGameNameCacheTTL).Err()
+		_ = s.Redis.Set(ctx, GetIDToNameCacheKey(knownGameID), knownGameName, steamGameNameCacheTTL).Err()
+		return knownGameID, knownGameName, nil
 	}
 
 	_ = s.Redis.Set(ctx, nameToIDCacheKey, steamGameNotFoundCacheValue, steamGameNegativeCacheTTL).Err()
