@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -25,5 +26,18 @@ func CountdownToString(target time.Time) string {
 	minutes := int(diff.Minutes()) % 60
 	seconds := int(diff.Seconds()) % 60
 
-	return fmt.Sprintf("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes, seconds)
+	timeParts := []string{}
+
+	if days > 0 {
+		timeParts = append(timeParts, fmt.Sprintf("%d days", days))
+	}
+	if days > 0 || hours > 0 {
+		timeParts = append(timeParts, fmt.Sprintf("%d hours", hours))
+	}
+	if days > 0 || hours > 0 || minutes > 0 {
+		timeParts = append(timeParts, fmt.Sprintf("%d minutes", minutes))
+	}
+	timeParts = append(timeParts, fmt.Sprintf("%d seconds", seconds))
+
+	return strings.Join(timeParts, ", ")
 }

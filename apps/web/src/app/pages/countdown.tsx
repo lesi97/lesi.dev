@@ -35,6 +35,8 @@ export function Countdown() {
         setCommandName,
     } = useCountdown();
 
+    const streamElementsMeta = '?nonce=${time}&command=${command}&sender=${sender}';
+
     return (
         <>
             <Description
@@ -158,7 +160,7 @@ export function Countdown() {
                                 id='generatedCommand'
                                 className='h-fit min-h-[100px] resize-none text-pretty rounded bg-primary/80 p-2 text-primary-content focus:outline-none'
                                 ref={commandRef}
-                                value={`${editCommand ? '!editcom' : '!addcom'} !${commandName} $(urlfetch ${command}) @$(touser)`}
+                                value={`${editCommand ? '!editcom' : '!addcom'} !${commandName} $(urlfetch ${command}?nonce=$(time UTC \"x\")&command=$(command)) @$(touser)`}
                             />
                         </div>
                         <div className='flex flex-col'>
@@ -168,7 +170,7 @@ export function Countdown() {
                                 id='generatedCommandStreamElements'
                                 className='h-fit min-h-[100px] resize-none text-pretty rounded bg-primary/80 p-2 text-primary-content focus:outline-none'
                                 ref={commandRef2}
-                                value={`${editCommand ? '!command edit' : '!command add'} !${commandName} $(urlfetch ${command}) @$(touser)`}
+                                value={`${editCommand ? '!command edit' : '!command add'} !${commandName} $(urlfetch ${command}${streamElementsMeta}) @$(touser)`}
                             />
                         </div>
                     </>
