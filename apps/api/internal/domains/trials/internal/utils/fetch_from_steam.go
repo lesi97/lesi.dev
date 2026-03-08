@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/lesi97/lesi.dev/internal/domains/trials/internal/model"
@@ -16,11 +17,13 @@ import (
 func FetchFromSteam(ctx context.Context, logger *utils.Logger, steamURL string, steamClientID string) (*model.SteamData, error) {
 	const destiny2 = "1085660"
 	url := fmt.Sprintf("%s/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=%s&key=%s", steamURL, destiny2, steamClientID)
-	defer logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", url), time.Now(), nil)
+	safeURL := httpapi.RedactSensitiveQueryValues(url)
+	defer logger.LogExecutionTime(fmt.Sprintf("EXTERNAL API CALL: %v", safeURL), time.Now(), nil)
 
 	body, _, err := httpapi.DoRequest(ctx, &http.Client{}, http.MethodGet, url, nil, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response: %w", err)
+		safeError := strings.ReplaceAll(err.Error(), url, safeURL)
+		return nil, fmt.Errorf("failed to read response from steam: %s", safeError)
 	}
 
 	result := &model.SteamData{}

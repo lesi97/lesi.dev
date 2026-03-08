@@ -3,8 +3,10 @@ package httpapi
 import (
 	"compress/gzip"
 	"context"
+	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	requestmetrics "github.com/lesi97/lesi.dev/internal/request_metrics"
@@ -19,6 +21,7 @@ func DoRequest(
 	headers map[string]string,
 ) ([]byte, int, error) {
 	start := time.Now()
+	safeURL := RedactSensitiveQueryValues(url)
 
 	if ctx == nil {
 		ctx = context.Background()
@@ -29,7 +32,8 @@ func DoRequest(
 
 	req, err := http.NewRequestWithContext(ctx, method, url, body)
 	if err != nil {
-		return nil, 0, err
+		safeError := strings.ReplaceAll(err.Error(), url, safeURL)
+		return nil, 0, fmt.Errorf("failed to create %s request for %s: %s", method, safeURL, safeError)
 	}
 
 	for key, value := range headers {
@@ -39,7 +43,8 @@ func DoRequest(
 	resp, err := client.Do(req)
 	if err != nil {
 		requestmetrics.AddFetchCallsDuration(ctx, time.Since(start), err)
-		return nil, 0, err
+		safeError := strings.ReplaceAll(err.Error(), url, safeURL)
+		return nil, 0, fmt.Errorf("%s request failed for %s: %s", method, safeURL, safeError)
 	}
 	defer resp.Body.Close()
 

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/lesi97/lesi.dev/internal/domains/steam/internal/model"
 	"github.com/lesi97/lesi.dev/internal/httpapi"
@@ -21,7 +22,9 @@ func (s *Store) FetchPlayerCountByGameID(ctx context.Context, gameID string) (in
 
 	body, statusCode, err := httpapi.DoRequest(ctx, s.HTTPClient, http.MethodGet, url, nil, nil)
 	if err != nil {
-		return 0, err
+		safeURL := httpapi.RedactSensitiveQueryValues(url)
+		safeError := strings.ReplaceAll(err.Error(), url, safeURL)
+		return 0, errors.New(safeError)
 	}
 
 	if statusCode < 200 || statusCode >= 300 {
