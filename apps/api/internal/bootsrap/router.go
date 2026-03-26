@@ -88,6 +88,9 @@ func setupRoutes(app *Application) *chi.Mux {
 		if app.FortniteHandler != nil {
 			registerRoutes(app.FortniteHandler, r)
 		}
+		if app.RequestCaptureHandler != nil {
+			registerRoutes(app.RequestCaptureHandler, r)
+		}
 
 	})
 

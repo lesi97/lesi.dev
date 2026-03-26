@@ -15,6 +15,7 @@ import (
 	countdown_handler "github.com/lesi97/lesi.dev/internal/domains/countdown/handler"
 	fortnite_handler "github.com/lesi97/lesi.dev/internal/domains/fortnite/handler"
 	local_handler "github.com/lesi97/lesi.dev/internal/domains/local/handler"
+	request_capture_handler "github.com/lesi97/lesi.dev/internal/domains/request_capture/handler"
 	steam_handler "github.com/lesi97/lesi.dev/internal/domains/steam/handler"
 	tarot_handler "github.com/lesi97/lesi.dev/internal/domains/tarot/handler"
 	telemetry_handler "github.com/lesi97/lesi.dev/internal/domains/telemetry/handler"
@@ -26,23 +27,24 @@ import (
 )
 
 type Application struct {
-	Logger            *utils.Logger
-	DB                *db.DB
-	Redis             *redis.Client
-	HTTPClient        *http.Client
-	TarotHandler      *tarot_handler.Handler
-	CountdownHandler  *countdown_handler.Handler
-	TimeHandler       *time_handler.Handler
-	BungieHandler     *bungie_handler.Handler
-	TrialsHandler     *trials_handler.Handler
-	SteamHandler      *steam_handler.Handler
-	AnilistHandler    *anilist_handler.Handler
-	LocalHandler      *local_handler.Handler
-	TwitchHandler     *twitch_handler.Handler
-	AuthHandler       *auth_handler.Handler
-	AimTrainerHandler *aim_trainer_handler.Handler
-	TelemetryHandler  *telemetry_handler.Handler
-	FortniteHandler   *fortnite_handler.Handler
+	Logger                *utils.Logger
+	DB                    *db.DB
+	Redis                 *redis.Client
+	HTTPClient            *http.Client
+	TarotHandler          *tarot_handler.Handler
+	CountdownHandler      *countdown_handler.Handler
+	TimeHandler           *time_handler.Handler
+	BungieHandler         *bungie_handler.Handler
+	TrialsHandler         *trials_handler.Handler
+	SteamHandler          *steam_handler.Handler
+	AnilistHandler        *anilist_handler.Handler
+	LocalHandler          *local_handler.Handler
+	RequestCaptureHandler *request_capture_handler.Handler
+	TwitchHandler         *twitch_handler.Handler
+	AuthHandler           *auth_handler.Handler
+	AimTrainerHandler     *aim_trainer_handler.Handler
+	TelemetryHandler      *telemetry_handler.Handler
+	FortniteHandler       *fortnite_handler.Handler
 }
 
 func init() {
@@ -94,6 +96,13 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	if localErr != nil {
 		logger.Error("Local handler disabled: " + localErr.Error())
 		localHandler = nil
+	}
+
+	var requestCaptureHandler *request_capture_handler.Handler
+	requestCaptureHandler, requestCaptureErr := request_capture_handler.NewHandler(logger, db)
+	if requestCaptureErr != nil {
+		logger.Error("Request capture handler disabled: " + requestCaptureErr.Error())
+		requestCaptureHandler = nil
 	}
 
 	var aimTrainerHandler *aim_trainer_handler.Handler
@@ -160,23 +169,24 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	}
 
 	app := &Application{
-		Logger:            logger,
-		DB:                db,
-		Redis:             redis,
-		HTTPClient:        httpClient,
-		TarotHandler:      tarotHandler,
-		TimeHandler:       timeHandler,
-		TrialsHandler:     trialsHandler,
-		SteamHandler:      steamHandler,
-		BungieHandler:     bungieHandler,
-		AnilistHandler:    anilistHandler,
-		CountdownHandler:  countdownHandler,
-		LocalHandler:      localHandler,
-		TwitchHandler:     twitchHandler,
-		AuthHandler:       authHandler,
-		AimTrainerHandler: aimTrainerHandler,
-		TelemetryHandler:  telemetryHandler,
-		FortniteHandler:   fortniteHandler,
+		Logger:                logger,
+		DB:                    db,
+		Redis:                 redis,
+		HTTPClient:            httpClient,
+		TarotHandler:          tarotHandler,
+		TimeHandler:           timeHandler,
+		TrialsHandler:         trialsHandler,
+		SteamHandler:          steamHandler,
+		BungieHandler:         bungieHandler,
+		AnilistHandler:        anilistHandler,
+		CountdownHandler:      countdownHandler,
+		LocalHandler:          localHandler,
+		RequestCaptureHandler: requestCaptureHandler,
+		TwitchHandler:         twitchHandler,
+		AuthHandler:           authHandler,
+		AimTrainerHandler:     aimTrainerHandler,
+		TelemetryHandler:      telemetryHandler,
+		FortniteHandler:       fortniteHandler,
 	}
 
 	routes := setupRoutes(app)
