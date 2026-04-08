@@ -45,7 +45,7 @@ func (l *Logger) SendDiscordNotification(data SendDiscordNotificationArgs) {
 		l.Error("DISCORD_USER_ID is not defined in environment variables")
 		contentMessage = fmt.Sprintf("%v %s", data.Title, content)
 	} else {
-		contentMessage = fmt.Sprintf("<@%s> %v %s`", userID, data.Title, content)
+		contentMessage = fmt.Sprintf("<@%s> %v %s", userID, data.Title, content)
 	}
 
 

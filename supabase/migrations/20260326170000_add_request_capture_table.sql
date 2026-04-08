@@ -10,8 +10,5 @@ create table if not exists public.request_capture (
   body jsonb not null
 );
 
-alter table public.request_capture owner to postgres;
-alter table public.request_capture enable row level security;
-
 create index if not exists request_capture_created_at_idx
 on public.request_capture (created_at desc);

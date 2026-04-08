@@ -82,7 +82,7 @@ func (s *Store) UpdateAnilist(ctx context.Context, data model.PlexWebhookPayload
 		if absEpisode%100 == 0 {
 			s.Logger.SendDiscordNotification(utils.SendDiscordNotificationArgs{
 				Content:  "",
-				Title:    fmt.Sprintf("Episde %v of %v watched!", absEpisode, showName),
+				Title:    fmt.Sprintf("Episode %v of %v watched!", absEpisode, showName),
 				Username: "Anilist Milestone",
 			})
 		}
