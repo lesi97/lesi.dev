@@ -164,7 +164,16 @@ export function Countdown() {
                             />
                         </div>
                         <div className='flex flex-col'>
-                            StreamElements:
+                            <span className='w-full'>StreamElements:</span>
+                            <span className='w-full text-xs italic pb-2'>
+                                Ensure you have '!command' enabled for your moderators{' '}
+                                <a
+                                    className='text-secondary hover:underline mx-0.5'
+                                    href='https://streamelements.com/dashboard/bot/commands/default#:~:text=0-,!command,-Add%2C%20edit%20and'
+                                    target='_blank'>
+                                    here
+                                </a>
+                            </span>
                             <textarea
                                 readOnly
                                 id='generatedCommandStreamElements'

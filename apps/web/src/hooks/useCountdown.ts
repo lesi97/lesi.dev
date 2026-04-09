@@ -10,27 +10,26 @@ const formIntialState = {
         target_date: '',
         message: '',
         fallback_message: '',
-    }, errors: {
-        command: {type: 'unique', value: undefined},
-        target_date: {type: 'unique', value: undefined},
-        message: {type: 'unique', value: undefined},
-        fallback_message: {type: 'unique', value: undefined},
-    }
-}
+    },
+    errors: {
+        command: { type: 'unique', value: undefined },
+        target_date: { type: 'unique', value: undefined },
+        message: { type: 'unique', value: undefined },
+        fallback_message: { type: 'unique', value: undefined },
+    },
+};
 
 type InitialStateType = typeof formIntialState.data;
 type CountdownDataKeysType = keyof InitialStateType;
 
-
 type ErrorsType = {
     target_date: string | null;
     message: string | null;
-    fallback_message:string | null;
+    fallback_message: string | null;
 };
 
-
 export function useCountdown() {
-const [today, setToday] = useState(new Date());
+    const [today, setToday] = useState(new Date());
     const [data, setData] = useState({
         target_date: '',
         message: '',
@@ -120,7 +119,6 @@ const [today, setToday] = useState(new Date());
         }
     }
 
-
     function transformCountdown(targetDate: string) {
         const futureDate = new Date(targetDate);
         const currentDate = new Date();
@@ -141,7 +139,7 @@ const [today, setToday] = useState(new Date());
 
         const countdownParts = [];
         if (days > 0) {
-            countdownParts.push(`${days} days`);
+            countdownParts.push(`${days} ${days === 1 ? 'day' : 'days'}`);
         }
         countdownParts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`);
         countdownParts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);

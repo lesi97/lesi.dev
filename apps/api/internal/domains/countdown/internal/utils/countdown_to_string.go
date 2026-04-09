@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"strings"
 	"time"
 )
@@ -29,15 +28,15 @@ func CountdownToString(target time.Time) string {
 	timeParts := []string{}
 
 	if days > 0 {
-		timeParts = append(timeParts, fmt.Sprintf("%d days", days))
+		timeParts = append(timeParts, CountdownTimePartToString(days, "day"))
 	}
 	if days > 0 || hours > 0 {
-		timeParts = append(timeParts, fmt.Sprintf("%d hours", hours))
+		timeParts = append(timeParts, CountdownTimePartToString(hours, "hour"))
 	}
 	if days > 0 || hours > 0 || minutes > 0 {
-		timeParts = append(timeParts, fmt.Sprintf("%d minutes", minutes))
+		timeParts = append(timeParts, CountdownTimePartToString(minutes, "minute"))
 	}
-	timeParts = append(timeParts, fmt.Sprintf("%d seconds", seconds))
+	timeParts = append(timeParts, CountdownTimePartToString(seconds, "second"))
 
 	return strings.Join(timeParts, ", ")
 }
