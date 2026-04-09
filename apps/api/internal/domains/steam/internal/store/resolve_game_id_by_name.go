@@ -26,7 +26,7 @@ func (s *Store) ResolveGameIDByName(ctx context.Context, gameName string) (strin
 	cachedGameID, cachedIDErr := s.Redis.Get(ctx, nameToIDCacheKey).Result()
 	if cachedIDErr == nil {
 		if cachedGameID == steamGameNotFoundCacheValue {
-			return "", "", errors.New("game not found on Steam Store")
+			return "", "", fmt.Errorf("'%s' not found on the steam store", gameName)
 		}
 
 		cachedGameName, cachedNameErr := s.Redis.Get(ctx, GetIDToNameCacheKey(cachedGameID)).Result()
@@ -148,5 +148,5 @@ func (s *Store) ResolveGameIDByName(ctx context.Context, gameName string) (strin
 	}
 
 	_ = s.Redis.Set(ctx, nameToIDCacheKey, steamGameNotFoundCacheValue, steamGameNegativeCacheTTL).Err()
-	return "", "", errors.New("game not found on Steam Store")
+	return "", "", fmt.Errorf("'%s' not found on the steam store", gameName)
 }
