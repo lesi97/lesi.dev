@@ -13,6 +13,8 @@ func GetKnownGameIDByName(normalisedGameName string) (string, bool) {
 		"rainbow six siege":     "359550",
 		"rainbow six":           "359550",
 		"r6":                    "359550",
+		"the first descendent":  "2074920",
+		"first descendent":      "2074920",
 	}
 
 	gameID, ok := knownGameIDs[normalisedGameName]
