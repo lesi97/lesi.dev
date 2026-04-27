@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/lesi97/lesi.dev/internal/domains/request_capture/internal/model"
@@ -34,12 +35,15 @@ func (h *Handler) PostRequestCapture(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		shared_utils.Error(w, http.StatusBadRequest, "invalid request body")
+		h.logger.Printf("Request capture body read failed: contentType=%q contentLength=%d err=%v", r.Header.Get("Content-Type"), r.ContentLength, err)
+		shared_utils.Error(w, http.StatusBadRequest, "could not read request body")
 		return
 	}
 
-	if !json.Valid([]byte(body)) {
-		shared_utils.Error(w, http.StatusBadRequest, "invalid request body")
+	err = domain_utils.ValidateRequestCaptureBody(body)
+	if err != nil {
+		h.logger.Printf("Request capture body invalid JSON: contentType=%q contentLength=%d err=%v", r.Header.Get("Content-Type"), r.ContentLength, err)
+		shared_utils.Error(w, http.StatusBadRequest, fmt.Errorf("invalid request body: %w", err))
 		return
 	}
 
