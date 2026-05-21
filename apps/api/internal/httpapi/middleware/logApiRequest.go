@@ -23,7 +23,8 @@ func LogApiRequest(
 	nonceOk bool,
 	status int,
 ) {
-	botType, channel, user := GetBotMetadata(r.Header)
+	headers := r.Header.Clone()
+	query := r.URL.Query()
 	ip := utils.GetRequestIP(r)
 	response := responseBody
 	utils.TruncateString(&response, 2000)
@@ -38,9 +39,6 @@ func LogApiRequest(
 		Timestamp:       time.Now().UTC(),
 		Route:           path,
 		IP:              ip,
-		Channel:         channel,
-		User:            user,
-		BotType:         botType,
 		Response:        response,
 		ExecutionTimeMS: duration.Milliseconds(),
 		ApiProcessingMS: apiProcessingDuration.Milliseconds(),
@@ -51,6 +49,11 @@ func LogApiRequest(
 	}
 
 	go func() {
+		botType, channel, user := GetBotMetadata(headers, query)
+		logEntry.BotType = botType
+		logEntry.Channel = channel
+		logEntry.User = user
+
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()
 		_ = apiLogStore.InsertApiLog(ctx, logEntry)

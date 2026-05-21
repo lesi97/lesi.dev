@@ -1,8 +1,14 @@
 package middleware
 
-import "net/http"
+import (
+	"net/http"
+	"net/url"
+	"strings"
+)
 
-func GetBotMetadata(headers http.Header) (*string, *string, *string) {
+var fetchStreamElementsChannelDisplayName = FetchStreamElementsChannelDisplayName
+
+func GetBotMetadata(headers http.Header, query url.Values) (*string, *string, *string) {
 	userDisplayName, channelDisplayName, ok := GetNightbotDisplayNames(headers)
 	if ok {
 		botType := "nightbot"
@@ -12,7 +18,18 @@ func GetBotMetadata(headers http.Header) (*string, *string, *string) {
 	streamElementsChannel := headers.Get("X-Streamelements-Channel")
 	if streamElementsChannel != "" {
 		botType := "streamelements"
-		return &botType, &streamElementsChannel, nil
+		userName := strings.TrimSpace(query.Get("sender"))
+		var user *string
+		if userName != "" {
+			user = &userName
+		}
+
+		channelDisplayName, ok := fetchStreamElementsChannelDisplayName(streamElementsChannel)
+		if ok {
+			return &botType, &channelDisplayName, user
+		}
+
+		return &botType, &streamElementsChannel, user
 	}
 
 	return nil, nil, nil
