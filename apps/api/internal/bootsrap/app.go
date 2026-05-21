@@ -13,6 +13,7 @@ import (
 	auth_handler "github.com/lesi97/lesi.dev/internal/domains/auth/handler"
 	bungie_handler "github.com/lesi97/lesi.dev/internal/domains/bungie/handler"
 	countdown_handler "github.com/lesi97/lesi.dev/internal/domains/countdown/handler"
+	facts_handler "github.com/lesi97/lesi.dev/internal/domains/facts/handler"
 	fortnite_handler "github.com/lesi97/lesi.dev/internal/domains/fortnite/handler"
 	local_handler "github.com/lesi97/lesi.dev/internal/domains/local/handler"
 	request_capture_handler "github.com/lesi97/lesi.dev/internal/domains/request_capture/handler"
@@ -37,6 +38,7 @@ type Application struct {
 	BungieHandler         *bungie_handler.Handler
 	TrialsHandler         *trials_handler.Handler
 	SteamHandler          *steam_handler.Handler
+	FactsHandler          *facts_handler.Handler
 	AnilistHandler        *anilist_handler.Handler
 	LocalHandler          *local_handler.Handler
 	RequestCaptureHandler *request_capture_handler.Handler
@@ -82,6 +84,13 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	if timeErr != nil {
 		logger.Error("Time handler disabled: " + timeErr.Error())
 		timeHandler = nil
+	}
+
+	var factsHandler *facts_handler.Handler
+	factsHandler, factsErr := facts_handler.NewHandler(logger, db)
+	if factsErr != nil {
+		logger.Error("Facts handler disabled: " + factsErr.Error())
+		factsHandler = nil
 	}
 
 	var countdownHandler *countdown_handler.Handler
@@ -177,6 +186,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		TimeHandler:           timeHandler,
 		TrialsHandler:         trialsHandler,
 		SteamHandler:          steamHandler,
+		FactsHandler:          factsHandler,
 		BungieHandler:         bungieHandler,
 		AnilistHandler:        anilistHandler,
 		CountdownHandler:      countdownHandler,

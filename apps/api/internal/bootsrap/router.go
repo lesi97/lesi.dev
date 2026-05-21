@@ -70,6 +70,9 @@ func setupRoutes(app *Application) *chi.Mux {
 		if app.CountdownHandler != nil {
 			registerRoutes(app.CountdownHandler, r)
 		}
+		if app.FactsHandler != nil {
+			registerRoutes(app.FactsHandler, r)
+		}
 		if app.TrialsHandler != nil {
 			registerRoutes(app.TrialsHandler, r)
 		}
