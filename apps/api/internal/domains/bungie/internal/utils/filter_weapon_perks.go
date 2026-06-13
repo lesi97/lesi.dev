@@ -25,12 +25,15 @@ func filterWeaponPerks(perks []databasePerk) filteredPerksResult {
 		case strings.Contains(name, "masterwork"),
 			strings.Contains(name, "catalyst"),
 			strings.Contains(name, "default shader"),
+			strings.Contains(name, "gear tier upgrade"),
 			strings.Contains(name, "unknown"),
 			strings.Contains(name, "socket"),
 			strings.Contains(name, "shaped weapon"),
 			strings.Contains(name, "crucible tracker"),
 			strings.Contains(name, "kill tracker"),
-			strings.Contains(name, "trials memento"):
+			strings.Contains(name, "trials memento"),
+			strings.Contains(itemType, "combat flair"),
+			itemType == "plug":
 		default:
 			filtered = append(filtered, perk)
 		}

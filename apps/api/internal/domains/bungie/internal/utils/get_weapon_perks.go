@@ -28,7 +28,11 @@ func getWeaponPerks(ctx context.Context, database *db.DB, logger *utils.Logger, 
 	freshFor := 7 * 24 * time.Hour
 	staleFor := 30 * 24 * time.Hour
 	now := time.Now()
-	cacheKey := fmt.Sprintf("bungie:weapon:perks:%s", strings.Join(perkHashIDs, ","))
+	requestedHashIDs := normaliseRequestedPerkHashIDs(perkHashIDs)
+	if len(requestedHashIDs) == 0 {
+		return nil, fmt.Errorf("perk list not provided")
+	}
+	cacheKey := fmt.Sprintf("bungie:weapon:perks:v2:%s", strings.Join(requestedHashIDs, ","))
 
 	cached, err := redis.Get(ctx, cacheKey).Result()
 	if err == nil {
@@ -49,14 +53,15 @@ func getWeaponPerks(ctx context.Context, database *db.DB, logger *utils.Logger, 
 				if ok {
 					go func() {
 						defer redis.Del(context.Background(), lockKey).Err()
-						placeholders := make([]string, len(perkHashIDs))
-						args := make([]interface{}, len(perkHashIDs))
-						for i, id := range perkHashIDs {
+						placeholders := make([]string, len(requestedHashIDs))
+						args := make([]interface{}, len(requestedHashIDs))
+						for i, id := range requestedHashIDs {
 							placeholders[i] = fmt.Sprintf("$%d", i+1)
 							args[i] = id
 						}
 						query := fmt.Sprintf(`
 		select 
+			hash_id,
 			name, 
 			item_type 
 		from destiny_weapon_perks 
@@ -72,7 +77,7 @@ func getWeaponPerks(ctx context.Context, database *db.DB, logger *utils.Logger, 
 						perks := make([]databasePerk, 0, 16)
 						for rows.Next() {
 							var perk databasePerk
-							if err := rows.Scan(&perk.Name, &perk.ItemType); err != nil {
+							if err := rows.Scan(&perk.HashID, &perk.Name, &perk.ItemType); err != nil {
 								return
 							}
 							perks = append(perks, perk)
@@ -101,14 +106,15 @@ func getWeaponPerks(ctx context.Context, database *db.DB, logger *utils.Logger, 
 		return nil, err
 	}
 
-	placeholders := make([]string, len(perkHashIDs))
-	args := make([]interface{}, len(perkHashIDs))
-	for i, id := range perkHashIDs {
+	placeholders := make([]string, len(requestedHashIDs))
+	args := make([]interface{}, len(requestedHashIDs))
+	for i, id := range requestedHashIDs {
 		placeholders[i] = fmt.Sprintf("$%d", i+1)
 		args[i] = id
 	}
 	query := fmt.Sprintf(`
 		select 
+			hash_id,
 			name, 
 			item_type 
 		from destiny_weapon_perks 
@@ -125,7 +131,7 @@ func getWeaponPerks(ctx context.Context, database *db.DB, logger *utils.Logger, 
 
 	for rows.Next() {
 		var perk databasePerk
-		if err := rows.Scan(&perk.Name, &perk.ItemType); err != nil {
+		if err := rows.Scan(&perk.HashID, &perk.Name, &perk.ItemType); err != nil {
 			return nil, err
 		}
 		perks = append(perks, perk)
@@ -133,6 +139,11 @@ func getWeaponPerks(ctx context.Context, database *db.DB, logger *utils.Logger, 
 
 	if err := rows.Err(); err != nil {
 		return nil, err
+	}
+
+	missingHashIDs := missingPerkHashIDs(requestedHashIDs, perks)
+	if len(missingHashIDs) != 0 {
+		return nil, fmt.Errorf("weapon perks missing from database: %s", strings.Join(missingHashIDs, ","))
 	}
 
 	filtered := filterWeaponPerks(perks)
@@ -144,4 +155,40 @@ func getWeaponPerks(ctx context.Context, database *db.DB, logger *utils.Logger, 
 		_ = redis.Set(ctx, cacheKey, b, staleFor).Err()
 	}
 	return &filtered, nil
+}
+
+func normaliseRequestedPerkHashIDs(perkHashIDs []string) []string {
+	seen := make(map[string]struct{}, len(perkHashIDs))
+	hashIDs := make([]string, 0, len(perkHashIDs))
+
+	for _, hashID := range perkHashIDs {
+		hashID = strings.TrimSpace(hashID)
+		if hashID == "" || hashID == "0" {
+			continue
+		}
+		if _, ok := seen[hashID]; ok {
+			continue
+		}
+
+		seen[hashID] = struct{}{}
+		hashIDs = append(hashIDs, hashID)
+	}
+
+	return hashIDs
+}
+
+func missingPerkHashIDs(requestedHashIDs []string, perks []databasePerk) []string {
+	found := make(map[string]struct{}, len(perks))
+	for _, perk := range perks {
+		found[perk.HashID] = struct{}{}
+	}
+
+	missing := make([]string, 0)
+	for _, hashID := range requestedHashIDs {
+		if _, ok := found[hashID]; !ok {
+			missing = append(missing, hashID)
+		}
+	}
+
+	return missing
 }

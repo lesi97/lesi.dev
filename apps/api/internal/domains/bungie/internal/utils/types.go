@@ -35,23 +35,23 @@ type levelProgression struct {
 }
 
 type character struct {
-	MembershipID         string            `json:"membershipId"`
-	MembershipType       int               `json:"membershipType"`
-	CharacterID          string            `json:"characterId"`
-	ClassHash            int64             `json:"classHash"`
-	RaceHash             int64             `json:"raceHash"`
-	GenderHash           int64             `json:"genderHash"`
-	ClassType            int               `json:"classType"`
-	EmblemPath           string            `json:"emblemPath"`
-	EmblemBackgroundPath string            `json:"emblemBackgroundPath"`
-	EmblemHash           int64             `json:"emblemHash"`
-	Light                int               `json:"light"`
-	LevelProgression     levelProgression  `json:"levelProgression"`
-	BaseCharacterLevel   int               `json:"baseCharacterLevel"`
-	PercentToNextLevel   float64           `json:"percentToNextLevel"`
-	DateLastPlayed       time.Time         `json:"dateLastPlayed"`
-	MinutesPlayedTotal   string            `json:"minutesPlayedTotal"`
-	Stats                map[string]int    `json:"stats"`
+	MembershipID         string           `json:"membershipId"`
+	MembershipType       int              `json:"membershipType"`
+	CharacterID          string           `json:"characterId"`
+	ClassHash            int64            `json:"classHash"`
+	RaceHash             int64            `json:"raceHash"`
+	GenderHash           int64            `json:"genderHash"`
+	ClassType            int              `json:"classType"`
+	EmblemPath           string           `json:"emblemPath"`
+	EmblemBackgroundPath string           `json:"emblemBackgroundPath"`
+	EmblemHash           int64            `json:"emblemHash"`
+	Light                int              `json:"light"`
+	LevelProgression     levelProgression `json:"levelProgression"`
+	BaseCharacterLevel   int              `json:"baseCharacterLevel"`
+	PercentToNextLevel   float64          `json:"percentToNextLevel"`
+	DateLastPlayed       time.Time        `json:"dateLastPlayed"`
+	MinutesPlayedTotal   string           `json:"minutesPlayedTotal"`
+	Stats                map[string]int   `json:"stats"`
 }
 
 type characters struct {
@@ -129,7 +129,17 @@ type itemPerks struct {
 	Privacy int                     `json:"privacy"`
 }
 
+type itemInstance struct {
+	GearTier int `json:"gearTier"`
+}
+
+type itemInstances struct {
+	Data    map[string]itemInstance `json:"data"`
+	Privacy int                     `json:"privacy"`
+}
+
 type itemComponents struct {
+	Instances      itemInstances  `json:"instances"`
 	Sockets        sockets        `json:"sockets"`
 	PlugObjectives plugObjectives `json:"plugObjectives"`
 	Perks          itemPerks      `json:"perks"`

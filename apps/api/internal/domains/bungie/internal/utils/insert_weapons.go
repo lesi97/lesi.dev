@@ -15,7 +15,15 @@ func insertWeapons(database *db.DB, logger *utils.Logger, weapons []dbWeapons) {
 			VALUES 
 				($1, $2, $3, $4, $5, $6, $7, $8, $9)
 			ON CONFLICT (id)
-			DO NOTHING
+			DO UPDATE SET
+				display_name = EXCLUDED.display_name,
+				item_type_display_name = EXCLUDED.item_type_display_name,
+				flavor_text = EXCLUDED.flavor_text,
+				bucket_type_hash = EXCLUDED.bucket_type_hash,
+				tier_type_hash = EXCLUDED.tier_type_hash,
+				tier_type_name = EXCLUDED.tier_type_name,
+				tier_type = EXCLUDED.tier_type,
+				talent_grid_hash = EXCLUDED.talent_grid_hash
 		`
 
 		_, err := database.Exec(context.Background(), query,

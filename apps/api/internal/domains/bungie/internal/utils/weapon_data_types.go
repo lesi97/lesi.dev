@@ -7,6 +7,7 @@ type weaponData struct {
 }
 
 type databasePerk struct {
+	HashID   string `json:"hash_id"`
 	Name     string `json:"name"`
 	ItemType string `json:"item_type"`
 }

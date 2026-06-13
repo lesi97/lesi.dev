@@ -30,7 +30,7 @@ func (s *Store) GetEquippedWeapon(ctx context.Context) (*string, error) {
 		s.BaseURL,
 		user.MembershipID,
 		preferredPlatform,
-		"200,205,302,305,309",
+		"200,205,300,302,305,309",
 	)
 	if err != nil {
 		fmt.Printf("ERROR: GetEquippedPrimary: getBungieProfileByMembershipID: %v\n", err)
@@ -45,6 +45,7 @@ func (s *Store) GetEquippedWeapon(ctx context.Context) (*string, error) {
 
 	itemInstanceID := profile.Response.CharacterEquipment.Data[mainCharId].Items[request.WeaponIndex].ItemInstanceID
 	itemHashID := strconv.Itoa(profile.Response.CharacterEquipment.Data[mainCharId].Items[request.WeaponIndex].ItemHash)
+	gearTier := profile.Response.ItemComponents.Instances.Data[itemInstanceID].GearTier
 
 	plugHashes := profile.Response.ItemComponents.Sockets.Data[itemInstanceID].Sockets
 	perkHashIDs := bungie_utils.GetPerkHashIDs(plugHashes)
@@ -56,9 +57,11 @@ func (s *Store) GetEquippedWeapon(ctx context.Context) (*string, error) {
 	if err != nil {
 		fmt.Printf("ERROR: GetEquippedWeapon: getWeaponData: %v\n", err)
 		go func() {
-			bungie_utils.GetNewWeapons(s.DB, s.Logger, s.HTTPClient, s.BaseURL, s.ClientID)
+			if err := bungie_utils.GetNewWeapons(s.DB, s.Logger, s.HTTPClient, s.BaseURL, s.ClientID); err != nil {
+				s.Logger.Printf("ERROR: GetEquippedWeapon: GetNewWeapons: %v\n", err)
+			}
 		}()
-		return nil, fmt.Errorf("weapon not found, please try again shortly, I'm updating my records ??")
+		return nil, fmt.Errorf("weapon not found, please try again shortly, I'm updating my records")
 	}
 
 	go func() {
@@ -74,6 +77,6 @@ func (s *Store) GetEquippedWeapon(ctx context.Context) (*string, error) {
 		}
 	}()
 
-	responseMessage := bungie_utils.GenerateString(request.Gamertag, weapon, category, killCount)
+	responseMessage := bungie_utils.GenerateString(request.Gamertag, weapon, gearTier, category, killCount)
 	return &responseMessage, nil
 }

@@ -33,5 +33,5 @@ func (h *Handler) HandleGetHeavy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.TextResponse(w, http.StatusOK, *message)
+	textResponse(w, http.StatusOK, *message)
 }

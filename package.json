@@ -10,6 +10,7 @@
         "redis": "docker compose -f infra/templates/compose-redis.dev.yml up redis",
         "redis:down": "docker compose -f infra/templates/compose-redis.dev.yml down",
         "redis:reset": "docker compose -f infra/templates/compose-redis.dev.yml down -v",
+        "refresh:bungie-manifest": "npm run -w apps/api refresh:bungie-manifest",
         "dev:all": "concurrently --kill-others \"npm run redis\" \"npm run dev:api\" \"npm run dev:web\"",
         "test:api": "npm run -w apps/api test",
         "test:api:clean": "npm run -w apps/api test:clean",

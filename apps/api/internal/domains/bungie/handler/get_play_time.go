@@ -31,5 +31,5 @@ func (h *Handler) HandleGetPlayTime(w http.ResponseWriter, r *http.Request) {
 		utils.TextResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	utils.TextResponse(w, http.StatusOK, *message)
+	textResponse(w, http.StatusOK, *message)
 }

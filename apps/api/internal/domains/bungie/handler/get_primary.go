@@ -33,5 +33,5 @@ func (h *Handler) HandleGetPrimary(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.TextResponse(w, http.StatusOK, *message)
+	textResponse(w, http.StatusOK, *message)
 }

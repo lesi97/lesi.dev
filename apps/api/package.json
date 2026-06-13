@@ -4,7 +4,8 @@
         "test": "go test ./...",
         "test:clean": "go clean -testcache && go test ./...",
         "test:withLogs": "go test ./... -v",
-        "test:clean:withLogs": "go clean -testcache && go test ./... -v"
+        "test:clean:withLogs": "go clean -testcache && go test ./... -v",
+        "refresh:bungie-manifest": "go run ./internal/domains/bungie/cmd/refresh_manifest"
     },
     "name": "apps",
     "private": true,

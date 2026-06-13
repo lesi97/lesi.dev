@@ -28,5 +28,5 @@ func (h *Handler) HandleGetYungerKillCount(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	utils.TextResponse(w, http.StatusOK, *message)
+	textResponse(w, http.StatusOK, *message)
 }

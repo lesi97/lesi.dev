@@ -15,7 +15,10 @@ func insertPerks(database *db.DB, logger *utils.Logger, perks []dbPerk) {
 			VALUES 
 				($1, $2, $3, $4)
 			ON CONFLICT (hash_id)
-			DO NOTHING
+			DO UPDATE SET
+				name = EXCLUDED.name,
+				description = EXCLUDED.description,
+				item_type = EXCLUDED.item_type
 		`
 		_, err := database.Exec(context.Background(), query, perk.Name, perk.Description, perk.ItemType, perk.HashID)
 		if err != nil {
