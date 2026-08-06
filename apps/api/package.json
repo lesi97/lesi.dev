@@ -1,6 +1,7 @@
 {
     "scripts": {
-        "dev": "go run ./cmd/main.go",
+        "dev": "pwsh -NoProfile -ExecutionPolicy Bypass -File ../../scripts/dev-api.ps1",
+        "dev:go-run": "go run ./cmd/main.go",
         "test": "go test ./...",
         "test:clean": "go clean -testcache && go test ./...",
         "test:withLogs": "go test ./... -v",

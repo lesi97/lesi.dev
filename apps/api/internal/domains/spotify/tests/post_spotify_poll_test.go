@@ -48,7 +48,7 @@ func TestPostSpotifyPollCallsStore(t *testing.T) {
 	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
 	handler.RegisterRoutes(router)
 
-	req := httptest.NewRequest(http.MethodPost, "/scrobbles/poll/spotify?limit=5&after=1786012626000", nil)
+	req := httptest.NewRequest(http.MethodPost, "/spotify/poll?limit=5&after=1786012626000", nil)
 	req.Header.Set("X-API-Key", "secret")
 	rec := httptest.NewRecorder()
 
@@ -76,7 +76,7 @@ func TestPostSpotifyPollRejectsMissingApiKey(t *testing.T) {
 	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
 	handler.RegisterRoutes(router)
 
-	req := httptest.NewRequest(http.MethodPost, "/scrobbles/poll/spotify", nil)
+	req := httptest.NewRequest(http.MethodPost, "/spotify/poll", nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)

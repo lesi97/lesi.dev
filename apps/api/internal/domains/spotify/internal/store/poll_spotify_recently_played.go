@@ -96,6 +96,7 @@ func (s *Store) PollSpotifyRecentlyPlayed(ctx context.Context, input model.Spoti
 	if err != nil {
 		return nil, err
 	}
+	s.refreshCurrentlyPlayingCacheAsync(ctx, auth)
 
 	afterMS := input.AfterMS
 	if afterMS == nil {

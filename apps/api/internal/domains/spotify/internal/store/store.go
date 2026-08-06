@@ -8,6 +8,7 @@ import (
 	"github.com/lesi97/lesi.dev/internal/db"
 	"github.com/lesi97/lesi.dev/internal/domains/spotify/internal/model"
 	"github.com/lesi97/lesi.dev/internal/utils"
+	"github.com/redis/go-redis/v9"
 )
 
 type Methods interface {
@@ -19,13 +20,15 @@ type Methods interface {
 type Store struct {
 	DB         *db.DB
 	Logger     *utils.Logger
+	Redis      *redis.Client
 	HTTPClient *http.Client
 }
 
-func NewStore(db *db.DB, logger *utils.Logger) *Store {
+func NewStore(db *db.DB, logger *utils.Logger, redis *redis.Client) *Store {
 	return &Store{
 		DB:         db,
 		Logger:     logger,
+		Redis:      redis,
 		HTTPClient: &http.Client{Timeout: 15 * time.Second},
 	}
 }

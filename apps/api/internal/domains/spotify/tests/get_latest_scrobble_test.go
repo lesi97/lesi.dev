@@ -37,7 +37,7 @@ func TestGetLatestScrobbleReturnsPlainTextWithoutApiKey(t *testing.T) {
 	handler := spotify_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
 	handler.RegisterRoutes(router)
 
-	req := httptest.NewRequest(http.MethodGet, "/scrobbles/latest", nil)
+	req := httptest.NewRequest(http.MethodGet, "/spotify/latest", nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -60,7 +60,7 @@ func TestGetLatestScrobbleReturnsNotFoundWhenEmpty(t *testing.T) {
 	handler := spotify_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
 	handler.RegisterRoutes(router)
 
-	req := httptest.NewRequest(http.MethodGet, "/scrobbles/latest", nil)
+	req := httptest.NewRequest(http.MethodGet, "/spotify/latest", nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)

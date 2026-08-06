@@ -43,7 +43,7 @@ type Application struct {
 	AnilistHandler        *anilist_handler.Handler
 	LocalHandler          *local_handler.Handler
 	RequestCaptureHandler *request_capture_handler.Handler
-	SpotifyHandler          *spotify_handler.Handler
+	SpotifyHandler        *spotify_handler.Handler
 	TwitchHandler         *twitch_handler.Handler
 	AuthHandler           *auth_handler.Handler
 	AimTrainerHandler     *aim_trainer_handler.Handler
@@ -117,7 +117,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	}
 
 	var spotifyHandler *spotify_handler.Handler
-	spotifyHandler, spotifyErr := spotify_handler.NewHandler(logger, db)
+	spotifyHandler, spotifyErr := spotify_handler.NewHandler(logger, db, redis)
 	if spotifyErr != nil {
 		logger.Error("Spotify handler disabled: " + spotifyErr.Error())
 		spotifyHandler = nil
@@ -201,7 +201,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		CountdownHandler:      countdownHandler,
 		LocalHandler:          localHandler,
 		RequestCaptureHandler: requestCaptureHandler,
-		SpotifyHandler:          spotifyHandler,
+		SpotifyHandler:        spotifyHandler,
 		TwitchHandler:         twitchHandler,
 		AuthHandler:           authHandler,
 		AimTrainerHandler:     aimTrainerHandler,
