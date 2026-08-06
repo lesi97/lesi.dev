@@ -13,6 +13,8 @@ import (
 type Methods interface {
 	AnilistAuthUrl() (*string, error)
 	AnilistCallback(ctx context.Context, code string) error
+	SpotifyAuthUrl(ctx context.Context) (*string, error)
+	SpotifyCallback(ctx context.Context, code string) error
 	TwitchModAuthUrl() (*string, error)
 	TwitchModCallback(ctx context.Context, code string) error
 
@@ -34,6 +36,7 @@ type Store struct {
 	DB      *db.DB
 	Logger  *utils.Logger
 	anilist ApiApplication
+	spotify ApiApplication
 	twitch  ApiApplication
 	apiUrl  *string
 	webUrl  *string
@@ -120,10 +123,19 @@ func NewStore(db *db.DB, logger *utils.Logger) (*Store, error) {
 		base_url:      "https://id.twitch.tv/oauth2",
 	}
 
+	spotifyClientID := os.Getenv("SPOTIFY_CLIENT_ID")
+	spotifyClientSecret := os.Getenv("SPOTIFY_CLIENT_SECRET")
+	spotify := ApiApplication{
+		client_id:     &spotifyClientID,
+		client_secret: &spotifyClientSecret,
+		base_url:      "https://accounts.spotify.com",
+	}
+
 	return &Store{
 		DB:      db,
 		Logger:  logger,
 		anilist: anilist,
+		spotify: spotify,
 		twitch:  twitch,
 		apiUrl:  &apiUrl,
 		webUrl:  &webUrl,

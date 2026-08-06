@@ -17,6 +17,7 @@ import (
 	fortnite_handler "github.com/lesi97/lesi.dev/internal/domains/fortnite/handler"
 	local_handler "github.com/lesi97/lesi.dev/internal/domains/local/handler"
 	request_capture_handler "github.com/lesi97/lesi.dev/internal/domains/request_capture/handler"
+	spotify_handler "github.com/lesi97/lesi.dev/internal/domains/spotify/handler"
 	steam_handler "github.com/lesi97/lesi.dev/internal/domains/steam/handler"
 	tarot_handler "github.com/lesi97/lesi.dev/internal/domains/tarot/handler"
 	telemetry_handler "github.com/lesi97/lesi.dev/internal/domains/telemetry/handler"
@@ -42,6 +43,7 @@ type Application struct {
 	AnilistHandler        *anilist_handler.Handler
 	LocalHandler          *local_handler.Handler
 	RequestCaptureHandler *request_capture_handler.Handler
+	SpotifyHandler          *spotify_handler.Handler
 	TwitchHandler         *twitch_handler.Handler
 	AuthHandler           *auth_handler.Handler
 	AimTrainerHandler     *aim_trainer_handler.Handler
@@ -112,6 +114,13 @@ func NewApplication() (*Application, *chi.Mux, error) {
 	if requestCaptureErr != nil {
 		logger.Error("Request capture handler disabled: " + requestCaptureErr.Error())
 		requestCaptureHandler = nil
+	}
+
+	var spotifyHandler *spotify_handler.Handler
+	spotifyHandler, spotifyErr := spotify_handler.NewHandler(logger, db)
+	if spotifyErr != nil {
+		logger.Error("Spotify handler disabled: " + spotifyErr.Error())
+		spotifyHandler = nil
 	}
 
 	var aimTrainerHandler *aim_trainer_handler.Handler
@@ -192,6 +201,7 @@ func NewApplication() (*Application, *chi.Mux, error) {
 		CountdownHandler:      countdownHandler,
 		LocalHandler:          localHandler,
 		RequestCaptureHandler: requestCaptureHandler,
+		SpotifyHandler:          spotifyHandler,
 		TwitchHandler:         twitchHandler,
 		AuthHandler:           authHandler,
 		AimTrainerHandler:     aimTrainerHandler,

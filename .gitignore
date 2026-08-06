@@ -5,6 +5,7 @@
 
 /example-data/
 README.Docker.md
+/tmp/*
 
 
 # /public/aim-trainer/

@@ -6,6 +6,8 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 	r.Route("/v1/auth", func(r chi.Router) {
 		r.Get("/anilist/login", h.HandleAniAuthInitialRedirect)
 		r.Get("/anilist/callback", h.HandleAnilistAuthCallback)
+		r.Get("/spotify/login", h.HandleSpotifyAuthInitialRedirect)
+		r.Get("/spotify/callback", h.HandleSpotifyAuthCallback)
 		r.Get("/twitch/login", h.HandleTwitchModAuthInitialRedirect)
 		r.Get("/twitch/callback", h.HandleTwitchModAuthCallback)
 	})

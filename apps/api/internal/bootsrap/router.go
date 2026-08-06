@@ -94,6 +94,9 @@ func setupRoutes(app *Application) *chi.Mux {
 		if app.RequestCaptureHandler != nil {
 			registerRoutes(app.RequestCaptureHandler, r)
 		}
+		if app.SpotifyHandler != nil {
+			registerRoutes(app.SpotifyHandler, r)
+		}
 
 	})
 

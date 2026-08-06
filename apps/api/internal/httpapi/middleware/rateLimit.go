@@ -3,6 +3,7 @@ package middleware
 import (
 	"net"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -48,24 +49,13 @@ func RateLimit() func(http.Handler) http.Handler {
 				return
 			}
 
+			if shouldBypassRateLimit(r) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
 			now := time.Now()
-			clientIP := r.RemoteAddr
-
-			forwardedFor := strings.TrimSpace(r.Header.Get("X-Forwarded-For"))
-			if forwardedFor != "" {
-				parts := strings.Split(forwardedFor, ",")
-				clientIP = strings.TrimSpace(parts[0])
-			}
-
-			realIP := strings.TrimSpace(r.Header.Get("X-Real-IP"))
-			if realIP != "" {
-				clientIP = realIP
-			}
-
-			host, _, err := net.SplitHostPort(clientIP)
-			if err == nil {
-				clientIP = host
-			}
+			clientIP := clientIPFromRequest(r)
 
 			mu.Lock()
 			client, ok := clients[clientIP]
@@ -86,7 +76,7 @@ func RateLimit() func(http.Handler) http.Handler {
 			client.count++
 			client.lastSeen = now
 			allowed := client.count <= maxRequests
-			remaining := max(maxRequests - client.count, 0)
+			remaining := max(maxRequests-client.count, 0)
 
 			resetAfter := max(client.windowStart.Add(window).Sub(now), 0)
 
@@ -109,4 +99,43 @@ func RateLimit() func(http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+func shouldBypassRateLimit(r *http.Request) bool {
+	if strings.EqualFold(strings.TrimSpace(os.Getenv("RATE_LIMIT_DISABLED")), "true") {
+		return true
+	}
+
+	if os.Getenv("GO_ENV") == "production" {
+		return false
+	}
+
+	return isLoopbackClientIP(clientIPFromRequest(r))
+}
+
+func clientIPFromRequest(r *http.Request) string {
+	clientIP := r.RemoteAddr
+
+	forwardedFor := strings.TrimSpace(r.Header.Get("X-Forwarded-For"))
+	if forwardedFor != "" {
+		parts := strings.Split(forwardedFor, ",")
+		clientIP = strings.TrimSpace(parts[0])
+	}
+
+	realIP := strings.TrimSpace(r.Header.Get("X-Real-IP"))
+	if realIP != "" {
+		clientIP = realIP
+	}
+
+	host, _, err := net.SplitHostPort(clientIP)
+	if err == nil {
+		clientIP = host
+	}
+
+	return clientIP
+}
+
+func isLoopbackClientIP(clientIP string) bool {
+	parsedIP := net.ParseIP(strings.TrimSpace(clientIP))
+	return parsedIP != nil && parsedIP.IsLoopback()
 }

@@ -13,6 +13,9 @@ type authStoreStub struct {
 	anilistAuthURL                   *string
 	anilistAuthErr                   error
 	anilistCallbackErr               error
+	spotifyAuthURL                   *string
+	spotifyAuthErr                   error
+	spotifyCallbackErr               error
 	twitchModAuthURL                 *string
 	twitchModAuthErr                 error
 	twitchModCallbackErr             error
@@ -35,6 +38,14 @@ func (s *authStoreStub) AnilistAuthUrl() (*string, error) {
 
 func (s *authStoreStub) AnilistCallback(ctx context.Context, code string) error {
 	return s.anilistCallbackErr
+}
+
+func (s *authStoreStub) SpotifyAuthUrl(ctx context.Context) (*string, error) {
+	return s.spotifyAuthURL, s.spotifyAuthErr
+}
+
+func (s *authStoreStub) SpotifyCallback(ctx context.Context, code string) error {
+	return s.spotifyCallbackErr
 }
 
 func (s *authStoreStub) TwitchModAuthUrl() (*string, error) {
