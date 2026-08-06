@@ -1,6 +1,7 @@
 name: docker-staging
 
 on:
+    workflow_dispatch:
     push:
         branches: ['staging']
         paths:
