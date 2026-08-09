@@ -2,11 +2,20 @@
     "apiVersion": "dashboard.grafana.app/v2",
     "kind": "Dashboard",
     "metadata": {
-        "name": "Spotify",
-        "uid": "95fd0381-8468-4132-a98f-5ef44c1037dc",
+        "name": "95fd0381-8468-4132-a98f-5ef44c1037dc",
         "namespace": "default",
+        "uid": "514506c0-43de-4b64-b794-4941b52c0b45",
+        "resourceVersion": "1786295064808997",
+        "generation": 8,
+        "creationTimestamp": "2026-08-09T10:58:33Z",
+        "labels": {
+            "grafana.app/deprecatedInternalID": "1240149904564224"
+        },
         "annotations": {
-            "grafana.app/saved-from-ui": "Grafana v12.4.2"
+            "grafana.app/createdBy": "user:ffelttjop80zke",
+            "grafana.app/saved-from-ui": "Grafana v13.1.3 (45a27d64b6)",
+            "grafana.app/updatedBy": "user:ffelttjop80zke",
+            "grafana.app/updatedTimestamp": "2026-08-09T17:04:24Z"
         }
     },
     "spec": {
@@ -27,10 +36,7 @@
                     "hide": true,
                     "iconColor": "rgba(0, 211, 255, 1)",
                     "name": "Annotations & Alerts",
-                    "builtIn": true,
-                    "legacyOptions": {
-                        "type": "dashboard"
-                    }
+                    "builtIn": true
                 }
             }
         ],
@@ -95,37 +101,38 @@
                     "vizConfig": {
                         "kind": "VizConfig",
                         "group": "stat",
-                        "version": "12.4.2",
+                        "version": "13.1.3",
                         "spec": {
                             "options": {
                                 "colorMode": "value",
                                 "graphMode": "area",
                                 "justifyMode": "auto",
                                 "orientation": "auto",
+                                "percentChangeColorMode": "standard",
                                 "reduceOptions": {
                                     "calcs": ["lastNotNull"],
                                     "fields": "",
                                     "values": false
                                 },
+                                "showPercentChange": false,
                                 "textMode": "auto",
                                 "wideLayout": true
                             },
                             "fieldConfig": {
                                 "defaults": {
-                                    "color": {
-                                        "mode": "thresholds"
-                                    },
-                                    "mappings": [],
+                                    "unit": "short",
                                     "thresholds": {
                                         "mode": "absolute",
                                         "steps": [
                                             {
-                                                "color": "green",
-                                                "value": null
+                                                "value": 0,
+                                                "color": "green"
                                             }
                                         ]
                                     },
-                                    "unit": "short"
+                                    "color": {
+                                        "mode": "thresholds"
+                                    }
                                 },
                                 "overrides": []
                             }
@@ -191,37 +198,38 @@
                     "vizConfig": {
                         "kind": "VizConfig",
                         "group": "stat",
-                        "version": "12.4.2",
+                        "version": "13.1.3",
                         "spec": {
                             "options": {
                                 "colorMode": "value",
                                 "graphMode": "area",
                                 "justifyMode": "auto",
                                 "orientation": "auto",
+                                "percentChangeColorMode": "standard",
                                 "reduceOptions": {
                                     "calcs": ["lastNotNull"],
                                     "fields": "",
                                     "values": false
                                 },
+                                "showPercentChange": false,
                                 "textMode": "auto",
                                 "wideLayout": true
                             },
                             "fieldConfig": {
                                 "defaults": {
-                                    "color": {
-                                        "mode": "thresholds"
-                                    },
-                                    "mappings": [],
+                                    "unit": "short",
                                     "thresholds": {
                                         "mode": "absolute",
                                         "steps": [
                                             {
-                                                "color": "blue",
-                                                "value": null
+                                                "value": 0,
+                                                "color": "blue"
                                             }
                                         ]
                                     },
-                                    "unit": "short"
+                                    "color": {
+                                        "mode": "thresholds"
+                                    }
                                 },
                                 "overrides": []
                             }
@@ -287,37 +295,38 @@
                     "vizConfig": {
                         "kind": "VizConfig",
                         "group": "stat",
-                        "version": "12.4.2",
+                        "version": "13.1.3",
                         "spec": {
                             "options": {
                                 "colorMode": "value",
                                 "graphMode": "area",
                                 "justifyMode": "auto",
                                 "orientation": "auto",
+                                "percentChangeColorMode": "standard",
                                 "reduceOptions": {
                                     "calcs": ["lastNotNull"],
                                     "fields": "",
                                     "values": false
                                 },
+                                "showPercentChange": false,
                                 "textMode": "auto",
                                 "wideLayout": true
                             },
                             "fieldConfig": {
                                 "defaults": {
-                                    "color": {
-                                        "mode": "thresholds"
-                                    },
-                                    "mappings": [],
+                                    "unit": "short",
                                     "thresholds": {
                                         "mode": "absolute",
                                         "steps": [
                                             {
-                                                "color": "orange",
-                                                "value": null
+                                                "value": 0,
+                                                "color": "orange"
                                             }
                                         ]
                                     },
-                                    "unit": "short"
+                                    "color": {
+                                        "mode": "thresholds"
+                                    }
                                 },
                                 "overrides": []
                             }
@@ -383,37 +392,38 @@
                     "vizConfig": {
                         "kind": "VizConfig",
                         "group": "stat",
-                        "version": "12.4.2",
+                        "version": "13.1.3",
                         "spec": {
                             "options": {
                                 "colorMode": "value",
                                 "graphMode": "area",
                                 "justifyMode": "auto",
                                 "orientation": "auto",
+                                "percentChangeColorMode": "standard",
                                 "reduceOptions": {
                                     "calcs": ["lastNotNull"],
                                     "fields": "",
                                     "values": false
                                 },
+                                "showPercentChange": false,
                                 "textMode": "auto",
                                 "wideLayout": true
                             },
                             "fieldConfig": {
                                 "defaults": {
-                                    "color": {
-                                        "mode": "thresholds"
-                                    },
-                                    "mappings": [],
+                                    "unit": "short",
                                     "thresholds": {
                                         "mode": "absolute",
                                         "steps": [
                                             {
-                                                "color": "purple",
-                                                "value": null
+                                                "value": 0,
+                                                "color": "purple"
                                             }
                                         ]
                                     },
-                                    "unit": "short"
+                                    "color": {
+                                        "mode": "thresholds"
+                                    }
                                 },
                                 "overrides": []
                             }
@@ -479,31 +489,50 @@
                     "vizConfig": {
                         "kind": "VizConfig",
                         "group": "timeseries",
-                        "version": "12.4.2",
+                        "version": "13.1.3",
                         "spec": {
                             "options": {
+                                "annotations": {
+                                    "clustering": -1,
+                                    "multiLane": false
+                                },
                                 "legend": {
                                     "calcs": [],
                                     "displayMode": "list",
+                                    "enableFacetedFilter": false,
+                                    "overflow": "ellipsis",
                                     "placement": "bottom",
                                     "showLegend": true
                                 },
                                 "tooltip": {
+                                    "hideZeros": false,
                                     "mode": "single",
                                     "sort": "none"
                                 }
                             },
                             "fieldConfig": {
                                 "defaults": {
+                                    "unit": "short",
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "value": 0,
+                                                "color": "green"
+                                            }
+                                        ]
+                                    },
                                     "color": {
                                         "mode": "palette-classic"
                                     },
                                     "custom": {
+                                        "axisBorderShow": false,
                                         "axisCenteredZero": false,
                                         "axisColorMode": "text",
                                         "axisLabel": "",
                                         "axisPlacement": "auto",
                                         "barAlignment": 0,
+                                        "barWidthFactor": 0.6,
                                         "drawStyle": "bars",
                                         "fillOpacity": 75,
                                         "gradientMode": "none",
@@ -520,6 +549,7 @@
                                             "type": "linear"
                                         },
                                         "showPoints": "never",
+                                        "showValues": false,
                                         "spanNulls": false,
                                         "stacking": {
                                             "group": "A",
@@ -528,18 +558,7 @@
                                         "thresholdsStyle": {
                                             "mode": "off"
                                         }
-                                    },
-                                    "mappings": [],
-                                    "thresholds": {
-                                        "mode": "absolute",
-                                        "steps": [
-                                            {
-                                                "color": "green",
-                                                "value": null
-                                            }
-                                        ]
-                                    },
-                                    "unit": "short"
+                                    }
                                 },
                                 "overrides": []
                             }
@@ -605,16 +624,10 @@
                     "vizConfig": {
                         "kind": "VizConfig",
                         "group": "table",
-                        "version": "12.4.2",
+                        "version": "13.1.3",
                         "spec": {
                             "options": {
                                 "cellHeight": "sm",
-                                "footer": {
-                                    "countRows": false,
-                                    "fields": "",
-                                    "reducer": ["sum"],
-                                    "show": false
-                                },
                                 "showHeader": true,
                                 "sortBy": [
                                     {
@@ -625,22 +638,24 @@
                             },
                             "fieldConfig": {
                                 "defaults": {
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "value": 0,
+                                                "color": "green"
+                                            }
+                                        ]
+                                    },
                                     "custom": {
                                         "align": "auto",
                                         "cellOptions": {
                                             "type": "auto"
                                         },
+                                        "footer": {
+                                            "reducers": []
+                                        },
                                         "inspect": false
-                                    },
-                                    "mappings": [],
-                                    "thresholds": {
-                                        "mode": "absolute",
-                                        "steps": [
-                                            {
-                                                "color": "green",
-                                                "value": null
-                                            }
-                                        ]
                                     }
                                 },
                                 "overrides": [
@@ -712,7 +727,7 @@
                                                 "editorMode": "code",
                                                 "format": "table",
                                                 "rawQuery": true,
-                                                "rawSql": "with aggregated as (\n  select\n    coalesce(t.image_url, al.image_url) as track_art,\n    a.name as artist,\n    al.name as album,\n    t.name as track,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    t.url as track_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.tracks t on t.id = s.track_id\n  left join music.albums al on al.id = s.album_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.image_url,\n    t.id,\n    t.name,\n    t.url,\n    t.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, track) as rank,\n  track_art,\n  artist,\n  album,\n  track,\n  listened_count,\n  first_listened,\n  last_listened,\n  track_url\nfrom aggregated\norder by rank\nlimit 50;",
+                                                "rawSql": "with aggregated as (\n  select\n    coalesce(t.image_url, al.image_url) as track_art,\n    a.name as artist,\n    al.name as album,\n    t.name as track,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    t.url as track_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.tracks t on t.id = s.track_id\n  left join music.albums al on al.id = s.album_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.image_url,\n    t.id,\n    t.name,\n    t.url,\n    t.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, track) as rank,\n  track_art,\n  artist,\n  album,\n  track,\n  listened_count,\n  first_listened,\n  last_listened,\n  track_url\nfrom aggregated\norder by rank;",
                                                 "sql": {
                                                     "columns": [
                                                         {
@@ -744,42 +759,39 @@
                     "vizConfig": {
                         "kind": "VizConfig",
                         "group": "table",
-                        "version": "12.4.2",
+                        "version": "13.1.3",
                         "spec": {
                             "options": {
                                 "cellHeight": "sm",
-                                "footer": {
-                                    "countRows": false,
-                                    "fields": "",
-                                    "reducer": ["sum"],
-                                    "show": false
-                                },
+                                "enablePagination": true,
                                 "showHeader": true,
                                 "sortBy": [
                                     {
-                                        "desc": true,
-                                        "displayName": "listened_count"
+                                        "desc": false,
+                                        "displayName": "rank"
                                     }
                                 ]
                             },
                             "fieldConfig": {
                                 "defaults": {
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "value": 0,
+                                                "color": "green"
+                                            }
+                                        ]
+                                    },
                                     "custom": {
                                         "align": "auto",
                                         "cellOptions": {
                                             "type": "auto"
                                         },
+                                        "footer": {
+                                            "reducers": []
+                                        },
                                         "inspect": false
-                                    },
-                                    "mappings": [],
-                                    "thresholds": {
-                                        "mode": "absolute",
-                                        "steps": [
-                                            {
-                                                "color": "green",
-                                                "value": null
-                                            }
-                                        ]
                                     }
                                 },
                                 "overrides": [
@@ -814,6 +826,10 @@
                                             {
                                                 "id": "unit",
                                                 "value": "short"
+                                            },
+                                            {
+                                                "id": "custom.width",
+                                                "value": 129
                                             }
                                         ]
                                     },
@@ -832,6 +848,84 @@
                                                         "url": "${__value.raw}"
                                                     }
                                                 ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "rank"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 63
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "artist"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 232
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "album"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 225
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "track"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 240
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "first_listened"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 169
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "last_listened"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 186
                                             }
                                         ]
                                     }
@@ -867,7 +961,7 @@
                                                 "editorMode": "code",
                                                 "format": "table",
                                                 "rawQuery": true,
-                                                "rawSql": "with aggregated as (\n  select\n    al.image_url as album_art,\n    a.name as artist,\n    al.name as album,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    al.url as album_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.albums al on al.id = s.album_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.url,\n    al.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, album) as rank,\n  album_art,\n  artist,\n  album,\n  listened_count,\n  first_listened,\n  last_listened,\n  album_url\nfrom aggregated\norder by rank\nlimit 50;",
+                                                "rawSql": "with aggregated as (\n  select\n    al.image_url as album_art,\n    a.name as artist,\n    al.name as album,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    al.url as album_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.albums al on al.id = s.album_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.url,\n    al.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, album) as rank,\n  album_art,\n  artist,\n  album,\n  listened_count,\n  first_listened,\n  last_listened,\n  album_url\nfrom aggregated\norder by rank;",
                                                 "sql": {
                                                     "columns": [
                                                         {
@@ -899,42 +993,39 @@
                     "vizConfig": {
                         "kind": "VizConfig",
                         "group": "table",
-                        "version": "12.4.2",
+                        "version": "13.1.3",
                         "spec": {
                             "options": {
                                 "cellHeight": "sm",
-                                "footer": {
-                                    "countRows": false,
-                                    "fields": "",
-                                    "reducer": ["sum"],
-                                    "show": false
-                                },
+                                "enablePagination": true,
                                 "showHeader": true,
                                 "sortBy": [
                                     {
-                                        "desc": true,
-                                        "displayName": "listened_count"
+                                        "desc": false,
+                                        "displayName": "rank"
                                     }
                                 ]
                             },
                             "fieldConfig": {
                                 "defaults": {
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "value": 0,
+                                                "color": "green"
+                                            }
+                                        ]
+                                    },
                                     "custom": {
                                         "align": "auto",
                                         "cellOptions": {
                                             "type": "auto"
                                         },
+                                        "footer": {
+                                            "reducers": []
+                                        },
                                         "inspect": false
-                                    },
-                                    "mappings": [],
-                                    "thresholds": {
-                                        "mode": "absolute",
-                                        "steps": [
-                                            {
-                                                "color": "green",
-                                                "value": null
-                                            }
-                                        ]
                                     }
                                 },
                                 "overrides": [
@@ -952,7 +1043,7 @@
                                             },
                                             {
                                                 "id": "custom.width",
-                                                "value": 72
+                                                "value": 83
                                             }
                                         ]
                                     },
@@ -969,6 +1060,10 @@
                                             {
                                                 "id": "unit",
                                                 "value": "short"
+                                            },
+                                            {
+                                                "id": "custom.width",
+                                                "value": 136
                                             }
                                         ]
                                     },
@@ -987,6 +1082,71 @@
                                                         "url": "${__value.raw}"
                                                     }
                                                 ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "rank"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 50
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "artist"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 160
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "album"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 201
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "first_listened"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 168
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "last_listened"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 174
                                             }
                                         ]
                                     }
@@ -1022,7 +1182,7 @@
                                                 "editorMode": "code",
                                                 "format": "table",
                                                 "rawQuery": true,
-                                                "rawSql": "with aggregated as (\n  select\n    a.image_url as artist_art,\n    a.name as artist,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    a.url as artist_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    a.url,\n    a.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist) as rank,\n  artist_art,\n  artist,\n  listened_count,\n  first_listened,\n  last_listened,\n  artist_url\nfrom aggregated\norder by rank\nlimit 50;",
+                                                "rawSql": "with aggregated as (\n  select\n    a.image_url as artist_art,\n    a.name as artist,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    a.url as artist_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    a.url,\n    a.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist) as rank,\n  artist_art,\n  artist,\n  listened_count,\n  first_listened,\n  last_listened,\n  artist_url\nfrom aggregated\norder by rank;",
                                                 "sql": {
                                                     "columns": [
                                                         {
@@ -1054,42 +1214,39 @@
                     "vizConfig": {
                         "kind": "VizConfig",
                         "group": "table",
-                        "version": "12.4.2",
+                        "version": "13.1.3",
                         "spec": {
                             "options": {
                                 "cellHeight": "sm",
-                                "footer": {
-                                    "countRows": false,
-                                    "fields": "",
-                                    "reducer": ["sum"],
-                                    "show": false
-                                },
+                                "enablePagination": true,
                                 "showHeader": true,
                                 "sortBy": [
                                     {
-                                        "desc": true,
-                                        "displayName": "listened_count"
+                                        "desc": false,
+                                        "displayName": "rank"
                                     }
                                 ]
                             },
                             "fieldConfig": {
                                 "defaults": {
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "value": 0,
+                                                "color": "green"
+                                            }
+                                        ]
+                                    },
                                     "custom": {
                                         "align": "auto",
                                         "cellOptions": {
                                             "type": "auto"
                                         },
+                                        "footer": {
+                                            "reducers": []
+                                        },
                                         "inspect": false
-                                    },
-                                    "mappings": [],
-                                    "thresholds": {
-                                        "mode": "absolute",
-                                        "steps": [
-                                            {
-                                                "color": "green",
-                                                "value": null
-                                            }
-                                        ]
                                     }
                                 },
                                 "overrides": [
@@ -1124,6 +1281,10 @@
                                             {
                                                 "id": "unit",
                                                 "value": "short"
+                                            },
+                                            {
+                                                "id": "custom.width",
+                                                "value": 111
                                             }
                                         ]
                                     },
@@ -1142,6 +1303,58 @@
                                                         "url": "${__value.raw}"
                                                     }
                                                 ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "rank"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 50
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "artist"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 185
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "first_listened"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 165
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "last_listened"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 164
                                             }
                                         ]
                                     }
