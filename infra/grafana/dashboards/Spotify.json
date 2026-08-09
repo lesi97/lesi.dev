@@ -1,0 +1,1306 @@
+{
+    "apiVersion": "dashboard.grafana.app/v2",
+    "kind": "Dashboard",
+    "metadata": {
+        "name": "Spotify",
+        "uid": "95fd0381-8468-4132-a98f-5ef44c1037dc",
+        "namespace": "default",
+        "annotations": {
+            "grafana.app/saved-from-ui": "Grafana v12.4.2"
+        }
+    },
+    "spec": {
+        "annotations": [
+            {
+                "kind": "AnnotationQuery",
+                "spec": {
+                    "query": {
+                        "kind": "DataQuery",
+                        "group": "grafana",
+                        "version": "v0",
+                        "datasource": {
+                            "name": "-- Grafana --"
+                        },
+                        "spec": {}
+                    },
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "builtIn": true,
+                    "legacyOptions": {
+                        "type": "dashboard"
+                    }
+                }
+            }
+        ],
+        "cursorSync": "Off",
+        "editable": true,
+        "elements": {
+            "panel-1": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 1,
+                    "title": "Total Scrobbles",
+                    "description": "",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "select count(*)::bigint as value\nfrom music.scrobble_events\nwhere $__timeFilter(scrobbled_at);",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "stat",
+                        "version": "12.4.2",
+                        "spec": {
+                            "options": {
+                                "colorMode": "value",
+                                "graphMode": "area",
+                                "justifyMode": "auto",
+                                "orientation": "auto",
+                                "reduceOptions": {
+                                    "calcs": ["lastNotNull"],
+                                    "fields": "",
+                                    "values": false
+                                },
+                                "textMode": "auto",
+                                "wideLayout": true
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "thresholds"
+                                    },
+                                    "mappings": [],
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": null
+                                            }
+                                        ]
+                                    },
+                                    "unit": "short"
+                                },
+                                "overrides": []
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-2": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 2,
+                    "title": "Tracks",
+                    "description": "",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "select count(distinct track_id)::bigint as value\nfrom music.scrobbles\nwhere $__timeFilter(scrobbled_at);",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "stat",
+                        "version": "12.4.2",
+                        "spec": {
+                            "options": {
+                                "colorMode": "value",
+                                "graphMode": "area",
+                                "justifyMode": "auto",
+                                "orientation": "auto",
+                                "reduceOptions": {
+                                    "calcs": ["lastNotNull"],
+                                    "fields": "",
+                                    "values": false
+                                },
+                                "textMode": "auto",
+                                "wideLayout": true
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "thresholds"
+                                    },
+                                    "mappings": [],
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "blue",
+                                                "value": null
+                                            }
+                                        ]
+                                    },
+                                    "unit": "short"
+                                },
+                                "overrides": []
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-3": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 3,
+                    "title": "Artists",
+                    "description": "",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "select count(distinct artist_id)::bigint as value\nfrom music.scrobbles\nwhere $__timeFilter(scrobbled_at);",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "stat",
+                        "version": "12.4.2",
+                        "spec": {
+                            "options": {
+                                "colorMode": "value",
+                                "graphMode": "area",
+                                "justifyMode": "auto",
+                                "orientation": "auto",
+                                "reduceOptions": {
+                                    "calcs": ["lastNotNull"],
+                                    "fields": "",
+                                    "values": false
+                                },
+                                "textMode": "auto",
+                                "wideLayout": true
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "thresholds"
+                                    },
+                                    "mappings": [],
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "orange",
+                                                "value": null
+                                            }
+                                        ]
+                                    },
+                                    "unit": "short"
+                                },
+                                "overrides": []
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-4": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 4,
+                    "title": "Albums",
+                    "description": "",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "select count(distinct album_id)::bigint as value\nfrom music.scrobbles\nwhere $__timeFilter(scrobbled_at)\n  and album_id is not null;",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "stat",
+                        "version": "12.4.2",
+                        "spec": {
+                            "options": {
+                                "colorMode": "value",
+                                "graphMode": "area",
+                                "justifyMode": "auto",
+                                "orientation": "auto",
+                                "reduceOptions": {
+                                    "calcs": ["lastNotNull"],
+                                    "fields": "",
+                                    "values": false
+                                },
+                                "textMode": "auto",
+                                "wideLayout": true
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "thresholds"
+                                    },
+                                    "mappings": [],
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "purple",
+                                                "value": null
+                                            }
+                                        ]
+                                    },
+                                    "unit": "short"
+                                },
+                                "overrides": []
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-5": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 5,
+                    "title": "Scrobbles Per Day",
+                    "description": "",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "time_series",
+                                                "rawQuery": true,
+                                                "rawSql": "select\n  $__timeGroupAlias(scrobbled_at, '1d'),\n  count(*)::bigint as plays\nfrom music.scrobble_events\nwhere $__timeFilter(scrobbled_at)\ngroup by 1\norder by 1;",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "timeseries",
+                        "version": "12.4.2",
+                        "spec": {
+                            "options": {
+                                "legend": {
+                                    "calcs": [],
+                                    "displayMode": "list",
+                                    "placement": "bottom",
+                                    "showLegend": true
+                                },
+                                "tooltip": {
+                                    "mode": "single",
+                                    "sort": "none"
+                                }
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "palette-classic"
+                                    },
+                                    "custom": {
+                                        "axisCenteredZero": false,
+                                        "axisColorMode": "text",
+                                        "axisLabel": "",
+                                        "axisPlacement": "auto",
+                                        "barAlignment": 0,
+                                        "drawStyle": "bars",
+                                        "fillOpacity": 75,
+                                        "gradientMode": "none",
+                                        "hideFrom": {
+                                            "legend": false,
+                                            "tooltip": false,
+                                            "viz": false
+                                        },
+                                        "insertNulls": false,
+                                        "lineInterpolation": "linear",
+                                        "lineWidth": 1,
+                                        "pointSize": 5,
+                                        "scaleDistribution": {
+                                            "type": "linear"
+                                        },
+                                        "showPoints": "never",
+                                        "spanNulls": false,
+                                        "stacking": {
+                                            "group": "A",
+                                            "mode": "none"
+                                        },
+                                        "thresholdsStyle": {
+                                            "mode": "off"
+                                        }
+                                    },
+                                    "mappings": [],
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": null
+                                            }
+                                        ]
+                                    },
+                                    "unit": "short"
+                                },
+                                "overrides": []
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-6": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 6,
+                    "title": "Recently Scrobbled",
+                    "description": "",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "select\n  scrobbled_at,\n  artist,\n  album,\n  track,\n  track_url,\n  coalesce(track_image_url, album_image_url, artist_image_url) as art,\n  source\nfrom music.scrobble_events\nwhere $__timeFilter(scrobbled_at)\norder by scrobbled_at desc\nlimit 25;",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "table",
+                        "version": "12.4.2",
+                        "spec": {
+                            "options": {
+                                "cellHeight": "sm",
+                                "footer": {
+                                    "countRows": false,
+                                    "fields": "",
+                                    "reducer": ["sum"],
+                                    "show": false
+                                },
+                                "showHeader": true,
+                                "sortBy": [
+                                    {
+                                        "desc": true,
+                                        "displayName": "scrobbled_at"
+                                    }
+                                ]
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "custom": {
+                                        "align": "auto",
+                                        "cellOptions": {
+                                            "type": "auto"
+                                        },
+                                        "inspect": false
+                                    },
+                                    "mappings": [],
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": null
+                                            }
+                                        ]
+                                    }
+                                },
+                                "overrides": [
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "art"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.cellOptions",
+                                                "value": {
+                                                    "type": "image"
+                                                }
+                                            },
+                                            {
+                                                "id": "custom.width",
+                                                "value": 72
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byRegexp",
+                                            "options": ".*_url$"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "links",
+                                                "value": [
+                                                    {
+                                                        "targetBlank": true,
+                                                        "title": "Open",
+                                                        "url": "${__value.raw}"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-7": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 7,
+                    "title": "Top Played Songs",
+                    "description": "Top songs for the selected Grafana time range.",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "with aggregated as (\n  select\n    coalesce(t.image_url, al.image_url) as track_art,\n    a.name as artist,\n    al.name as album,\n    t.name as track,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    t.url as track_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.tracks t on t.id = s.track_id\n  left join music.albums al on al.id = s.album_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.image_url,\n    t.id,\n    t.name,\n    t.url,\n    t.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, track) as rank,\n  track_art,\n  artist,\n  album,\n  track,\n  listened_count,\n  first_listened,\n  last_listened,\n  track_url\nfrom aggregated\norder by rank\nlimit 50;",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "table",
+                        "version": "12.4.2",
+                        "spec": {
+                            "options": {
+                                "cellHeight": "sm",
+                                "footer": {
+                                    "countRows": false,
+                                    "fields": "",
+                                    "reducer": ["sum"],
+                                    "show": false
+                                },
+                                "showHeader": true,
+                                "sortBy": [
+                                    {
+                                        "desc": true,
+                                        "displayName": "listened_count"
+                                    }
+                                ]
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "custom": {
+                                        "align": "auto",
+                                        "cellOptions": {
+                                            "type": "auto"
+                                        },
+                                        "inspect": false
+                                    },
+                                    "mappings": [],
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": null
+                                            }
+                                        ]
+                                    }
+                                },
+                                "overrides": [
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "track_art"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.cellOptions",
+                                                "value": {
+                                                    "type": "image"
+                                                }
+                                            },
+                                            {
+                                                "id": "custom.width",
+                                                "value": 72
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "listened_count"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.align",
+                                                "value": "right"
+                                            },
+                                            {
+                                                "id": "unit",
+                                                "value": "short"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byRegexp",
+                                            "options": ".*_url$"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "links",
+                                                "value": [
+                                                    {
+                                                        "targetBlank": true,
+                                                        "title": "Open",
+                                                        "url": "${__value.raw}"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-8": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 8,
+                    "title": "Top Played Albums",
+                    "description": "Top albums for the selected Grafana time range.",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "with aggregated as (\n  select\n    al.image_url as album_art,\n    a.name as artist,\n    al.name as album,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    al.url as album_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.albums al on al.id = s.album_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.url,\n    al.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, album) as rank,\n  album_art,\n  artist,\n  album,\n  listened_count,\n  first_listened,\n  last_listened,\n  album_url\nfrom aggregated\norder by rank\nlimit 50;",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "table",
+                        "version": "12.4.2",
+                        "spec": {
+                            "options": {
+                                "cellHeight": "sm",
+                                "footer": {
+                                    "countRows": false,
+                                    "fields": "",
+                                    "reducer": ["sum"],
+                                    "show": false
+                                },
+                                "showHeader": true,
+                                "sortBy": [
+                                    {
+                                        "desc": true,
+                                        "displayName": "listened_count"
+                                    }
+                                ]
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "custom": {
+                                        "align": "auto",
+                                        "cellOptions": {
+                                            "type": "auto"
+                                        },
+                                        "inspect": false
+                                    },
+                                    "mappings": [],
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": null
+                                            }
+                                        ]
+                                    }
+                                },
+                                "overrides": [
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "album_art"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.cellOptions",
+                                                "value": {
+                                                    "type": "image"
+                                                }
+                                            },
+                                            {
+                                                "id": "custom.width",
+                                                "value": 72
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "listened_count"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.align",
+                                                "value": "right"
+                                            },
+                                            {
+                                                "id": "unit",
+                                                "value": "short"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byRegexp",
+                                            "options": ".*_url$"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "links",
+                                                "value": [
+                                                    {
+                                                        "targetBlank": true,
+                                                        "title": "Open",
+                                                        "url": "${__value.raw}"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-9": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 9,
+                    "title": "Top Played Artists",
+                    "description": "Top artists for the selected Grafana time range.",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "with aggregated as (\n  select\n    a.image_url as artist_art,\n    a.name as artist,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    a.url as artist_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    a.url,\n    a.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist) as rank,\n  artist_art,\n  artist,\n  listened_count,\n  first_listened,\n  last_listened,\n  artist_url\nfrom aggregated\norder by rank\nlimit 50;",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "table",
+                        "version": "12.4.2",
+                        "spec": {
+                            "options": {
+                                "cellHeight": "sm",
+                                "footer": {
+                                    "countRows": false,
+                                    "fields": "",
+                                    "reducer": ["sum"],
+                                    "show": false
+                                },
+                                "showHeader": true,
+                                "sortBy": [
+                                    {
+                                        "desc": true,
+                                        "displayName": "listened_count"
+                                    }
+                                ]
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "custom": {
+                                        "align": "auto",
+                                        "cellOptions": {
+                                            "type": "auto"
+                                        },
+                                        "inspect": false
+                                    },
+                                    "mappings": [],
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": null
+                                            }
+                                        ]
+                                    }
+                                },
+                                "overrides": [
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "artist_art"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.cellOptions",
+                                                "value": {
+                                                    "type": "image"
+                                                }
+                                            },
+                                            {
+                                                "id": "custom.width",
+                                                "value": 72
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "listened_count"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.align",
+                                                "value": "right"
+                                            },
+                                            {
+                                                "id": "unit",
+                                                "value": "short"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byRegexp",
+                                            "options": ".*_url$"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "links",
+                                                "value": [
+                                                    {
+                                                        "targetBlank": true,
+                                                        "title": "Open",
+                                                        "url": "${__value.raw}"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "layout": {
+            "kind": "GridLayout",
+            "spec": {
+                "items": [
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 6,
+                            "height": 4,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-1"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 6,
+                            "height": 4,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-2"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "x": 12,
+                            "y": 0,
+                            "width": 6,
+                            "height": 4,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-3"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "x": 18,
+                            "y": 0,
+                            "width": 6,
+                            "height": 4,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-4"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "x": 0,
+                            "y": 4,
+                            "width": 16,
+                            "height": 8,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-5"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "x": 16,
+                            "y": 4,
+                            "width": 8,
+                            "height": 8,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-6"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "x": 0,
+                            "y": 12,
+                            "width": 24,
+                            "height": 12,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-7"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "x": 0,
+                            "y": 24,
+                            "width": 12,
+                            "height": 12,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-8"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "x": 12,
+                            "y": 24,
+                            "width": 12,
+                            "height": 12,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-9"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "links": [],
+        "liveNow": false,
+        "preload": false,
+        "tags": [],
+        "timeSettings": {
+            "timezone": "browser",
+            "from": "2021-02-04 00:00:00",
+            "to": "now",
+            "autoRefresh": "",
+            "autoRefreshIntervals": [
+                "5s",
+                "10s",
+                "30s",
+                "1m",
+                "5m",
+                "15m",
+                "30m",
+                "1h",
+                "2h",
+                "1d"
+            ],
+            "hideTimepicker": false,
+            "fiscalYearStartMonth": 0
+        },
+        "title": "Spotify",
+        "variables": []
+    }
+}
