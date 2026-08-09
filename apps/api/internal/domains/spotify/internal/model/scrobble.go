@@ -106,12 +106,15 @@ type SpotifyPollInput struct {
 }
 
 type SpotifyPollResult struct {
-	Fetched        int     `json:"fetched"`
-	Scrobbled      int     `json:"scrobbled"`
-	Skipped        int     `json:"skipped"`
-	AfterMS        *int64  `json:"after_ms,omitempty"`
-	LatestPlayedAt *string `json:"latest_played_at,omitempty"`
-	Source         string  `json:"source"`
+	Fetched                    int     `json:"fetched"`
+	Scrobbled                  int     `json:"scrobbled"`
+	Skipped                    int     `json:"skipped"`
+	AfterMS                    *int64  `json:"after_ms,omitempty"`
+	LatestPlayedAt             *string `json:"latest_played_at,omitempty"`
+	Source                     string  `json:"source"`
+	RateLimited                bool    `json:"rate_limited,omitempty"`
+	RateLimitReason            string  `json:"rate_limit_reason,omitempty"`
+	RateLimitRetryAfterSeconds *int    `json:"rate_limit_retry_after_seconds,omitempty"`
 }
 
 func (r ScrobbleRequest) ToInput(rawPayload []byte) (ScrobbleInput, error) {

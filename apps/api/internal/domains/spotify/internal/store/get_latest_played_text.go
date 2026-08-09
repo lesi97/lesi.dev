@@ -16,8 +16,9 @@ import (
 )
 
 const (
-	currentlyPlayingCacheKey = "spotify:currently-playing:text"
-	currentlyPlayingCacheTTL = 15 * time.Second
+	currentlyPlayingCacheKey            = "spotify:currently-playing:text"
+	currentlyPlayingCacheTTL            = 15 * time.Second
+	spotifyCurrentlyPlayingRateLimitKey = "spotify:rate-limit:currently-playing"
 )
 
 type spotifyCurrentlyPlayingResponse struct {
@@ -85,8 +86,19 @@ func (s *Store) GetLatestPlayedText(ctx context.Context) (*string, error) {
 }
 
 func (s *Store) currentlyPlayingText(ctx context.Context) (*string, error) {
+	if retryAfter := s.spotifyRateLimitRetryAfter(ctx, spotifyCurrentlyPlayingRateLimitKey); retryAfter != nil {
+		return nil, fmt.Errorf("spotify currently playing cooldown active: retry after %d seconds", *retryAfter)
+	}
+	if retryAfter := s.spotifyRateLimitRetryAfter(ctx, spotifyTokenRateLimitKey); retryAfter != nil {
+		return nil, fmt.Errorf("spotify token cooldown active: retry after %d seconds", *retryAfter)
+	}
+
 	auth, err := s.spotifyAPIAuth(ctx)
 	if err != nil {
+		var rateLimitErr *spotifyRateLimitError
+		if errors.As(err, &rateLimitErr) {
+			s.rememberSpotifyRateLimit(ctx, spotifyTokenRateLimitKey)
+		}
 		return nil, err
 	}
 
@@ -98,11 +110,19 @@ func (s *Store) currentlyPlayingTextWithAuth(ctx context.Context, auth spotifyAP
 	if errors.Is(err, errSpotifyUnauthorized) {
 		accessToken, refreshErr := s.refreshSpotifyAccessToken(ctx, auth.Details)
 		if refreshErr != nil {
+			var rateLimitErr *spotifyRateLimitError
+			if errors.As(refreshErr, &rateLimitErr) {
+				s.rememberSpotifyRateLimit(ctx, spotifyTokenRateLimitKey)
+			}
 			return nil, refreshErr
 		}
 		current, err = s.fetchSpotifyCurrentlyPlaying(ctx, auth.APIURL, accessToken)
 	}
 	if err != nil {
+		var rateLimitErr *spotifyRateLimitError
+		if errors.As(err, &rateLimitErr) {
+			s.rememberSpotifyRateLimit(ctx, spotifyCurrentlyPlayingRateLimitKey)
+		}
 		return nil, err
 	}
 	if current == nil {
@@ -110,26 +130,6 @@ func (s *Store) currentlyPlayingTextWithAuth(ctx context.Context, auth spotifyAP
 	}
 
 	return spotifyCurrentlyPlayingText(*current), nil
-}
-
-func (s *Store) refreshCurrentlyPlayingCache(ctx context.Context, auth spotifyAPIAuth) {
-	current, err := s.currentlyPlayingTextWithAuth(ctx, auth)
-	if err != nil {
-		if s.Logger != nil {
-			s.Logger.Printf("Spotify currently playing cache refresh skipped: %v", err)
-		}
-		return
-	}
-
-	s.setCurrentlyPlayingCache(ctx, current)
-}
-
-func (s *Store) refreshCurrentlyPlayingCacheAsync(ctx context.Context, auth spotifyAPIAuth) {
-	cacheCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
-	go func() {
-		defer cancel()
-		s.refreshCurrentlyPlayingCache(cacheCtx, auth)
-	}()
 }
 
 func (s *Store) fetchSpotifyCurrentlyPlaying(ctx context.Context, apiURL string, accessToken string) (*spotifyCurrentlyPlayingResponse, error) {
@@ -161,6 +161,12 @@ func (s *Store) fetchSpotifyCurrentlyPlaying(ctx context.Context, apiURL string,
 	}
 	if statusCode == http.StatusUnauthorized {
 		return nil, errSpotifyUnauthorized
+	}
+	if statusCode == http.StatusTooManyRequests {
+		return nil, &spotifyRateLimitError{
+			endpoint: "currently playing",
+			body:     string(body),
+		}
 	}
 	if statusCode < 200 || statusCode >= 300 {
 		return nil, fmt.Errorf("spotify currently playing failed: status=%d body=%s", statusCode, string(body))

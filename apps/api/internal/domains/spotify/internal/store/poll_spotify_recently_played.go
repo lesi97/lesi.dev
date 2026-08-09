@@ -24,6 +24,10 @@ const (
 	spotifyPollSource  = "spotify-poll"
 	spotifyAccountsURL = "https://accounts.spotify.com"
 	spotifyAPIURL      = "https://api.spotify.com/v1"
+
+	spotifyRecentlyPlayedRateLimitKey = "spotify:rate-limit:recently-played"
+	spotifyTokenRateLimitKey          = "spotify:rate-limit:token"
+	spotifyDefaultRateLimitCooldown   = 120 * time.Second
 )
 
 type spotifyAPIAuth struct {
@@ -92,13 +96,8 @@ func (s *Store) PollSpotifyRecentlyPlayed(ctx context.Context, input model.Spoti
 		return nil, fmt.Errorf("limit must be between 1 and 50")
 	}
 
-	auth, err := s.spotifyAPIAuth(ctx)
-	if err != nil {
-		return nil, err
-	}
-	s.refreshCurrentlyPlayingCacheAsync(ctx, auth)
-
 	afterMS := input.AfterMS
+	var err error
 	if afterMS == nil {
 		afterMS, err = s.latestSpotifyScrobbleMS(ctx)
 		if err != nil {
@@ -106,25 +105,50 @@ func (s *Store) PollSpotifyRecentlyPlayed(ctx context.Context, input model.Spoti
 		}
 	}
 
+	result := &model.SpotifyPollResult{
+		AfterMS: afterMS,
+		Source:  spotifyPollSource,
+	}
+
+	if retryAfter := s.spotifyRateLimitRetryAfter(ctx, spotifyRecentlyPlayedRateLimitKey); retryAfter != nil {
+		return spotifyRateLimitedPollResult(result, "spotify recently played cooldown active", *retryAfter), nil
+	}
+	if retryAfter := s.spotifyRateLimitRetryAfter(ctx, spotifyTokenRateLimitKey); retryAfter != nil {
+		return spotifyRateLimitedPollResult(result, "spotify token cooldown active", *retryAfter), nil
+	}
+
+	auth, err := s.spotifyAPIAuth(ctx)
+	if err != nil {
+		if rateLimit := s.spotifyRateLimitedPollResultFromError(ctx, result, spotifyTokenRateLimitKey, err); rateLimit != nil {
+			return rateLimit, nil
+		}
+		return nil, err
+	}
+
 	recentlyPlayed, err := s.fetchSpotifyRecentlyPlayed(ctx, auth.APIURL, auth.AccessToken, limit, afterMS)
 	if errors.Is(err, errSpotifyUnauthorized) {
 		accessToken, refreshErr := s.refreshSpotifyAccessToken(ctx, auth.Details)
 		if refreshErr != nil {
+			if rateLimit := s.spotifyRateLimitedPollResultFromError(ctx, result, spotifyTokenRateLimitKey, refreshErr); rateLimit != nil {
+				return rateLimit, nil
+			}
 			return nil, refreshErr
 		}
 		auth.AccessToken = accessToken
 		recentlyPlayed, err = s.fetchSpotifyRecentlyPlayed(ctx, auth.APIURL, auth.AccessToken, limit, afterMS)
 	}
 	if err != nil {
+		if rateLimit := s.spotifyRateLimitedPollResultFromError(ctx, result, spotifyRecentlyPlayedRateLimitKey, err); rateLimit != nil {
+			return rateLimit, nil
+		}
 		return nil, err
 	}
 
-	artistImages := s.fetchSpotifyArtistImages(ctx, auth.APIURL, auth.AccessToken, recentlyPlayed)
-	result := &model.SpotifyPollResult{
-		Fetched: len(recentlyPlayed.Items),
-		AfterMS: afterMS,
-		Source:  spotifyPollSource,
+	var artistImages map[string]*string
+	if spotifyArtistImageEnrichmentEnabled() {
+		artistImages = s.fetchSpotifyArtistImages(ctx, auth.APIURL, auth.AccessToken, recentlyPlayed)
 	}
+	result.Fetched = len(recentlyPlayed.Items)
 	var latestPlayedAt time.Time
 
 	for _, rawItem := range recentlyPlayed.Items {
@@ -159,6 +183,18 @@ func (s *Store) PollSpotifyRecentlyPlayed(ctx context.Context, input model.Spoti
 }
 
 var errSpotifyUnauthorized = errors.New("spotify unauthorized")
+
+type spotifyRateLimitError struct {
+	endpoint string
+	body     string
+}
+
+func (e *spotifyRateLimitError) Error() string {
+	if strings.TrimSpace(e.body) == "" {
+		return fmt.Sprintf("spotify %s rate limited", e.endpoint)
+	}
+	return fmt.Sprintf("spotify %s rate limited: %s", e.endpoint, e.body)
+}
 
 func (s *Store) spotifyAPIAuth(ctx context.Context) (spotifyAPIAuth, error) {
 	if s.DB == nil {
@@ -240,6 +276,12 @@ func (s *Store) refreshSpotifyAccessToken(ctx context.Context, apiDetails *db.Ap
 	)
 	if err != nil {
 		return "", err
+	}
+	if statusCode == http.StatusTooManyRequests {
+		return "", &spotifyRateLimitError{
+			endpoint: "token refresh",
+			body:     string(body),
+		}
 	}
 	if statusCode < 200 || statusCode >= 300 {
 		return "", fmt.Errorf("spotify token refresh failed: status=%d body=%s", statusCode, string(body))
@@ -336,6 +378,12 @@ func (s *Store) fetchSpotifyRecentlyPlayed(ctx context.Context, apiURL string, a
 	if statusCode == http.StatusUnauthorized {
 		return spotifyRecentlyPlayedResponse{}, errSpotifyUnauthorized
 	}
+	if statusCode == http.StatusTooManyRequests {
+		return spotifyRecentlyPlayedResponse{}, &spotifyRateLimitError{
+			endpoint: "recently played",
+			body:     string(body),
+		}
+	}
 	if statusCode < 200 || statusCode >= 300 {
 		return spotifyRecentlyPlayedResponse{}, fmt.Errorf("spotify recently played failed: status=%d body=%s", statusCode, string(body))
 	}
@@ -391,6 +439,12 @@ func (s *Store) fetchSpotifyArtist(ctx context.Context, apiURL string, accessTok
 		return spotifyArtist{}, err
 	}
 	if statusCode < 200 || statusCode >= 300 {
+		if statusCode == http.StatusTooManyRequests {
+			return spotifyArtist{}, &spotifyRateLimitError{
+				endpoint: "artist",
+				body:     string(body),
+			}
+		}
 		return spotifyArtist{}, fmt.Errorf("spotify artist failed: status=%d body=%s", statusCode, string(body))
 	}
 
@@ -486,6 +540,73 @@ func spotifyAccessTokenExpired(expiresAt *int64) bool {
 	}
 
 	return time.Now().Add(30*time.Second).UnixMilli() >= *expiresAt
+}
+
+func (s *Store) spotifyRateLimitedPollResultFromError(ctx context.Context, result *model.SpotifyPollResult, cacheKey string, err error) *model.SpotifyPollResult {
+	var rateLimitErr *spotifyRateLimitError
+	if !errors.As(err, &rateLimitErr) {
+		return nil
+	}
+
+	retryAfter := s.rememberSpotifyRateLimit(ctx, cacheKey)
+	return spotifyRateLimitedPollResult(result, rateLimitErr.Error(), retryAfter)
+}
+
+func spotifyRateLimitedPollResult(result *model.SpotifyPollResult, reason string, retryAfterSeconds int) *model.SpotifyPollResult {
+	result.RateLimited = true
+	result.RateLimitReason = reason
+	result.RateLimitRetryAfterSeconds = &retryAfterSeconds
+	return result
+}
+
+func (s *Store) spotifyRateLimitRetryAfter(ctx context.Context, cacheKey string) *int {
+	if s.Redis == nil {
+		return nil
+	}
+
+	ttl, err := s.Redis.TTL(ctx, cacheKey).Result()
+	if err != nil || ttl <= 0 {
+		return nil
+	}
+
+	seconds := int((ttl + time.Second - time.Nanosecond) / time.Second)
+	return &seconds
+}
+
+func (s *Store) rememberSpotifyRateLimit(ctx context.Context, cacheKey string) int {
+	cooldown := spotifyRateLimitCooldown()
+	if s.Redis == nil {
+		return int(cooldown / time.Second)
+	}
+
+	if err := s.Redis.Set(ctx, cacheKey, "1", cooldown).Err(); err != nil && s.Logger != nil {
+		s.Logger.Printf("Redis Spotify rate-limit cooldown write skipped: %v", err)
+	}
+
+	return int(cooldown / time.Second)
+}
+
+func spotifyRateLimitCooldown() time.Duration {
+	raw := strings.TrimSpace(os.Getenv("SPOTIFY_RATE_LIMIT_COOLDOWN_SECONDS"))
+	if raw == "" {
+		return spotifyDefaultRateLimitCooldown
+	}
+
+	seconds, err := strconv.Atoi(raw)
+	if err != nil || seconds < 1 {
+		return spotifyDefaultRateLimitCooldown
+	}
+
+	return time.Duration(seconds) * time.Second
+}
+
+func spotifyArtistImageEnrichmentEnabled() bool {
+	switch strings.ToLower(strings.TrimSpace(os.Getenv("SPOTIFY_FETCH_ARTIST_IMAGES"))) {
+	case "1", "true", "yes", "on":
+		return true
+	default:
+		return false
+	}
 }
 
 func (s *Store) httpClient() *http.Client {

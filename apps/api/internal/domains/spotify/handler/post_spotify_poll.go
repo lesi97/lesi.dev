@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/lesi97/lesi.dev/internal/domains/spotify/internal/model"
@@ -26,7 +27,11 @@ func (h *Handler) PostSpotifyPoll(w http.ResponseWriter, r *http.Request) {
 	result, err := h.store.PollSpotifyRecentlyPlayed(r.Context(), input)
 	if err != nil {
 		h.logger.Printf("ERROR: Spotify scrobble poll: %v", err)
-		shared_utils.Error(w, http.StatusInternalServerError, "internal server error")
+		if os.Getenv("GO_ENV") == "production" {
+			shared_utils.Error(w, http.StatusInternalServerError, "internal server error")
+			return
+		}
+		shared_utils.Error(w, http.StatusInternalServerError, err)
 		return
 	}
 

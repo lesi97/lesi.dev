@@ -120,7 +120,8 @@ select
 from music.scrobbles s
 join music.artists a on a.id = s.artist_id
 join music.tracks t on t.id = s.track_id
-left join music.albums al on al.id = s.album_id;
+left join music.albums al on al.id = s.album_id
+order by s.scrobbled_at desc;
 
 comment on table music.scrobbles is 'Personal music scrobble events for Grafana-backed listening history dashboards.';
 comment on view music.scrobble_events is 'Flattened Last.fm-style scrobble rows for Grafana queries.';

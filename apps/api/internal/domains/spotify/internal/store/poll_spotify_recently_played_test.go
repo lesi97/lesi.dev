@@ -97,3 +97,27 @@ func TestSpotifyAccessTokenExpiredSupportsUnixSecondsAndMilliseconds(t *testing.
 		t.Fatal("past unix milliseconds expiry should be expired")
 	}
 }
+
+func TestSpotifyArtistImageEnrichmentDisabledByDefault(t *testing.T) {
+	t.Setenv("SPOTIFY_FETCH_ARTIST_IMAGES", "")
+
+	if spotifyArtistImageEnrichmentEnabled() {
+		t.Fatal("artist image enrichment should be disabled by default")
+	}
+}
+
+func TestSpotifyArtistImageEnrichmentCanBeEnabled(t *testing.T) {
+	t.Setenv("SPOTIFY_FETCH_ARTIST_IMAGES", "true")
+
+	if !spotifyArtistImageEnrichmentEnabled() {
+		t.Fatal("artist image enrichment should be enabled")
+	}
+}
+
+func TestSpotifyRateLimitCooldownCanBeConfigured(t *testing.T) {
+	t.Setenv("SPOTIFY_RATE_LIMIT_COOLDOWN_SECONDS", "30")
+
+	if got, want := spotifyRateLimitCooldown(), 30*time.Second; got != want {
+		t.Fatalf("spotifyRateLimitCooldown() = %s, want %s", got, want)
+	}
+}

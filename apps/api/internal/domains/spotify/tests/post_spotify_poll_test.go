@@ -2,8 +2,10 @@ package tests
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/go-chi/chi/v5"
@@ -68,6 +70,36 @@ func TestPostSpotifyPollCallsStore(t *testing.T) {
 	}
 }
 
+func TestPostSpotifyPollReturnsRateLimitedResult(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	retryAfter := 120
+	store := &musicStoreStub{
+		pollResult: &model.SpotifyPollResult{
+			Source:                     "spotify-poll",
+			RateLimited:                true,
+			RateLimitReason:            "spotify recently played quota exceeded",
+			RateLimitRetryAfterSeconds: &retryAfter,
+		},
+	}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/poll", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status %d got %d body %s", http.StatusOK, rec.Code, rec.Body.String())
+	}
+	if !strings.Contains(rec.Body.String(), `"rate_limited":true`) {
+		t.Fatalf("expected rate limited response, got %s", rec.Body.String())
+	}
+}
+
 func TestPostSpotifyPollRejectsMissingApiKey(t *testing.T) {
 	t.Setenv("SCROBBLE_API_KEY", "secret")
 	store := &musicStoreStub{}
@@ -86,5 +118,54 @@ func TestPostSpotifyPollRejectsMissingApiKey(t *testing.T) {
 	}
 	if store.pollCalled {
 		t.Fatal("poll should not be called when API key is missing")
+	}
+}
+
+func TestPostSpotifyPollReturnsStoreErrorOutsideProduction(t *testing.T) {
+	t.Setenv("GO_ENV", "development")
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{pollErr: errors.New("spotify token refresh failed")}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/poll", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusInternalServerError {
+		t.Fatalf("expected status %d got %d body %s", http.StatusInternalServerError, rec.Code, rec.Body.String())
+	}
+	if !strings.Contains(rec.Body.String(), "spotify token refresh failed") {
+		t.Fatalf("expected response to include store error, got %s", rec.Body.String())
+	}
+}
+
+func TestPostSpotifyPollHidesStoreErrorInProduction(t *testing.T) {
+	t.Setenv("GO_ENV", "production")
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{pollErr: errors.New("spotify token refresh failed")}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/poll", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusInternalServerError {
+		t.Fatalf("expected status %d got %d body %s", http.StatusInternalServerError, rec.Code, rec.Body.String())
+	}
+	if !strings.Contains(rec.Body.String(), "internal server error") {
+		t.Fatalf("expected response to hide store error, got %s", rec.Body.String())
+	}
+	if strings.Contains(rec.Body.String(), "spotify token refresh failed") {
+		t.Fatalf("expected response to hide store error, got %s", rec.Body.String())
 	}
 }
