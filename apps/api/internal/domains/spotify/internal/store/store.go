@@ -15,6 +15,7 @@ type Methods interface {
 	InsertScrobble(ctx context.Context, input model.ScrobbleInput) (*model.ScrobbleResult, error)
 	GetLatestPlayedText(ctx context.Context) (*string, error)
 	PollSpotifyRecentlyPlayed(ctx context.Context, input model.SpotifyPollInput) (*model.SpotifyPollResult, error)
+	EnrichSpotifyMetadata(ctx context.Context, input model.SpotifyEnrichmentInput) (*model.SpotifyEnrichmentResult, error)
 }
 
 type Store struct {

@@ -66,6 +66,7 @@ type spotifyAlbum struct {
 	Name         string              `json:"name"`
 	ExternalURLs spotifyExternalURLs `json:"external_urls"`
 	Images       []spotifyImage      `json:"images"`
+	Artists      []spotifyArtist     `json:"artists"`
 }
 
 type spotifyArtistsResponse struct {

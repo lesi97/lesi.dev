@@ -19,6 +19,11 @@ type musicStoreStub struct {
 	pollInput  model.SpotifyPollInput
 	pollResult *model.SpotifyPollResult
 	pollErr    error
+
+	enrichCalled bool
+	enrichInput  model.SpotifyEnrichmentInput
+	enrichResult *model.SpotifyEnrichmentResult
+	enrichErr    error
 }
 
 func (s *musicStoreStub) InsertScrobble(ctx context.Context, input model.ScrobbleInput) (*model.ScrobbleResult, error) {
@@ -33,6 +38,12 @@ func (s *musicStoreStub) PollSpotifyRecentlyPlayed(ctx context.Context, input mo
 	s.pollCalled = true
 	s.pollInput = input
 	return s.pollResult, s.pollErr
+}
+
+func (s *musicStoreStub) EnrichSpotifyMetadata(ctx context.Context, input model.SpotifyEnrichmentInput) (*model.SpotifyEnrichmentResult, error) {
+	s.enrichCalled = true
+	s.enrichInput = input
+	return s.enrichResult, s.enrichErr
 }
 
 func TestPostSpotifyPollCallsStore(t *testing.T) {
@@ -167,5 +178,105 @@ func TestPostSpotifyPollHidesStoreErrorInProduction(t *testing.T) {
 	}
 	if strings.Contains(rec.Body.String(), "spotify token refresh failed") {
 		t.Fatalf("expected response to hide store error, got %s", rec.Body.String())
+	}
+}
+
+func TestPostSpotifyEnrichCallsStore(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{
+		enrichResult: &model.SpotifyEnrichmentResult{
+			EntityType: model.SpotifyEnrichmentTypeAlbum,
+			Status:     "complete",
+		},
+	}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/enrich?type=album", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status %d got %d body %s", http.StatusOK, rec.Code, rec.Body.String())
+	}
+	if !store.enrichCalled {
+		t.Fatal("expected EnrichSpotifyMetadata to be called")
+	}
+	if got, want := store.enrichInput.EntityType, model.SpotifyEnrichmentTypeAlbum; got != want {
+		t.Fatalf("entity type = %q, want %q", got, want)
+	}
+}
+
+func TestPostSpotifyEnrichDefaultsToTrack(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{
+		enrichResult: &model.SpotifyEnrichmentResult{
+			EntityType: model.SpotifyEnrichmentTypeTrack,
+			Status:     "complete",
+		},
+	}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/enrich", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status %d got %d body %s", http.StatusOK, rec.Code, rec.Body.String())
+	}
+	if got, want := store.enrichInput.EntityType, model.SpotifyEnrichmentTypeTrack; got != want {
+		t.Fatalf("entity type = %q, want %q", got, want)
+	}
+}
+
+func TestPostSpotifyEnrichRejectsInvalidType(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/enrich?type=playlist", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("expected status %d got %d body %s", http.StatusBadRequest, rec.Code, rec.Body.String())
+	}
+	if store.enrichCalled {
+		t.Fatal("enrichment should not be called when type is invalid")
+	}
+}
+
+func TestPostSpotifyEnrichRejectsMissingApiKey(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/enrich?type=track", nil)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("expected status %d got %d body %s", http.StatusForbidden, rec.Code, rec.Body.String())
+	}
+	if store.enrichCalled {
+		t.Fatal("enrichment should not be called when API key is missing")
 	}
 }

@@ -29,6 +29,10 @@ func (s *latestScrobbleStoreStub) PollSpotifyRecentlyPlayed(ctx context.Context,
 	return nil, nil
 }
 
+func (s *latestScrobbleStoreStub) EnrichSpotifyMetadata(ctx context.Context, input model.SpotifyEnrichmentInput) (*model.SpotifyEnrichmentResult, error) {
+	return nil, nil
+}
+
 func TestGetLatestScrobbleReturnsPlainTextWithoutApiKey(t *testing.T) {
 	text := "Hozier - Talk"
 	store := &latestScrobbleStoreStub{text: &text}
