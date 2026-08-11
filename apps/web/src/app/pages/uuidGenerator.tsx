@@ -12,23 +12,23 @@ type UuidRouteVersion = (typeof UUID_ROUTE_VERSIONS)[number];
 const VERSION_DETAILS: Record<UuidRouteVersion, { title: string; subtitle: string }> = {
     '1': {
         title: 'UUID v1 Generator',
-        subtitle: 'Generate timestamp based UUIDs locally in your browser',
+        subtitle: 'Generate timestamp based UUIDs',
     },
     '4': {
         title: 'UUID v4 Generator',
-        subtitle: 'Generate random UUIDs with browser crypto',
+        subtitle: 'Generate random UUIDs',
     },
     '6': {
         title: 'UUID v6 Generator',
-        subtitle: 'Generate reordered timestamp UUIDs locally in your browser',
+        subtitle: 'Generate reordered timestamp UUIDs',
     },
     '7': {
         title: 'UUID v7 Generator',
-        subtitle: 'Generate Unix-time UUIDs with browser crypto',
+        subtitle: 'Generate unix time UUIDs',
     },
     nil: {
         title: 'Nil UUID',
-        subtitle: 'Copy the all-zero UUID value',
+        subtitle: 'Generate a nil UUID',
     },
 };
 
