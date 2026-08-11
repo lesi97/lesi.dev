@@ -2,20 +2,20 @@
     "apiVersion": "dashboard.grafana.app/v2",
     "kind": "Dashboard",
     "metadata": {
-        "name": "95fd0381-8468-4132-a98f-5ef44c1037dc",
+        "name": "97fc18a8-d040-4193-ad23-7b0d348512e9",
         "namespace": "default",
-        "uid": "514506c0-43de-4b64-b794-4941b52c0b45",
-        "resourceVersion": "1786295064808997",
-        "generation": 8,
-        "creationTimestamp": "2026-08-09T10:58:33Z",
+        "uid": "f87395ea-9020-4a3b-9140-7bcfa63eec84",
+        "resourceVersion": "1786448847095011",
+        "generation": 5,
+        "creationTimestamp": "2026-08-11T11:40:19Z",
         "labels": {
-            "grafana.app/deprecatedInternalID": "1240149904564224"
+            "grafana.app/deprecatedInternalID": "1975434690928640"
         },
         "annotations": {
             "grafana.app/createdBy": "user:ffelttjop80zke",
             "grafana.app/saved-from-ui": "Grafana v13.1.3 (45a27d64b6)",
             "grafana.app/updatedBy": "user:ffelttjop80zke",
-            "grafana.app/updatedTimestamp": "2026-08-09T17:04:24Z"
+            "grafana.app/updatedTimestamp": "2026-08-11T11:47:27Z"
         }
     },
     "spec": {
@@ -121,6 +121,257 @@
                             "fieldConfig": {
                                 "defaults": {
                                     "unit": "short",
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "value": 0,
+                                                "color": "green"
+                                            }
+                                        ]
+                                    },
+                                    "color": {
+                                        "mode": "thresholds"
+                                    }
+                                },
+                                "overrides": []
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-10": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 10,
+                    "title": "Top Genres",
+                    "description": "Top artists for the selected Grafana time range.",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "with aggregated as (\n  select\n    g.name as genre,\n    count(distinct s.id)::bigint as listened_count\n  from music.scrobbles s\n  join music.track_genres tg on tg.track_id = s.track_id\n  join music.genres g on g.id = tg.genre_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    g.id,\n    g.name\n)\nselect\n  row_number() over (order by listened_count desc, genre) as rank,\n  genre,\n  listened_count\nfrom aggregated\norder by rank;",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "table",
+                        "version": "13.1.3",
+                        "spec": {
+                            "options": {
+                                "cellHeight": "md",
+                                "enablePagination": true,
+                                "showHeader": true,
+                                "sortBy": []
+                            },
+                            "fieldConfig": {
+                                "defaults": {
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "value": 0,
+                                                "color": "green"
+                                            }
+                                        ]
+                                    },
+                                    "custom": {
+                                        "align": "left",
+                                        "cellOptions": {
+                                            "type": "auto"
+                                        },
+                                        "footer": {
+                                            "reducers": []
+                                        },
+                                        "inspect": false
+                                    }
+                                },
+                                "overrides": [
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "rank"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.align",
+                                                "value": "center"
+                                            },
+                                            {
+                                                "id": "custom.width",
+                                                "value": 50
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "genre"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 101
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "listened_count"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "displayName",
+                                                "value": "listened count"
+                                            },
+                                            {
+                                                "id": "custom.align",
+                                                "value": "right"
+                                            },
+                                            {
+                                                "id": "unit",
+                                                "value": "short"
+                                            },
+                                            {
+                                                "id": "custom.width",
+                                                "value": 220
+                                            },
+                                            {
+                                                "id": "custom.cellOptions",
+                                                "value": {
+                                                    "mode": "basic",
+                                                    "type": "gauge"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "panel-11": {
+                "kind": "Panel",
+                "spec": {
+                    "id": 11,
+                    "title": "Top Genre",
+                    "description": "",
+                    "links": [],
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "query": {
+                                            "kind": "DataQuery",
+                                            "group": "grafana-postgresql-datasource",
+                                            "version": "v0",
+                                            "datasource": {
+                                                "name": "afem93txittdsf"
+                                            },
+                                            "spec": {
+                                                "dataset": "postgres",
+                                                "editorMode": "code",
+                                                "format": "table",
+                                                "rawQuery": true,
+                                                "rawSql": "with aggregated as (\n  select\n    g.name as genre,\n    count(distinct s.id)::bigint as listened_count\n  from music.scrobbles s\n  join music.track_genres tg on tg.track_id = s.track_id\n  join music.genres g on g.id = tg.genre_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    g.id,\n    g.name\n)\nselect genre as value\nfrom aggregated\norder by listened_count desc, genre\nlimit 1;",
+                                                "sql": {
+                                                    "columns": [
+                                                        {
+                                                            "parameters": [],
+                                                            "type": "function"
+                                                        }
+                                                    ],
+                                                    "groupBy": [
+                                                        {
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": "groupBy"
+                                                        }
+                                                    ],
+                                                    "limit": 50
+                                                }
+                                            }
+                                        },
+                                        "refId": "A",
+                                        "hidden": false
+                                    }
+                                }
+                            ],
+                            "transformations": [],
+                            "queryOptions": {}
+                        }
+                    },
+                    "vizConfig": {
+                        "kind": "VizConfig",
+                        "group": "stat",
+                        "version": "13.1.3",
+                        "spec": {
+                            "options": {
+                                "colorMode": "value",
+                                "graphMode": "none",
+                                "justifyMode": "auto",
+                                "orientation": "auto",
+                                "percentChangeColorMode": "standard",
+                                "reduceOptions": {
+                                    "calcs": ["lastNotNull"],
+                                    "fields": "/.*/",
+                                    "values": false
+                                },
+                                "showPercentChange": false,
+                                "textMode": "value",
+                                "wideLayout": true
+                            },
+                            "fieldConfig": {
+                                "defaults": {
                                     "thresholds": {
                                         "mode": "absolute",
                                         "steps": [
@@ -592,7 +843,7 @@
                                                 "editorMode": "code",
                                                 "format": "table",
                                                 "rawQuery": true,
-                                                "rawSql": "select\n  scrobbled_at,\n  artist,\n  album,\n  track,\n  track_url,\n  coalesce(track_image_url, album_image_url, artist_image_url) as art,\n  source\nfrom music.scrobble_events\nwhere $__timeFilter(scrobbled_at)\norder by scrobbled_at desc\nlimit 25;",
+                                                "rawSql": "select\n  scrobbled_at,\n  artist,\n  album,\n  track,\n  track_url,\n  coalesce(track_image_url, album_image_url, artist_image_url) as art,\n  source\nfrom music.scrobble_events\nwhere $__timeFilter(scrobbled_at)\norder by scrobbled_at desc\nlimit 100;",
                                                 "sql": {
                                                     "columns": [
                                                         {
@@ -628,13 +879,9 @@
                         "spec": {
                             "options": {
                                 "cellHeight": "sm",
+                                "enablePagination": true,
                                 "showHeader": true,
-                                "sortBy": [
-                                    {
-                                        "desc": true,
-                                        "displayName": "scrobbled_at"
-                                    }
-                                ]
+                                "sortBy": []
                             },
                             "fieldConfig": {
                                 "defaults": {
@@ -694,6 +941,32 @@
                                                 ]
                                             }
                                         ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "artist"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 138
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "scope": "series",
+                                            "options": "scrobbled_at"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.width",
+                                                "value": 162
+                                            }
+                                        ]
                                     }
                                 ]
                             }
@@ -727,7 +1000,7 @@
                                                 "editorMode": "code",
                                                 "format": "table",
                                                 "rawQuery": true,
-                                                "rawSql": "with aggregated as (\n  select\n    coalesce(t.image_url, al.image_url) as track_art,\n    a.name as artist,\n    al.name as album,\n    t.name as track,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    t.url as track_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.tracks t on t.id = s.track_id\n  left join music.albums al on al.id = s.album_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.image_url,\n    t.id,\n    t.name,\n    t.url,\n    t.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, track) as rank,\n  track_art,\n  artist,\n  album,\n  track,\n  listened_count,\n  first_listened,\n  last_listened,\n  track_url\nfrom aggregated\norder by rank;",
+                                                "rawSql": "with aggregated as (\n  select\n    coalesce(t.image_url, al.image_url) as track_art,\n    a.name as artist,\n    al.name as album,\n    t.name as track,\n    array_to_string(coalesce(track_tags.tags, '{}'::text[]), ', ') as track_genres,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    t.url as track_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.tracks t on t.id = s.track_id\n  left join music.albums al on al.id = s.album_id\n  left join lateral (\n    select array_agg(g.name order by tg.weight desc nulls last, g.name) as tags\n    from music.track_genres tg\n    join music.genres g on g.id = tg.genre_id\n    where tg.track_id = t.id\n  ) track_tags on true\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.image_url,\n    t.id,\n    t.name,\n    t.url,\n    t.image_url,\n    track_tags.tags\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, track) as rank,\n  track_art,\n  artist,\n  album,\n  track,\n  track_genres,\n  listened_count,\n  first_listened,\n  last_listened,\n  track_url\nfrom aggregated\norder by rank;",
                                                 "sql": {
                                                     "columns": [
                                                         {
@@ -961,7 +1234,7 @@
                                                 "editorMode": "code",
                                                 "format": "table",
                                                 "rawQuery": true,
-                                                "rawSql": "with aggregated as (\n  select\n    al.image_url as album_art,\n    a.name as artist,\n    al.name as album,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    al.url as album_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.albums al on al.id = s.album_id\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.url,\n    al.image_url\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, album) as rank,\n  album_art,\n  artist,\n  album,\n  listened_count,\n  first_listened,\n  last_listened,\n  album_url\nfrom aggregated\norder by rank;",
+                                                "rawSql": "with aggregated as (\n  select\n    al.image_url as album_art,\n    a.name as artist,\n    al.name as album,\n    array_to_string(coalesce(album_tags.tags, '{}'::text[]), ', ') as album_genres,\n    count(*)::bigint as listened_count,\n    min(s.scrobbled_at) as first_listened,\n    max(s.scrobbled_at) as last_listened,\n    al.url as album_url\n  from music.scrobbles s\n  join music.artists a on a.id = s.artist_id\n  join music.albums al on al.id = s.album_id\n  left join lateral (\n    select array_agg(g.name order by alg.weight desc nulls last, g.name) as tags\n    from music.album_genres alg\n    join music.genres g on g.id = alg.genre_id\n    where alg.album_id = al.id\n  ) album_tags on true\n  where $__timeFilter(s.scrobbled_at)\n  group by\n    a.id,\n    a.name,\n    al.id,\n    al.name,\n    al.url,\n    al.image_url,\n    album_tags.tags\n)\nselect\n  row_number() over (order by listened_count desc, last_listened desc, artist, album) as rank,\n  album_art,\n  artist,\n  album,\n  album_genres,\n  listened_count,\n  first_listened,\n  last_listened,\n  album_url\nfrom aggregated\norder by rank;",
                                                 "sql": {
                                                     "columns": [
                                                         {
@@ -1374,7 +1647,7 @@
                         "spec": {
                             "x": 0,
                             "y": 0,
-                            "width": 6,
+                            "width": 5,
                             "height": 4,
                             "element": {
                                 "kind": "ElementReference",
@@ -1385,9 +1658,9 @@
                     {
                         "kind": "GridLayoutItem",
                         "spec": {
-                            "x": 6,
+                            "x": 5,
                             "y": 0,
-                            "width": 6,
+                            "width": 5,
                             "height": 4,
                             "element": {
                                 "kind": "ElementReference",
@@ -1398,9 +1671,9 @@
                     {
                         "kind": "GridLayoutItem",
                         "spec": {
-                            "x": 12,
+                            "x": 10,
                             "y": 0,
-                            "width": 6,
+                            "width": 5,
                             "height": 4,
                             "element": {
                                 "kind": "ElementReference",
@@ -1411,9 +1684,9 @@
                     {
                         "kind": "GridLayoutItem",
                         "spec": {
-                            "x": 18,
+                            "x": 15,
                             "y": 0,
-                            "width": 6,
+                            "width": 4,
                             "height": 4,
                             "element": {
                                 "kind": "ElementReference",
@@ -1424,10 +1697,23 @@
                     {
                         "kind": "GridLayoutItem",
                         "spec": {
+                            "x": 19,
+                            "y": 0,
+                            "width": 5,
+                            "height": 4,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-11"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
                             "x": 0,
                             "y": 4,
-                            "width": 16,
-                            "height": 8,
+                            "width": 11,
+                            "height": 10,
                             "element": {
                                 "kind": "ElementReference",
                                 "name": "panel-5"
@@ -1437,10 +1723,23 @@
                     {
                         "kind": "GridLayoutItem",
                         "spec": {
+                            "x": 11,
+                            "y": 4,
+                            "width": 5,
+                            "height": 10,
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-10"
+                            }
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
                             "x": 16,
                             "y": 4,
                             "width": 8,
-                            "height": 8,
+                            "height": 10,
                             "element": {
                                 "kind": "ElementReference",
                                 "name": "panel-6"
@@ -1451,7 +1750,7 @@
                         "kind": "GridLayoutItem",
                         "spec": {
                             "x": 0,
-                            "y": 12,
+                            "y": 14,
                             "width": 24,
                             "height": 12,
                             "element": {
@@ -1464,7 +1763,7 @@
                         "kind": "GridLayoutItem",
                         "spec": {
                             "x": 0,
-                            "y": 24,
+                            "y": 26,
                             "width": 12,
                             "height": 12,
                             "element": {
@@ -1477,7 +1776,7 @@
                         "kind": "GridLayoutItem",
                         "spec": {
                             "x": 12,
-                            "y": 24,
+                            "y": 26,
                             "width": 12,
                             "height": 12,
                             "element": {

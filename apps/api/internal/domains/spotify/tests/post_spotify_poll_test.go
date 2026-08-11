@@ -24,6 +24,11 @@ type musicStoreStub struct {
 	enrichInput  model.SpotifyEnrichmentInput
 	enrichResult *model.SpotifyEnrichmentResult
 	enrichErr    error
+
+	tagEnrichCalled bool
+	tagEnrichInput  model.LastFMTagEnrichmentInput
+	tagEnrichResult *model.LastFMTagEnrichmentResult
+	tagEnrichErr    error
 }
 
 func (s *musicStoreStub) InsertScrobble(ctx context.Context, input model.ScrobbleInput) (*model.ScrobbleResult, error) {
@@ -44,6 +49,12 @@ func (s *musicStoreStub) EnrichSpotifyMetadata(ctx context.Context, input model.
 	s.enrichCalled = true
 	s.enrichInput = input
 	return s.enrichResult, s.enrichErr
+}
+
+func (s *musicStoreStub) EnrichLastFMTags(ctx context.Context, input model.LastFMTagEnrichmentInput) (*model.LastFMTagEnrichmentResult, error) {
+	s.tagEnrichCalled = true
+	s.tagEnrichInput = input
+	return s.tagEnrichResult, s.tagEnrichErr
 }
 
 func TestPostSpotifyPollCallsStore(t *testing.T) {
@@ -278,5 +289,137 @@ func TestPostSpotifyEnrichRejectsMissingApiKey(t *testing.T) {
 	}
 	if store.enrichCalled {
 		t.Fatal("enrichment should not be called when API key is missing")
+	}
+}
+
+func TestPostSpotifyEnrichTagsCallsStore(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{
+		tagEnrichResult: &model.LastFMTagEnrichmentResult{
+			EntityType: model.SpotifyEnrichmentTypeAlbum,
+			Status:     "tagged",
+			TagsFound:  3,
+			Updated:    true,
+		},
+	}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/enrich/tags?type=album", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status %d got %d body %s", http.StatusOK, rec.Code, rec.Body.String())
+	}
+	if !store.tagEnrichCalled {
+		t.Fatal("expected EnrichLastFMTags to be called")
+	}
+	if got, want := store.tagEnrichInput.EntityType, model.SpotifyEnrichmentTypeAlbum; got != want {
+		t.Fatalf("entity type = %q, want %q", got, want)
+	}
+}
+
+func TestPostSpotifyEnrichTagsDefaultsToTrack(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{
+		tagEnrichResult: &model.LastFMTagEnrichmentResult{
+			EntityType: model.SpotifyEnrichmentTypeTrack,
+			Status:     "complete",
+		},
+	}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/enrich/tags", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status %d got %d body %s", http.StatusOK, rec.Code, rec.Body.String())
+	}
+	if got, want := store.tagEnrichInput.EntityType, model.SpotifyEnrichmentTypeTrack; got != want {
+		t.Fatalf("entity type = %q, want %q", got, want)
+	}
+}
+
+func TestPostSpotifyEnrichTagsAcceptsEntityID(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{
+		tagEnrichResult: &model.LastFMTagEnrichmentResult{
+			EntityType: model.SpotifyEnrichmentTypeTrack,
+			Status:     "tagged",
+		},
+	}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/enrich/tags?type=track&id=121", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status %d got %d body %s", http.StatusOK, rec.Code, rec.Body.String())
+	}
+	if store.tagEnrichInput.EntityID == nil || *store.tagEnrichInput.EntityID != 121 {
+		t.Fatalf("entity id = %v, want 121", store.tagEnrichInput.EntityID)
+	}
+	if !store.tagEnrichInput.Force {
+		t.Fatal("expected id lookup to force enrichment")
+	}
+}
+
+func TestPostSpotifyEnrichTagsRejectsInvalidType(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/enrich/tags?type=playlist", nil)
+	req.Header.Set("X-API-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("expected status %d got %d body %s", http.StatusBadRequest, rec.Code, rec.Body.String())
+	}
+	if store.tagEnrichCalled {
+		t.Fatal("tag enrichment should not be called when type is invalid")
+	}
+}
+
+func TestPostSpotifyEnrichTagsRejectsMissingApiKey(t *testing.T) {
+	t.Setenv("SCROBBLE_API_KEY", "secret")
+	store := &musicStoreStub{}
+
+	router := chi.NewRouter()
+	handler := music_handler.NewHandlerWithStore(utils.NewColourLogger("brightBlack"), store)
+	handler.RegisterRoutes(router)
+
+	req := httptest.NewRequest(http.MethodPost, "/spotify/enrich/tags?type=track", nil)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("expected status %d got %d body %s", http.StatusForbidden, rec.Code, rec.Body.String())
+	}
+	if store.tagEnrichCalled {
+		t.Fatal("tag enrichment should not be called when API key is missing")
 	}
 }

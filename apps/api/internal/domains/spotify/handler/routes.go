@@ -7,6 +7,7 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 		r.Get("/latest", h.GetLatestScrobble)
 		r.Post("/", h.PostScrobble)
 		r.Post("/poll", h.PostSpotifyPoll)
+		r.Post("/enrich/tags", h.PostSpotifyEnrichTags)
 		r.Post("/enrich", h.PostSpotifyEnrich)
 	})
 }

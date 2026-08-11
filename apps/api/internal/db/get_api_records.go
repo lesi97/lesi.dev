@@ -21,11 +21,12 @@ type ApiDetails struct {
 }
 
 var allowedApplications = map[string]struct{}{
-	"Anilist":  {},
-	"Nightbot": {},
-	"Twitch_GO":   {},
-	"Spotify":  {},
-	"Nasa":     {},
+	"Anilist":   {},
+	"Nightbot":  {},
+	"Twitch_GO": {},
+	"Spotify":   {},
+	"LastFM":    {},
+	"Nasa":      {},
 }
 
 func isAllowedApplication(app string) bool {
@@ -108,7 +109,6 @@ func (db *DB) FetchApiDetails(ctx context.Context, application string, logger *u
 		}
 		refreshToken = &v
 	}
-
 
 	return &ApiDetails{
 		Name:               name,

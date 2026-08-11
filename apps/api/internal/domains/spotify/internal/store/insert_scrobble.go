@@ -16,21 +16,23 @@ func (s *Store) InsertScrobble(ctx context.Context, input model.ScrobbleInput) (
 	}
 	defer tx.Rollback(ctx)
 
-	artistID, err := upsertArtist(ctx, tx, input.Artist)
+	artistID, artistCreated, err := upsertArtist(ctx, tx, input.Artist)
 	if err != nil {
 		return nil, err
 	}
 
 	var albumID *int64
+	var albumCreated bool
 	if input.Album != nil {
-		id, err := upsertAlbum(ctx, tx, artistID, *input.Album)
+		id, created, err := upsertAlbum(ctx, tx, artistID, *input.Album)
 		if err != nil {
 			return nil, err
 		}
 		albumID = &id
+		albumCreated = created
 	}
 
-	trackID, err := upsertTrack(ctx, tx, artistID, albumID, input.Track)
+	trackID, trackCreated, err := upsertTrack(ctx, tx, artistID, albumID, input.Track)
 	if err != nil {
 		return nil, err
 	}
@@ -51,10 +53,11 @@ func (s *Store) InsertScrobble(ctx context.Context, input model.ScrobbleInput) (
 			source = excluded.source,
 			raw_payload = excluded.raw_payload,
 			updated_at = now()
-		RETURNING id
+		RETURNING id, (xmax = 0) AS created
 	`
 
 	var scrobbleID int64
+	var scrobbleCreated bool
 	err = tx.QueryRow(
 		ctx,
 		query,
@@ -64,7 +67,7 @@ func (s *Store) InsertScrobble(ctx context.Context, input model.ScrobbleInput) (
 		trackID,
 		input.Source,
 		input.RawPayload,
-	).Scan(&scrobbleID)
+	).Scan(&scrobbleID, &scrobbleCreated)
 	if err != nil {
 		return nil, err
 	}
@@ -79,6 +82,10 @@ func (s *Store) InsertScrobble(ctx context.Context, input model.ScrobbleInput) (
 		AlbumID:         albumID,
 		TrackID:         trackID,
 		ScrobbledAt:     input.ScrobbledAt.UTC().Format(time.RFC3339),
+		ArtistCreated:   artistCreated,
+		AlbumCreated:    albumCreated,
+		TrackCreated:    trackCreated,
+		ScrobbleCreated: scrobbleCreated,
 		ArtistURL:       input.Artist.URL,
 		TrackURL:        input.Track.URL,
 		ArtistImageURL:  input.Artist.ImageURL,
@@ -95,7 +102,7 @@ func (s *Store) InsertScrobble(ctx context.Context, input model.ScrobbleInput) (
 	return result, nil
 }
 
-func upsertArtist(ctx context.Context, tx pgx.Tx, entity model.ScrobbleEntityInput) (int64, error) {
+func upsertArtist(ctx context.Context, tx pgx.Tx, entity model.ScrobbleEntityInput) (int64, bool, error) {
 	spotifyID := optionalString(entity.SpotifyID)
 	url := optionalString(entity.URL)
 	imageURL := optionalString(entity.ImageURL)
@@ -116,7 +123,7 @@ func upsertArtist(ctx context.Context, tx pgx.Tx, entity model.ScrobbleEntityInp
 		LIMIT 1
 	`, entity.Name, spotifyID)
 	if err != nil {
-		return 0, err
+		return 0, false, err
 	}
 
 	if ok {
@@ -130,17 +137,18 @@ func upsertArtist(ctx context.Context, tx pgx.Tx, entity model.ScrobbleEntityInp
 				updated_at = now()
 			WHERE id = $5
 		`, entity.Name, spotifyID, url, imageURL, id)
-		return id, err
+		return id, false, err
 	}
 
-	return insertID(ctx, tx, `
+	id, err = insertID(ctx, tx, `
 		INSERT INTO music.artists (name, spotify_id, url, image_url)
 		VALUES ($1, $2::text, $3::text, $4::text)
 		RETURNING id
 	`, entity.Name, spotifyID, url, imageURL)
+	return id, true, err
 }
 
-func upsertAlbum(ctx context.Context, tx pgx.Tx, artistID int64, entity model.ScrobbleEntityInput) (int64, error) {
+func upsertAlbum(ctx context.Context, tx pgx.Tx, artistID int64, entity model.ScrobbleEntityInput) (int64, bool, error) {
 	spotifyID := optionalString(entity.SpotifyID)
 	url := optionalString(entity.URL)
 	imageURL := optionalString(entity.ImageURL)
@@ -162,7 +170,7 @@ func upsertAlbum(ctx context.Context, tx pgx.Tx, artistID int64, entity model.Sc
 		LIMIT 1
 	`, artistID, entity.Name, spotifyID)
 	if err != nil {
-		return 0, err
+		return 0, false, err
 	}
 
 	if ok {
@@ -177,17 +185,18 @@ func upsertAlbum(ctx context.Context, tx pgx.Tx, artistID int64, entity model.Sc
 				updated_at = now()
 			WHERE id = $6
 		`, artistID, entity.Name, spotifyID, url, imageURL, id)
-		return id, err
+		return id, false, err
 	}
 
-	return insertID(ctx, tx, `
+	id, err = insertID(ctx, tx, `
 		INSERT INTO music.albums (artist_id, name, spotify_id, url, image_url)
 		VALUES ($1, $2, $3::text, $4::text, $5::text)
 		RETURNING id
 	`, artistID, entity.Name, spotifyID, url, imageURL)
+	return id, true, err
 }
 
-func upsertTrack(ctx context.Context, tx pgx.Tx, artistID int64, albumID *int64, entity model.ScrobbleEntityInput) (int64, error) {
+func upsertTrack(ctx context.Context, tx pgx.Tx, artistID int64, albumID *int64, entity model.ScrobbleEntityInput) (int64, bool, error) {
 	spotifyID := optionalString(entity.SpotifyID)
 	url := optionalString(entity.URL)
 	imageURL := optionalString(entity.ImageURL)
@@ -211,7 +220,7 @@ func upsertTrack(ctx context.Context, tx pgx.Tx, artistID int64, albumID *int64,
 		LIMIT 1
 	`, artistID, album, entity.Name, spotifyID)
 	if err != nil {
-		return 0, err
+		return 0, false, err
 	}
 
 	if ok {
@@ -227,14 +236,15 @@ func upsertTrack(ctx context.Context, tx pgx.Tx, artistID int64, albumID *int64,
 				updated_at = now()
 			WHERE id = $7
 		`, artistID, album, entity.Name, spotifyID, url, imageURL, id)
-		return id, err
+		return id, false, err
 	}
 
-	return insertID(ctx, tx, `
+	id, err = insertID(ctx, tx, `
 		INSERT INTO music.tracks (artist_id, album_id, name, spotify_id, url, image_url)
 		VALUES ($1, $2::bigint, $3, $4::text, $5::text, $6::text)
 		RETURNING id
 	`, artistID, album, entity.Name, spotifyID, url, imageURL)
+	return id, true, err
 }
 
 func selectID(ctx context.Context, tx pgx.Tx, query string, args ...any) (int64, bool, error) {

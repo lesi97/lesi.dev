@@ -168,8 +168,12 @@ func (s *Store) PollSpotifyRecentlyPlayed(ctx context.Context, input model.Spoti
 			continue
 		}
 
-		if _, err := s.InsertScrobble(ctx, input); err != nil {
+		inserted, err := s.InsertScrobble(ctx, input)
+		if err != nil {
 			return nil, err
+		}
+		if inserted != nil && inserted.TrackCreated {
+			s.enrichLastFMTagsForScrobble(ctx, input, inserted, result)
 		}
 
 		result.Scrobbled++

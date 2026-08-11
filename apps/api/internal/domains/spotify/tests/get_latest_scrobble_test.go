@@ -33,6 +33,10 @@ func (s *latestScrobbleStoreStub) EnrichSpotifyMetadata(ctx context.Context, inp
 	return nil, nil
 }
 
+func (s *latestScrobbleStoreStub) EnrichLastFMTags(ctx context.Context, input model.LastFMTagEnrichmentInput) (*model.LastFMTagEnrichmentResult, error) {
+	return nil, nil
+}
+
 func TestGetLatestScrobbleReturnsPlainTextWithoutApiKey(t *testing.T) {
 	text := "Hozier - Talk"
 	store := &latestScrobbleStoreStub{text: &text}

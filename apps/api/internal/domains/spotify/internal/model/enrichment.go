@@ -10,6 +10,12 @@ type SpotifyEnrichmentInput struct {
 	EntityType string
 }
 
+type LastFMTagEnrichmentInput struct {
+	EntityType string
+	EntityID   *int64
+	Force      bool
+}
+
 type SpotifyEnrichmentResult struct {
 	EntityType                 string   `json:"entity_type"`
 	EntityID                   *int64   `json:"entity_id,omitempty"`
@@ -21,6 +27,20 @@ type SpotifyEnrichmentResult struct {
 	SpotifyID                  *string  `json:"spotify_id,omitempty"`
 	SpotifyURL                 *string  `json:"spotify_url,omitempty"`
 	ImageURL                   *string  `json:"image_url,omitempty"`
+	Notes                      string   `json:"notes,omitempty"`
+	RateLimited                bool     `json:"rate_limited,omitempty"`
+	RateLimitReason            string   `json:"rate_limit_reason,omitempty"`
+	RateLimitRetryAfterSeconds *int     `json:"rate_limit_retry_after_seconds,omitempty"`
+}
+
+type LastFMTagEnrichmentResult struct {
+	EntityType                 string   `json:"entity_type"`
+	EntityID                   *int64   `json:"entity_id,omitempty"`
+	EntityName                 string   `json:"entity_name,omitempty"`
+	Status                     string   `json:"status"`
+	Updated                    bool     `json:"updated"`
+	TagsFound                  int      `json:"tags_found"`
+	Tags                       []string `json:"tags,omitempty"`
 	Notes                      string   `json:"notes,omitempty"`
 	RateLimited                bool     `json:"rate_limited,omitempty"`
 	RateLimitReason            string   `json:"rate_limit_reason,omitempty"`

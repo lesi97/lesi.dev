@@ -89,6 +89,10 @@ type ScrobbleResult struct {
 	AlbumID         *int64  `json:"album_id,omitempty"`
 	TrackID         int64   `json:"track_id"`
 	ScrobbledAt     string  `json:"scrobbled_at"`
+	ArtistCreated   bool    `json:"artist_created,omitempty"`
+	AlbumCreated    bool    `json:"album_created,omitempty"`
+	TrackCreated    bool    `json:"track_created,omitempty"`
+	ScrobbleCreated bool    `json:"scrobble_created,omitempty"`
 	ArtistURL       *string `json:"artist_url,omitempty"`
 	AlbumURL        *string `json:"album_url,omitempty"`
 	TrackURL        *string `json:"track_url,omitempty"`
@@ -109,6 +113,9 @@ type SpotifyPollResult struct {
 	Fetched                    int     `json:"fetched"`
 	Scrobbled                  int     `json:"scrobbled"`
 	Skipped                    int     `json:"skipped"`
+	LastFMTagLookups           int     `json:"lastfm_tag_lookups,omitempty"`
+	LastFMTaggedEntities       int     `json:"lastfm_tagged_entities,omitempty"`
+	LastFMTagErrors            int     `json:"lastfm_tag_errors,omitempty"`
 	AfterMS                    *int64  `json:"after_ms,omitempty"`
 	LatestPlayedAt             *string `json:"latest_played_at,omitempty"`
 	Source                     string  `json:"source"`

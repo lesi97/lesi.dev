@@ -16,6 +16,7 @@ type Methods interface {
 	GetLatestPlayedText(ctx context.Context) (*string, error)
 	PollSpotifyRecentlyPlayed(ctx context.Context, input model.SpotifyPollInput) (*model.SpotifyPollResult, error)
 	EnrichSpotifyMetadata(ctx context.Context, input model.SpotifyEnrichmentInput) (*model.SpotifyEnrichmentResult, error)
+	EnrichLastFMTags(ctx context.Context, input model.LastFMTagEnrichmentInput) (*model.LastFMTagEnrichmentResult, error)
 }
 
 type Store struct {
