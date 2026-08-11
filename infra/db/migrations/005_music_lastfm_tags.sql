@@ -258,3 +258,7 @@ comment on table music.artist_genres is 'Artist-to-tag relationships sourced fro
 comment on table music.album_genres is 'Album-to-tag relationships sourced from Last.fm top tags.';
 comment on table music.track_genres is 'Track-to-tag relationships sourced from Last.fm top tags.';
 comment on table music.lastfm_tag_enrichment_attempts is 'Last.fm tag lookup attempt state for music artists, albums, and tracks.';
+
+create index if not exists music_scrobbles_album_scrobbled_at_idx
+on music.scrobbles (album_id, scrobbled_at desc)
+where album_id is not null;

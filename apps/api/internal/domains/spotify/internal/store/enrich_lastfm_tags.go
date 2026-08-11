@@ -496,31 +496,50 @@ func (s *Store) lastFMTrackTagEnrichmentTargetByID(ctx context.Context, entityID
 func (s *Store) nextLastFMAlbumTagEnrichmentTarget(ctx context.Context) (lastfmTagTarget, bool, error) {
 	target := lastfmTagTarget{EntityType: model.SpotifyEnrichmentTypeAlbum}
 	err := s.DB.QueryRow(ctx, `
+		WITH candidates AS (
+			SELECT
+				al.id,
+				a.name AS artist,
+				al.name AS album,
+				coalesce(e.attempts, 0) AS attempts,
+				coalesce(e.updated_at, 'epoch'::timestamptz) AS last_attempted_at
+			FROM music.albums al
+			JOIN music.artists a ON a.id = al.artist_id
+			LEFT JOIN music.lastfm_tag_enrichment_attempts e
+				ON e.entity_type = 'album'
+				AND e.entity_id = al.id
+			WHERE NOT EXISTS (
+				SELECT 1
+				FROM music.album_genres alg
+				WHERE alg.album_id = al.id
+					AND alg.source = $1
+			)
+			AND (
+				e.id IS NULL
+				OR (e.status = 'error' AND e.updated_at < now() - interval '6 hours')
+				OR (e.status = 'rate_limited' AND e.updated_at < now() - interval '15 minutes')
+			)
+		),
+		album_play_counts AS (
+			SELECT
+				s.album_id,
+				count(*)::bigint AS play_count
+			FROM music.scrobbles s
+			JOIN candidates c ON c.id = s.album_id
+			WHERE s.album_id IS NOT NULL
+			GROUP BY s.album_id
+		)
 		SELECT
-			al.id,
-			a.name,
-			al.name
-		FROM music.albums al
-		JOIN music.artists a ON a.id = al.artist_id
-		LEFT JOIN music.lastfm_tag_enrichment_attempts e
-			ON e.entity_type = 'album'
-			AND e.entity_id = al.id
-		WHERE NOT EXISTS (
-			SELECT 1
-			FROM music.album_genres alg
-			WHERE alg.album_id = al.id
-				AND alg.source = $1
-		)
-		AND (
-			e.id IS NULL
-			OR (e.status = 'error' AND e.updated_at < now() - interval '6 hours')
-			OR (e.status = 'rate_limited' AND e.updated_at < now() - interval '15 minutes')
-		)
+			c.id,
+			c.artist,
+			c.album
+		FROM candidates c
+		LEFT JOIN album_play_counts apc ON apc.album_id = c.id
 		ORDER BY
-			coalesce(e.attempts, 0),
-			(SELECT count(*) FROM music.scrobbles s WHERE s.album_id = al.id) DESC,
-			coalesce(e.updated_at, 'epoch'::timestamptz),
-			al.id
+			c.attempts,
+			coalesce(apc.play_count, 0) DESC,
+			c.last_attempted_at,
+			c.id
 		LIMIT 1
 	`, lastfmTagSource).Scan(&target.EntityID, &target.Artist, &target.Album)
 
