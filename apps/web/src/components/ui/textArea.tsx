@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/utils';
 
 const textareaVariants = cva(
-    'inline-flex items-center justify-start whitespace-pre-wrap rounded-lg text-sm font-medium ring-offset-white transition-colors focus-visible:!outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed select-text placeholder:italic',
+    'inline-flex items-center justify-start whitespace-pre-wrap rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 select-text placeholder:italic',
     {
         variants: {
             variant: {
@@ -11,9 +11,9 @@ const textareaVariants = cva(
                 secondary: 'bg-secondary text-secondary-content placeholder:text-secondary-content/50',
                 accent: 'bg-accent text-accent-content placeholder:text-accent-content/50',
                 outline:
-                    'bg-transparent border-2 border-base-content/80 text-base-content placeholder:text-base-content/50',
+                    'border-2 border-base-content/80 bg-transparent text-base-content placeholder:text-base-content/50 hover:bg-accent/10 focus:border-accent focus-visible:border-accent',
                 underline:
-                    'bg-transparent border border-b-accent border-t-0 border-l-0 border-r-0 rounded-none rounded-t-lg focus-visible:!ring-0',
+                    'rounded-none rounded-t-lg border border-b-accent border-l-0 border-r-0 border-t-0 bg-transparent focus:bg-accent/10 focus-visible:bg-accent/10',
             },
             size: {
                 default: 'min-h-[100px] p-3',
@@ -29,7 +29,8 @@ const textareaVariants = cva(
 );
 
 export interface TextareaProps
-    extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'>, VariantProps<typeof textareaVariants> {
+    extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'>,
+        VariantProps<typeof textareaVariants> {
     id: string;
     error?: string;
     tags?: boolean;

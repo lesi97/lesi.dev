@@ -1,11 +1,12 @@
 import ReactDOM from 'react-dom/client';
 import { StrictMode, lazy, Suspense, useEffect } from 'react';
 import './index.css';
-import { Routes, Route, BrowserRouter, useLocation } from 'react-router-dom';
+import { Routes, Route, BrowserRouter, Navigate, useLocation } from 'react-router-dom';
 import { Home } from './pages/home';
 import { AspectRatio } from './pages/aspectRatio';
 import { ImageToIcon } from './pages/imageToIcon';
 import { PasswordGenerator } from './pages/passwordGenerator';
+import { UuidGenerator } from './pages/uuidGenerator';
 import { WeightConverter } from './pages/weightConverter';
 import { Minifier } from './pages/minifier';
 import { Countdown } from './pages/countdown';
@@ -48,6 +49,12 @@ function Router() {
                         <Route path='/pdf-to-png' element={<PdfToPng />} />
                         <Route path='/ico-converter' element={<ImageToIcon />} />
                         <Route path='/password-generator' element={<PasswordGenerator />} />
+                        <Route path='/uuid-generator' element={<Navigate to='/uuid-generator/v4' replace />} />
+                        <Route path='/uuid-generator/v1' element={<UuidGenerator version='1' />} />
+                        <Route path='/uuid-generator/v4' element={<UuidGenerator version='4' />} />
+                        <Route path='/uuid-generator/v6' element={<UuidGenerator version='6' />} />
+                        <Route path='/uuid-generator/v7' element={<UuidGenerator version='7' />} />
+                        <Route path='/uuid-generator/nil' element={<UuidGenerator version='nil' />} />
                         <Route path='/weight-converter' element={<WeightConverter />} />
                         <Route path='/minifier' element={<Minifier />} />
                         <Route path='/countdown' element={<Countdown />} />

@@ -5,7 +5,7 @@ import { cn } from '@/utils';
 import { Icons } from './icons';
 
 const inputVariants = cva(
-    'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-white transition-colors focus-visible:!outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed select-none placeholder:italic',
+    'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 select-none placeholder:italic',
     {
         variants: {
             variant: {
@@ -14,9 +14,9 @@ const inputVariants = cva(
                     'bg-secondary hover:bg-secondary/80 text-secondary-content  placeholder:text-secondary-content:50',
                 accent: 'bg-accent hover:bg-accent/80 text-accent-content placeholder:text-accent-content:50',
                 outline:
-                    'bg-transparent hover:bg-accent/10 border-2 border-base-content/80 placeholder:text-base-content/50 text-base-content',
+                    'border-2 border-base-content/80 bg-transparent text-base-content placeholder:text-base-content/50 hover:bg-accent/10 focus:border-accent focus-visible:border-accent',
                 underline:
-                    'bg-transparent hover:bg-accent/10 border border-b-accent border-t-0 border-l-0 border-r-0 rounded-none rounded-t-lg focus-within:!ring-0 focus-within:!outline-0 focus focus-visible:!ring-0 focus-visible:!outline-0 focus:!ring-0 focus:!outline-0 focus-visible:ring-offset-0 focus-visible:bg-accent/10',
+                    'rounded-none rounded-t-lg border border-b-accent border-l-0 border-r-0 border-t-0 bg-transparent hover:bg-accent/10 focus:bg-accent/10 focus-visible:bg-accent/10',
             },
             size: {
                 default: 'h-10 px-4 py-2',
@@ -33,7 +33,8 @@ const inputVariants = cva(
 );
 
 export interface InputProps
-    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>, VariantProps<typeof inputVariants> {
+    extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
+        VariantProps<typeof inputVariants> {
     asChild?: boolean;
     error?: string | undefined | null;
     id: string;

@@ -5,6 +5,7 @@ export { ImageToIcon } from './imageToIcon';
 export { loadVideoToMp3 } from './videoToMp3';
 export { loadVideoCropper } from './videoCropper';
 export { PasswordGenerator } from './passwordGenerator';
+export { UuidGenerator } from './uuidGenerator';
 export { WeightConverter } from './weightConverter';
 export { Minifier } from './minifier';
 export { Countdown } from './countdown';

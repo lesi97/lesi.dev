@@ -25,6 +25,17 @@ const links: NavLink[] = [
         ],
     },
     { to: '/password-generator', label: 'Password Generator' },
+    {
+        to: '/uuid-generator/v4',
+        label: 'UUID Generator',
+        children: [
+            { to: '/uuid-generator/v1', label: 'UUID v1' },
+            { to: '/uuid-generator/v4', label: 'UUID v4' },
+            { to: '/uuid-generator/v6', label: 'UUID v6' },
+            { to: '/uuid-generator/v7', label: 'UUID v7' },
+            { to: '/uuid-generator/nil', label: 'Nil UUID' },
+        ],
+    },
     { to: '/weight-converter', label: 'Weight Converter' },
     { to: '/minifier', label: 'Minifier' },
     { to: '/countdown', label: 'Countdown' },
