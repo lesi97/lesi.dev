@@ -10,6 +10,7 @@ import { UuidGenerator } from './pages/uuidGenerator';
 import { WeightConverter } from './pages/weightConverter';
 import { Minifier } from './pages/minifier';
 import { Countdown } from './pages/countdown';
+import { DiscordTimestampConverter } from './pages/discordTimestampConverter';
 import { AimTrainer } from './pages/aimTrainer';
 import { Settings } from './pages/settings';
 import { NotFound } from './pages/notFound';
@@ -58,6 +59,7 @@ function Router() {
                         <Route path='/weight-converter' element={<WeightConverter />} />
                         <Route path='/minifier' element={<Minifier />} />
                         <Route path='/countdown' element={<Countdown />} />
+                        <Route path='/discord-timestamp-converter' element={<DiscordTimestampConverter />} />
                         <Route path='/settings' element={<Settings />} />
                         <Route path='/aim-trainer/release-notes' element={<AimTrainerReleaseNotes />} />
                     </Route>

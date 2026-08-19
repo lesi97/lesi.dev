@@ -39,6 +39,7 @@ const links: NavLink[] = [
     { to: '/weight-converter', label: 'Weight Converter' },
     { to: '/minifier', label: 'Minifier' },
     { to: '/countdown', label: 'Countdown' },
+    { to: '/discord-timestamp-converter', label: 'Discord Timestamp Converter' },
     { to: '/aim-trainer', label: 'Aim Trainer' },
     { to: '/settings', label: 'Settings' },
 ];
