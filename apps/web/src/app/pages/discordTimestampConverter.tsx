@@ -184,7 +184,7 @@ export function DiscordTimestampConverter() {
         <>
             <Description
                 title='Discord Timestamp Converter'
-                subtitle='Create Discord markdown that displays times in each viewer local timezone.'
+                subtitle='Create Discord markdown that displays times in each users local timezone'
             />
 
             <div className='mx-auto flex w-full flex-col gap-6'>
