@@ -239,6 +239,11 @@ export function DateMeme() {
         setAccepted(true);
     }
 
+    function declineDate() {
+        trackDateMemeClick('no');
+        moveNoButton();
+    }
+
     const yesButton = (
         <button
             type='button'
@@ -283,7 +288,7 @@ export function DateMeme() {
             }}
             onPointerEnter={(event) => {
                 if (event.pointerType === 'mouse') {
-                    moveNoButton();
+                    declineDate();
                 }
             }}
             onPointerDown={(event) => {
@@ -295,8 +300,9 @@ export function DateMeme() {
                 } catch {
                     // The button may move before all browsers allow pointer capture.
                 }
-                trackDateMemeClick('no');
-                moveNoButton();
+                if (event.pointerType !== 'mouse') {
+                    declineDate();
+                }
             }}
             onFocus={() => {
                 if (Date.now() >= suppressYesClickUntilRef.current) {
