@@ -10,6 +10,7 @@ import (
 
 type Methods interface {
 	InsertTelemetry(ctx context.Context, payload model.TelemetryPayload) error
+	UpsertDateMemeClick(ctx context.Context, input model.DateMemeClickInput) error
 }
 
 type Store struct {

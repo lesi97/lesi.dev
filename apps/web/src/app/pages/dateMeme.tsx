@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { usePageMeta } from '@/hooks';
 import { useSeason } from '@/context/SeasonContext';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { sendDateMemeClick } from '@/lib/telemetry/sendDateMemeClick';
 
 type MemePrompt = {
     question: string;
@@ -178,6 +179,7 @@ function ValentineHeartRain() {
 }
 
 export function DateMeme() {
+    const location = useLocation();
     const { slug } = useParams();
     const name = formatNameFromSlug(slug);
 
@@ -227,7 +229,12 @@ export function DateMeme() {
         suppressYesClickUntilRef.current = Date.now() + 450;
     }
 
+    function trackDateMemeClick(action: 'yes' | 'no') {
+        sendDateMemeClick(location.pathname, action);
+    }
+
     function acceptDate() {
+        trackDateMemeClick('yes');
         setEffectsEnabled(true);
         setAccepted(true);
     }
@@ -288,6 +295,7 @@ export function DateMeme() {
                 } catch {
                     // The button may move before all browsers allow pointer capture.
                 }
+                trackDateMemeClick('no');
                 moveNoButton();
             }}
             onFocus={() => {
