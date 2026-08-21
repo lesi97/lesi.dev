@@ -10,6 +10,7 @@ export { WeightConverter } from './weightConverter';
 export { Minifier } from './minifier';
 export { Countdown } from './countdown';
 export { DiscordTimestampConverter } from './discordTimestampConverter';
+export { DateMeme } from './dateMeme';
 export { AimTrainer } from './aimTrainer';
 export { Settings } from './settings';
 export { NotFound } from './notFound';

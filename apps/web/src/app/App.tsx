@@ -24,7 +24,7 @@ import { SeasonProvider } from '@/context/SeasonContext';
 import { ErrorBoundary } from './ErrorBoundary';
 import { DefaultLayout, FfmpegLayout, WideLayout, Ltoe, Nav } from '@/components/layout';
 import { PopoverLayout } from '@/components/layout/popoverLayout';
-import { WordpressAdmin } from './pages';
+import { DateMeme, WordpressAdmin } from './pages';
 import { sendTelemetry } from '@/lib/telemetry/sendTelemetry';
 
 const PdfToPng = lazy(loadPdfToPng);
@@ -33,7 +33,12 @@ const VideoCropper = lazy(loadVideoCropper);
 
 function Router() {
     const location = useLocation();
-    const isWordpressAdmin = location.pathname.startsWith('/wp-admin') || location.pathname.startsWith('/wp-content');
+
+    const isMemePage =
+        location.pathname.startsWith('/wp-admin') ||
+        location.pathname.startsWith('/wp-content') ||
+        location.pathname.startsWith('/date') ||
+        location.pathname.startsWith('/audrey');
 
     useEffect(() => {
         sendTelemetry(location.pathname);
@@ -41,7 +46,7 @@ function Router() {
 
     return (
         <>
-            {!isWordpressAdmin && <Nav />}
+            {!isMemePage && <Nav />}
             <Suspense fallback={null}>
                 <Routes>
                     <Route element={<DefaultLayout />}>
@@ -63,6 +68,7 @@ function Router() {
                         <Route path='/settings' element={<Settings />} />
                         <Route path='/aim-trainer/release-notes' element={<AimTrainerReleaseNotes />} />
                     </Route>
+                    <Route path='/audrey' element={<DateMeme />} />
 
                     <Route element={<FfmpegLayout hasAudio={true} />}>
                         <Route path='/video-to-mp3' element={<VideoToMp3 />} />
@@ -89,7 +95,7 @@ function Router() {
                     </Route>
                 </Routes>
             </Suspense>
-            {!isWordpressAdmin && <Ltoe />}
+            {!isMemePage && <Ltoe />}
         </>
     );
 }
