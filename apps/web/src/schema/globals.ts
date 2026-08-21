@@ -170,3 +170,6 @@ export type MimeType =
     | 'font/ttf'
     | 'font/woff'
     | 'font/woff2';
+
+export type AcceptedFileType = MimeType | `.${string}`;
+export type AcceptedFileTypes = AcceptedFileType | AcceptedFileType[];

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, Fragment, ReactNode } from 'react';
 import { checkFileTypeValidity, uploadBoxDropOverOrEnter, removeDropZone, uploadBoxOnDrop } from './dropbox-helpers';
 import parseMessage from './message-parser';
-import { MimeType } from '@/schema';
+import { type AcceptedFileTypes } from '@/schema';
 import { highlightText } from './dropbox-helpers';
 import { cn } from '@/utils';
 import { Waveform } from './waveform';
@@ -15,7 +15,7 @@ export function Dropbox({
     loading,
     progress,
 }: {
-    fileType: MimeType;
+    fileType: AcceptedFileTypes;
     illustration: ReactNode;
     url?: string | null;
     callback: (file: File) => void;
@@ -53,6 +53,7 @@ export function Dropbox({
     }, [loading, progress]);
 
     if (!isBrowser) return null;
+    const inputAccept = Array.isArray(fileType) ? fileType.join(',') : fileType;
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
@@ -102,7 +103,7 @@ export function Dropbox({
                             type='file'
                             className='hidden'
                             ref={fileInputRef}
-                            accept={fileType}
+                            accept={inputAccept}
                             onChange={(e) => handleFileChange(e)}
                         />
                     </label>

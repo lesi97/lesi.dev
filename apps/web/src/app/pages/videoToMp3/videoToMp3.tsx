@@ -25,7 +25,7 @@ export function VideoToMp3() {
             />
             {ffmpeg.ready && (
                 <Dropbox
-                    fileType='video/mp4'
+                    fileType={['video/mp4', 'video/quicktime', '.mov']}
                     illustration={
                         <illustrations.Music
                             playPause={() => {

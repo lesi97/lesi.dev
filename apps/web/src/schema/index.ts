@@ -1,4 +1,6 @@
 export {
+    type AcceptedFileType,
+    type AcceptedFileTypes,
     type MimeType,
     genericErrorRequired,
     genericErrorSelectAnOption,

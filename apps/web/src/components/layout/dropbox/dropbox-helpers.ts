@@ -1,13 +1,14 @@
-function checkFileTypeValidity(acceptableFileType: string, file: File) {
-    const fileType = file.type;
-    if (acceptableFileType.endsWith('/*')) {
-        const generalType = acceptableFileType.split('/')[0];
-        const actualType = fileType.split('/')[0];
-        if (generalType === actualType) {
-            const message = `${highlightText(file.name, 'success')} has now been converted\n\nCheck your downloads folder for the converted file`;
-            return { valid: true, message };
-        }
-    } else if (acceptableFileType === fileType) {
+import type { AcceptedFileTypes } from '@/schema';
+
+const knownExtensionsByMimeType: Record<string, string[]> = {
+    'application/pdf': ['.pdf'],
+    'video/mp4': ['.mp4', '.m4v'],
+    'video/quicktime': ['.mov', '.qt'],
+};
+
+function checkFileTypeValidity(acceptableFileType: AcceptedFileTypes, file: File) {
+    const acceptableFileTypes = normaliseAcceptableFileTypes(acceptableFileType);
+    if (acceptableFileTypes.some((fileType) => fileMatchesAcceptableType(fileType, file))) {
         const message = `${highlightText(file.name, 'success')} has now been converted\n\nCheck your downloads folder for the converted file`;
         return { valid: true, message };
     }
@@ -17,21 +18,48 @@ function checkFileTypeValidity(acceptableFileType: string, file: File) {
     return { valid: false, message };
 }
 
-function checkAcceptableFileType(fileType: string) {
-    switch (fileType) {
-        case 'image/*':
-            return 'image';
-        case 'video/*':
-            return 'video';
-        case 'video/mp4':
-            return 'video';
-        case 'application/pdf':
-            return 'PDF';
-        case 'audio/*':
-            return 'audio';
-        default:
-            return '';
+function normaliseAcceptableFileTypes(acceptableFileType: AcceptedFileTypes) {
+    const acceptableFileTypes = Array.isArray(acceptableFileType) ? acceptableFileType : [acceptableFileType];
+    return acceptableFileTypes.map((fileType) => fileType.toLowerCase().trim()).filter(Boolean);
+}
+
+function fileMatchesAcceptableType(acceptableFileType: string, file: File) {
+    const fileType = file.type.toLowerCase();
+    const fileName = file.name.toLowerCase();
+
+    if (acceptableFileType.startsWith('.')) {
+        return fileName.endsWith(acceptableFileType);
     }
+
+    if (acceptableFileType.endsWith('/*')) {
+        const generalType = acceptableFileType.split('/')[0];
+        const actualType = fileType.split('/')[0];
+        return generalType === actualType;
+    }
+
+    if (acceptableFileType === fileType) {
+        return true;
+    }
+
+    return knownExtensionsByMimeType[acceptableFileType]?.some((extension) => fileName.endsWith(extension)) ?? false;
+}
+
+function checkAcceptableFileType(fileType: AcceptedFileTypes) {
+    const fileTypes = normaliseAcceptableFileTypes(fileType);
+    if (fileTypes.some((type) => type === 'image/*' || type.startsWith('image/'))) {
+        return 'image';
+    }
+    if (fileTypes.some((type) => type === 'video/*' || type.startsWith('video/'))) {
+        return 'video';
+    }
+    if (fileTypes.includes('application/pdf')) {
+        return 'PDF';
+    }
+    if (fileTypes.some((type) => type === 'audio/*' || type.startsWith('audio/'))) {
+        return 'audio';
+    }
+
+    return fileTypes.find((type) => type.startsWith('.'))?.toUpperCase() ?? '';
 }
 
 function uploadBoxDropOverOrEnter(

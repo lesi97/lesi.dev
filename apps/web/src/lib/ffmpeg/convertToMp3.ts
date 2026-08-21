@@ -17,8 +17,16 @@ export async function convertToMp3(
         const ffmpeg = ffmpegRef.current;
 
         const videoElement = videoRef.current;
-        if (videoElement === null) return;
-        const duration = (await loadMetadata(videoElement)) as number;
+        if (videoElement === null) {
+            setLoading(false);
+            return;
+        }
+        let duration = 0;
+        try {
+            duration = (await loadMetadata(videoElement)) as number;
+        } catch (error) {
+            console.warn('Could not load video metadata; continuing conversion without duration-based progress.', error);
+        }
 
         if (!ffmpeg.Loaded) {
             await ffmpeg.load();
@@ -26,7 +34,7 @@ export async function convertToMp3(
 
         ffmpeg.on('log', ({ message }: { message: string }) => {
             const timeMatch = message.match(/time=(\d{2}:\d{2}:\d{2}\.\d{2})/);
-            if (timeMatch) {
+            if (timeMatch && duration > 0) {
                 const currentTime = timeToSeconds(timeMatch[1]);
                 const percentage = (currentTime / duration) * 100;
                 setProgress(Math.min(percentage, 100));
@@ -34,7 +42,7 @@ export async function convertToMp3(
         });
 
         // Write the video file to FFmpeg's virtual filesystem
-        ffmpeg.writeFile(videoFile.name, await fetchFile(videoFile));
+        await ffmpeg.writeFile(videoFile.name, await fetchFile(videoFile));
 
         // Convert to MP3
         const mp3Name = replaceVideoExtensionWithMp3(videoFile.name);
@@ -55,6 +63,7 @@ export async function convertToMp3(
         const data = await ffmpeg.readFile(mp3Name);
         const url = URL.createObjectURL(new Blob([data.buffer], { type: 'audio/mpeg' }));
         setMp3(url);
+        setProgress(100);
         setLoading(false);
         downloadFile(mp3Name, url);
 
