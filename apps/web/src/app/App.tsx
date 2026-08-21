@@ -69,6 +69,7 @@ function Router() {
                         <Route path='/aim-trainer/release-notes' element={<AimTrainerReleaseNotes />} />
                     </Route>
                     <Route path='/audrey' element={<DateMeme />} />
+                    <Route path='/date/:slug' element={<DateMeme />} />
 
                     <Route element={<FfmpegLayout hasAudio={true} />}>
                         <Route path='/video-to-mp3' element={<VideoToMp3 />} />

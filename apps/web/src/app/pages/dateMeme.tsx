@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { usePageMeta } from '@/hooks';
 import { useSeason } from '@/context/SeasonContext';
+import { useParams } from 'react-router-dom';
 
 type MemePrompt = {
     question: string;
@@ -25,11 +26,6 @@ const memeImages = {
 const acceptedPrompt: MemePrompt = {
     question: 'I knew you would say yes',
     image: memeImages.rizzFace,
-};
-
-const initialPrompt: MemePrompt = {
-    question: 'Audrey, will you go out on a date with me?',
-    image: memeImages.roseCatOne,
 };
 
 const prompts: MemePrompt[] = [
@@ -134,6 +130,12 @@ function getColourMode(): ColourMode {
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+function formatNameFromSlug(slug: string | undefined) {
+    const decodedSlug = slug ? decodeURIComponent(slug).replace(/[-_]+/g, ' ').trim() : 'Audrey';
+    const name = decodedSlug || 'Audrey';
+    return `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+}
+
 function ValentineHeartRain() {
     return (
         <div className='pointer-events-none fixed inset-0 z-20 overflow-hidden' aria-hidden='true'>
@@ -176,8 +178,11 @@ function ValentineHeartRain() {
 }
 
 export function DateMeme() {
+    const { slug } = useParams();
+    const name = formatNameFromSlug(slug);
+
     usePageMeta({
-        title: 'Date? | Lesi',
+        title: `${name}, date? | Lesi`,
         description: 'A deeply serious yes or no question',
     });
     const { effectsEnabled, setEffectsEnabled } = useSeason();
@@ -189,6 +194,11 @@ export function DateMeme() {
     const [colourMode, setColourMode] = useState<ColourMode>(() => getColourMode());
     const [accepted, setAccepted] = useState(false);
     const suppressYesClickUntilRef = useRef(0);
+
+    const initialPrompt: MemePrompt = {
+        question: `${name}, will you go out on a date with me?`,
+        image: memeImages.roseCatOne,
+    };
 
     const noPosition = noPositions[noPositionIndex];
     const activePrompt = accepted ? acceptedPrompt : noHoverCount === 0 ? initialPrompt : prompts[questionIndex];
