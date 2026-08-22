@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePageMeta } from '@/hooks';
 import { useSeason } from '@/context/SeasonContext';
 import { useLocation, useParams } from 'react-router-dom';
@@ -22,12 +22,8 @@ const memeImages = {
     roseCatTwo: { src: '/images/date/cat-rose-2.jpg', alt: 'Cat holding a rose' },
     roseCatThree: { src: '/images/date/cat-rose-3.gif', alt: 'Cat offering a rose' },
     rizzFace: { src: '/images/date/rizz-face.webp', alt: 'Rizz face' },
+    lesiChad: { src: '/images/date/lesi-chad-square.png', alt: 'Lesi chad face' },
 } satisfies Record<string, MemePrompt['image']>;
-
-const acceptedPrompt: MemePrompt = {
-    question: 'I knew you would say yes',
-    image: memeImages.rizzFace,
-};
 
 const prompts: MemePrompt[] = [
     { question: 'Are you sure?', image: memeImages.angryCat },
@@ -137,6 +133,20 @@ function formatNameFromSlug(slug: string | undefined) {
     return `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
 }
 
+function shouldUseLesiChadImage(pathname: string) {
+    const normalizedPathname = pathname.replace(/\/+$/, '') || '/';
+
+    if (normalizedPathname === '/audrey') {
+        return true;
+    }
+
+    if (normalizedPathname.startsWith('/date/')) {
+        return Math.random() < 0.1;
+    }
+
+    return false;
+}
+
 function ValentineHeartRain() {
     return (
         <div className='pointer-events-none fixed inset-0 z-20 overflow-hidden' aria-hidden='true'>
@@ -182,6 +192,7 @@ export function DateMeme() {
     const location = useLocation();
     const { slug } = useParams();
     const name = formatNameFromSlug(slug);
+    const useLesiChadImage = useMemo(() => shouldUseLesiChadImage(location.pathname), [location.pathname]);
 
     usePageMeta({
         title: `${name}, date? | Lesi`,
@@ -201,6 +212,15 @@ export function DateMeme() {
         question: `${name}, will you go out on a date with me?`,
         image: memeImages.roseCatOne,
     };
+    const acceptedPrompt: MemePrompt = {
+        question: useLesiChadImage
+            ? "Mhm yes, of course m'lady, thou hast made the most wisest of decisions"
+            : 'I knew you would say yes',
+        image: useLesiChadImage ? memeImages.lesiChad : memeImages.rizzFace,
+    };
+    const acceptedFooterText = useLesiChadImage
+        ? 'Thou shouldst send thy carrier pigeon with declaration of our engagement 🫦'
+        : 'Call me on my cell baby gurrl 🫦';
 
     const noPosition = noPositions[noPositionIndex];
     const activePrompt = accepted ? acceptedPrompt : noHoverCount === 0 ? initialPrompt : prompts[questionIndex];
@@ -346,7 +366,7 @@ export function DateMeme() {
                     <p
                         className='flex h-full items-start justify-center pt-8 text-[clamp(1.25rem,4vw,1.75rem)] font-semibold'
                         style={{ color: palette.muted }}>
-                        Call me on my cell baby girl 🫦
+                        {acceptedFooterText}
                     </p>
                 ) : (
                     <div className='relative flex h-full w-full items-start justify-center pt-10'>
