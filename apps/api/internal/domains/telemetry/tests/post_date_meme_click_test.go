@@ -64,11 +64,39 @@ func TestPostDateMemeClickRecordsServerDerivedIP(t *testing.T) {
 	if store.dateMemeClickInput.Action != model.DateMemeClickActionYes {
 		t.Fatalf("unexpected action: %s", store.dateMemeClickInput.Action)
 	}
+	if store.dateMemeClickInput.SecretEnding {
+		t.Fatal("secret ending should default to false")
+	}
 	if store.dateMemeClickInput.IP != "203.0.113.10" {
 		t.Fatalf("unexpected ip: %s", store.dateMemeClickInput.IP)
 	}
 	if store.dateMemeClickInput.UserAgent != "date-test-agent" {
 		t.Fatalf("unexpected user agent: %s", store.dateMemeClickInput.UserAgent)
+	}
+}
+
+func TestPostDateMemeClickRecordsSecretEnding(t *testing.T) {
+	t.Setenv("WEB_URL", "https://example.com")
+	t.Setenv("TELEMETRY_API_KEY", "secret")
+
+	store := &telemetryStoreStub{}
+	router := newTelemetryTestRouter(store)
+
+	req := httptest.NewRequest(http.MethodPost, "/telemetry/date-meme-click", strings.NewReader(`{"route":"/audrey","action":"yes","secretEnding":true}`))
+	req.Header.Set("Origin", "https://example.com")
+	req.Header.Set("X-Telemetry-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusNoContent {
+		t.Fatalf("expected status %d got %d: %s", http.StatusNoContent, rec.Code, rec.Body.String())
+	}
+	if store.dateMemeClickInput == nil {
+		t.Fatal("expected store to record date meme click")
+	}
+	if !store.dateMemeClickInput.SecretEnding {
+		t.Fatal("expected secret ending to be recorded")
 	}
 }
 
@@ -93,6 +121,31 @@ func TestPostDateMemeClickRejectsInvalidAction(t *testing.T) {
 		t.Fatal("store should not be called for invalid action")
 	}
 	if !strings.Contains(rec.Body.String(), "action must be yes or no") {
+		t.Fatalf("unexpected body: %s", rec.Body.String())
+	}
+}
+
+func TestPostDateMemeClickRejectsSecretEndingForNo(t *testing.T) {
+	t.Setenv("WEB_URL", "https://example.com")
+	t.Setenv("TELEMETRY_API_KEY", "secret")
+
+	store := &telemetryStoreStub{}
+	router := newTelemetryTestRouter(store)
+
+	req := httptest.NewRequest(http.MethodPost, "/telemetry/date-meme-click", strings.NewReader(`{"route":"/audrey","action":"no","secretEnding":true}`))
+	req.Header.Set("Origin", "https://example.com")
+	req.Header.Set("X-Telemetry-Key", "secret")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("expected status %d got %d", http.StatusBadRequest, rec.Code)
+	}
+	if store.dateMemeClickInput != nil {
+		t.Fatal("store should not be called when secret ending is sent for no")
+	}
+	if !strings.Contains(rec.Body.String(), "secret ending can only be tracked for yes clicks") {
 		t.Fatalf("unexpected body: %s", rec.Body.String())
 	}
 }

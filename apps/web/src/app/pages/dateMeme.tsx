@@ -249,12 +249,12 @@ export function DateMeme() {
         suppressYesClickUntilRef.current = Date.now() + 450;
     }
 
-    function trackDateMemeClick(action: 'yes' | 'no') {
-        sendDateMemeClick(location.pathname, action);
+    function trackDateMemeClick(action: 'yes' | 'no', options?: { secretEnding?: boolean }) {
+        sendDateMemeClick(location.pathname, action, options);
     }
 
     function acceptDate() {
-        trackDateMemeClick('yes');
+        trackDateMemeClick('yes', { secretEnding: useLesiChadImage });
         setEffectsEnabled(true);
         setAccepted(true);
     }

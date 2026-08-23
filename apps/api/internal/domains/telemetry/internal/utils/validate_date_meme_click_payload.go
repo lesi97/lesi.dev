@@ -21,6 +21,9 @@ func ValidateDateMemeClickPayload(payload model.DateMemeClickPayload) error {
 	if payload.Action != model.DateMemeClickActionYes && payload.Action != model.DateMemeClickActionNo {
 		return errors.New("action must be yes or no")
 	}
+	if payload.SecretEnding && payload.Action != model.DateMemeClickActionYes {
+		return errors.New("secret ending can only be tracked for yes clicks")
+	}
 
 	return nil
 }

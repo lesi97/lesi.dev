@@ -33,10 +33,11 @@ func (h *Handler) PostDateMemeClick(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.store.UpsertDateMemeClick(r.Context(), model.DateMemeClickInput{
-		Route:     payload.Route,
-		Action:    payload.Action,
-		IP:        utils.GetRequestIP(r),
-		UserAgent: r.UserAgent(),
+		Route:        payload.Route,
+		Action:       payload.Action,
+		SecretEnding: payload.SecretEnding,
+		IP:           utils.GetRequestIP(r),
+		UserAgent:    r.UserAgent(),
 	}); err != nil {
 		h.logger.Printf("ERROR: Date meme click telemetry POST: %v", err)
 		utils.TextResponse(w, http.StatusInternalServerError, "internal server error")

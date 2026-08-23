@@ -6,6 +6,7 @@ create table if not exists logs.date_meme_clicks (
     click_date date not null default ((now() at time zone 'utc')::date),
     yes_clicks integer not null default 0 check (yes_clicks >= 0),
     no_clicks integer not null default 0 check (no_clicks >= 0),
+    secret_endings integer not null default 0 check (secret_endings >= 0),
     user_agent text not null default '',
     first_clicked_at timestamptz not null default now(),
     last_clicked_at timestamptz not null default now(),

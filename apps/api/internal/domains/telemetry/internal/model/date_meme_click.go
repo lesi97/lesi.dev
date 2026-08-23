@@ -8,13 +8,15 @@ const (
 )
 
 type DateMemeClickPayload struct {
-	Route  string              `json:"route"`
-	Action DateMemeClickAction `json:"action"`
+	Route        string              `json:"route"`
+	Action       DateMemeClickAction `json:"action"`
+	SecretEnding bool                `json:"secretEnding,omitempty"`
 }
 
 type DateMemeClickInput struct {
-	Route     string
-	Action    DateMemeClickAction
-	IP        string
-	UserAgent string
+	Route        string
+	Action       DateMemeClickAction
+	SecretEnding bool
+	IP           string
+	UserAgent    string
 }
